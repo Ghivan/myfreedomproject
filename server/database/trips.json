@@ -1,0 +1,29 @@
+[
+  {
+    "id": 0,
+    "name": "Тур в Пекин 2017",
+    "route": {
+      "location": 0,
+      "arrivalDate": "2017-10-21",
+      "destinationDate": "2017-10-30"
+    }
+  },
+  {
+    "id": 1,
+    "name": "Французская весна",
+    "route": {
+      "location": 1,
+      "arrivalDate": "2018-03-15",
+      "destinationDate": "2018-03-23"
+    }
+  },
+  {
+    "id": 2,
+    "name": "Новогодние каникулы в Китае",
+    "route": {
+      "location": 0,
+      "arrivalDate": "2018-01-25",
+      "destinationDate": "2018-02-15"
+    }
+  }
+]

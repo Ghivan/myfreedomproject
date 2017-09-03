@@ -1,0 +1,21 @@
+<nav>
+    <ul>
+        <li <% if (title === 'Trips') { %>
+                class="active"
+                <%}%>>
+            <a href="trips">Путешествия</a>
+        </li>
+        <li <% if (title === 'Customers') { %>
+                class="active"
+                <%}%>
+        >
+            <a href="customers">Клиенты</a>
+        </li>
+        <li <% if (title === 'Locations') { %>
+                class="active"
+                <%}%>
+        >
+            <a href="locations">Направления</a>
+        </li>
+    </ul>
+</nav>

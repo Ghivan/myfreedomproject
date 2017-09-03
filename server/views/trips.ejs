@@ -4,8 +4,33 @@
     <title>
         <%= title %>
     </title>
+    <style>
+        <% include components/style.css %>
+    </style>
 </head>
 <body>
-
+<% include components/navigation.ejs %>
+<table>
+    <thead>
+    <tr>
+        <th>Название тура</th>
+        <th>Страна</th>
+        <th>Город</th>
+        <th>Старт</th>
+        <th>Возврат</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% for (let i = 0; i < trips.length; i++) {%>
+    <tr>
+        <td><%= trips[i].name %></td>
+        <td><%= trips[i].route.location.country %></td>
+        <td><%= trips[i].route.location.city %></td>
+        <td><%= trips[i].route.arrivalDate %></td>
+        <td><%= trips[i].route.destinationDate %></td>
+    </tr>
+    <%}%>
+    </tbody>
+</table>
 </body>
 </html>

@@ -4,8 +4,27 @@
     <title>
         <%= title %>
     </title>
+    <style>
+        <% include components/style.css %>
+    </style>
 </head>
 <body>
-
+<% include components/navigation.ejs %>
+<table>
+    <thead>
+    <tr>
+        <th>Страна</th>
+        <th>Город</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% for (let i = 0; i < locations.length; i++) {%>
+    <tr>
+        <td><%= locations[i].country %></td>
+        <td><%= locations[i].city %></td>
+    </tr>
+    <%}%>
+    </tbody>
+</table>
 </body>
 </html>
