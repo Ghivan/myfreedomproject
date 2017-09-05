@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+    <title>
+        <%= title %>
+    </title>
+
+       <link  href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<% include navigation.ejs %>
+<table>
+    <thead>
+    <tr>
+        <th>Название тура</th>
+        <th>Маршрут</th>
+        <th>Старт</th>
+        <th>Возврат</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% for (let i = 0; i < trips.length; i++) {%>
+    <tr>
+        <td><%= trips[i].name %></td>
+        <td><%= trips[i].route.locations %></td>
+        <td><%= trips[i].route.arrivalDate %></td>
+        <td><%= trips[i].route.destinationDate %></td>
+    </tr>
+    <%}%>
+    </tbody>
+</table>
+</body>
+</html>

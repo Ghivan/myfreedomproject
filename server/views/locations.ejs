@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+    <title>
+        <%= title %>
+    </title>
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<% include navigation.ejs %>
+<table>
+    <thead>
+    <tr>
+        <th>Страна</th>
+        <th>Город</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% for (let i = 0; i < locations.length; i++) {%>
+    <tr>
+        <td><%= locations[i].country %></td>
+        <td><%= locations[i].city %></td>
+    </tr>
+    <%}%>
+    </tbody>
+</table>
+</body>
+</html>
