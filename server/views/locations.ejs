@@ -8,6 +8,10 @@
 </head>
 <body>
 <% include navigation.ejs %>
+<% if (errorMessage) {%>
+<div><span class="danger">Ошибка!</span><%= errorMessage %></div>
+<%} %>
+
 <table>
     <thead>
     <tr>
@@ -24,5 +28,17 @@
     <%}%>
     </tbody>
 </table>
+<form action="/locations/add" method="post">
+    <h3>Добавить локацию</h3>
+    <div class="input-group">
+        <label for="city">Город:</label>
+        <input type="text" name="city" id="city" title="city" required/>
+    </div>
+    <div class="input-group">
+        <label for="country">Страна:</label>
+        <input type="text" name="country" title="country" id="country" required/>
+    </div>
+    <button type="submit">Добавить</button>
+</form>
 </body>
 </html>

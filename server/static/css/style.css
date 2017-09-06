@@ -31,6 +31,7 @@ table{
     width: 80%;
     margin: auto;
     border-collapse: collapse;
+    border: 1px solid black;
 }
 table td, table th{
     padding: 5px;
@@ -43,3 +44,31 @@ table tbody tr:nth-child(2n){
     background-color: #eee;
 }
 
+.danger{
+    color: red;
+}
+form{
+    width: 300px;
+    margin: 20px auto;
+    border: 1px solid black;
+    padding: 5px;
+}
+
+form h3{
+    text-align: center;
+}
+
+.input-group{
+    text-align: left;
+    padding: 5px;
+    margin: auto;
+}
+
+.input-group label{
+    display: inline-block;
+    min-width: 100px;
+}
+button[type="submit"]{
+    display: block;
+    margin: auto;
+}

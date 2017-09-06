@@ -5,8 +5,8 @@ const DBSource = require('./database');
 
 const locations = {
     getAll: () => DBSource.getAll('locations'),
-    getById: (id) => DBSource.getAll('locations').then((data) => data.find(location => location.id === id))
-
+    getById: (id) => DBSource.getAll('locations').then((data) => data.find(location => location.id === id)),
+    add: (data) => DBSource.write('locations', data)
 };
 
 module.exports = locations;

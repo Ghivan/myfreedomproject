@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+    <title>
+        <%= title %>
+    </title>
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<% include navigation.ejs %>
+<table>
+    <thead>
+    <tr>
+        <th>Имя</th>
+        <th>Фамилия</th>
+        <th>Туры</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% for (let i = 0; i < customers.length; i++) {%>
+    <tr>
+        <td><%= customers[i].firstName %></td>
+        <td><%= customers[i].lastName %></td>
+        <td><%= customers[i].trips %></td>
+    </tr>
+    <%}%>
+    </tbody>
+</table>
+</body>
+</html>

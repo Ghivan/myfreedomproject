@@ -14,8 +14,8 @@
     <tr>
         <th>Название тура</th>
         <th>Маршрут</th>
-        <th>Старт</th>
-        <th>Возврат</th>
+        <th>Дата отправления</th>
+        <th>Дата возвращения</th>
     </tr>
     </thead>
     <tbody>
@@ -29,5 +29,31 @@
     <%}%>
     </tbody>
 </table>
+<form action="/trips/add" method="post">
+    <h3>Добавить маршрут</h3>
+    <div class="input-group">
+        <label for="name">Название:</label>
+        <input type="text" name="name" id="name" title="name" required/>
+    </div>
+    <div class="input-group">
+        <label for="locations"></label>
+        <fieldset>
+            <legend>Пункты назначения:</legend>
+            <% for (let i = 0; i < locations.length; i++) {%>
+            <input type="checkbox" id="<%= locations[i].id %>" value="<%= locations[i].id %>" name="locations"/>
+            <label for="<%= locations[i].id %>"> <%= locations[i].city %> (<%= locations[i].country %>)</label></br>
+            <%}%>
+        </fieldset>
+    </div>
+    <div class="input-group">
+        <label for="arrivalDate">Дата отправления:</label>
+        <input type="date" name="arrivalDate" id="arrivalDate" title="arrivalDate"/>
+    </div>
+    <div class="input-group">
+        <label for="destinationDate">Дата возвращения:</label>
+        <input type="date" name="destinationDate" id="destinationDate" title="destinationDate" required/>
+    </div>
+    <button type="submit">Добавить</button>
+</form>
 </body>
 </html>

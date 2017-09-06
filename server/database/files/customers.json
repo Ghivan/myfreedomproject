@@ -3,5 +3,10 @@
     "firstName" : "Иван",
     "lastName": "Иванов",
     "trips": [0]
+  },
+  {
+    "firstName" : "Сидоров",
+    "lastName": "Сидор",
+    "trips": [0, 1]
   }
 ]
