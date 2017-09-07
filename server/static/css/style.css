@@ -1,13 +1,15 @@
 nav{
     margin: auto;
-    width: 50%;
+    display: flex;
+    align-content: center;
 }
 nav ul{
+    padding: 0;
     list-style: none;
+    margin: auto;
 }
 nav ul>li{
     display: inline-block;
-    padding: 5px;
     text-align: center;
 }
 nav ul>li:hover{
@@ -19,7 +21,9 @@ nav ul li.active{
     color: #fff;
 }
 nav ul li a{
+    display: inline-block;
     color: black;
+    padding: 5px;
     text-decoration: none;
     text-transform: uppercase;
 }
@@ -42,6 +46,11 @@ table thead{
 }
 table tbody tr:nth-child(2n){
     background-color: #eee;
+}
+
+.error{
+    text-align: center;
+    padding: 20px;
 }
 
 .danger{
@@ -67,6 +76,8 @@ form h3{
 .input-group label{
     display: inline-block;
     min-width: 100px;
+    word-wrap: normal;
+    user-select: none;
 }
 button[type="submit"]{
     display: block;

@@ -1,12 +1,1 @@
-[
-  {
-    "firstName" : "Иван",
-    "lastName": "Иванов",
-    "trips": [0]
-  },
-  {
-    "firstName" : "Сидоров",
-    "lastName": "Сидор",
-    "trips": [0, 1]
-  }
-]
+[{"id":0,"firstName":"Иван","lastName":"Иванов","trips":[0,1,2]},{"id":1,"firstName":"Сидоров","lastName":"Сидор","trips":[0,2]},{"id":2,"firstName":"Петя","lastName":"Петров","trips":[0]},{"id":3,"firstName":"Алексей","lastName":"Козлов","trips":[0,1]},{"id":4,"firstName":"Понтий","lastName":"Пилат","trips":[0,1,2]}]

@@ -9,7 +9,9 @@
 <body>
 <% include navigation.ejs %>
 <% if (errorMessage) {%>
-<div><span class="danger">Ошибка!</span><%= errorMessage %></div>
+<div class="error">
+    <span class="danger">Ошибка!</span> <%= errorMessage %>
+</div>
 <%} %>
 
 <table>
