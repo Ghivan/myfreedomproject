@@ -3,16 +3,8 @@ const path = require('path');
 
 const router = express.Router();
 const rootDir = path.dirname(require.main.filename);
-const {LocationModel} = require(path.join(rootDir, 'model', 'database'));
+const {LocationModel, transform} = require(path.join(rootDir, 'model', 'database'));
 const Validator = require(path.join(rootDir, 'model', 'validators'));
-
-const transform = model => {
-    const obj = model.toObject();
-    obj.id = obj._id;
-    delete obj.__v;
-    delete obj._id;
-    return obj;
-};
 
 router.get('/', (req, res, next) => {
     LocationModel.find().then(locations => res.json(locations.map(transform)), next)
@@ -44,8 +36,8 @@ router.post('/', (req, res, next) => {
             );
             NewLocation.save().then(location => res.json(transform(location)), next);
         } else {
-            res.status(400);
-            res.json({error: "City already exits"});
+            res.status(200);
+            res.json(transform(location));
             res.end();
         }
 
@@ -83,7 +75,7 @@ router.delete('/:id', (req, res, next) => {
 
 router.all((err, req, res, next) => {
     res.status(500);
-    res.json(err);
+    res.send(err);
 });
 
 module.exports = router;
