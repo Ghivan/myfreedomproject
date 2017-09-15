@@ -27,7 +27,7 @@
         <fieldset>
             <legend>Путешествия:</legend>
             <% for (let i = 0; i < trips.length; i++) {%>
-            <input type="checkbox" id="<%= trips[i].id %>" value="<%= trips[i].id %>" name="trips" <%= customer.trips.indexOf(trips[i].name) !== -1 ? 'checked' : ''%>/>
+            <input type="checkbox" id="<%= trips[i].id %>" value="<%= trips[i].id %>" name="trips" <%= customer.trips.indexOf(trips[i].name) >= 0 ? 'checked' : ''%>/>
             <label for="<%= trips[i].id %>"> <%= trips[i].name %> </label></br>
             <%}%>
         </fieldset>

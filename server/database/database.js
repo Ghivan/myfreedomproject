@@ -18,7 +18,7 @@ const DB = {
             console.log('Cannot get source!');
         }),
     write: (source, data) => {
-        return writeDbFile(path.join(__dirname, 'files', source + '.json'), data);
+        return writeDbFile(path.join(__dirname, 'files', source + '.json'), JSON.stringify(data));
     }
 };
 

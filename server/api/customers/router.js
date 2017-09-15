@@ -4,56 +4,37 @@ const router = express.Router();
 const rootDir = path.dirname(require.main.filename);
 const tripsDB = require(path.join(rootDir, 'database', 'tripsDB'));
 const customersDB = require(path.join(rootDir, 'database', 'customersDB'));
+const {getNextId} = require(path.join(rootDir, 'database', 'utils'));
 
 
 router.get('/', (req, res)=> {
-    res.locals.title = 'Customers';
-    customersDB.getAll().then(customers => {
-        tripsDB.getAll().then(trips => {
-            res.locals.trips = trips;
-            customersDB.setTripsNames(customers, trips);
-            res.locals.customers = customers;
-            res.render('customers');
-        });
-    });
+    Promise.all([customersDB.getAll(), tripsDB.getAll()]).then(([customers, trips]) => {
+        customersDB.setTripsNames(customers, trips);
+        res.render('customers', {title: 'Customers', trips, customers});
+    })
 });
 
 router.post('/add', (req, res) => {
-    res.locals.title = 'Customers';
+    if (!req.body.firstName || !req.body.lastName || !req.body.firstName.trim() || !req.body.lastName.trim()){
+        Promise.all([customersDB.getAll(), tripsDB.getAll()]).then(([customers, trips]) => {
+            customersDB.setTripsNames(customers, trips);
+            res.render('customers', {title: 'Customers', errorMessage: 'Не введены имя и(или) фамилия клиента', trips, customers});
+        });
+        return;
+    }
     let firstName = req.body.firstName.trim();
     let lastName = req.body.lastName.trim();
-    if (!req.body.trips) req.body.trips = [];
-    if (!Array.isArray(req.body.trips)) req.body.trips =[req.body.trips];
+    let requestedTrips = req.body.trips || [];
+    if (!Array.isArray(requestedTrips)) requestedTrips =[requestedTrips];
     customersDB.getAll().then(customers => {
         tripsDB.getAll().then(trips => {
-            res.locals.trips = trips;
-            let repeats = {
-                firstName: false,
-                lastName: false
-            };
-            if (customers.find(customer => customer.firstName.toLowerCase() === firstName.toLowerCase())){
-                repeats.firstName = true;
-            }
-            if (customers.find(customer => customer.lastName.toLowerCase() === lastName.toLowerCase())){
-                repeats.lastName = true;
-            }
-            if (repeats.firstName && repeats.lastName){
-                res.locals.errorMessage = 'Клиент уже есть в базе данных!';
-                customersDB.setTripsNames(customers, trips);
-                res.locals.customers = customers;
-                res.render('customers');
-                return;
-            }
-
-            const maxId = Math.max.apply(null, customers.map(customer => customer.id));
-            const id = (maxId > 0) ? maxId + 1 : 1;
             customers.push({
-                id: id,
+                id: getNextId(customers),
                 firstName: firstName,
                 lastName: lastName,
-                trips: req.body.trips.map(trip => parseInt(trip))
+                trips: requestedTrips.map(trip => parseInt(trip))
             });
-            customersDB.add(JSON.stringify(customers)).then(() => {
+            customersDB.add(customers).then(() => {
                 res.redirect('/customers');
             });
         })
@@ -61,44 +42,50 @@ router.post('/add', (req, res) => {
 });
 
 router.get('/manage/:id', (req, res)=> {
-    customersDB.getById(parseInt(parseInt(req.params.id)))
+    customersDB.getById(parseInt(req.params.id))
         .then(customer => {
             if (!customer){
-                res.redirect('/customers');
+                Promise.all([customersDB.getAll(), tripsDB.getAll()]).then(([customers, trips]) => {
+                    customersDB.setTripsNames(customers, trips);
+                    res.render('customers', {title: 'Customers', errorMessage: 'Клиента с идентификационным номером ' + req.params.id +' не существует!', trips, customers});
+                });
+                return;
             }
             tripsDB.getAll()
                 .then(trips => {
-                    customersDB.setTripsNames(customer, trips);
-                    res.locals.customer = customer;
-                    res.locals.trips = trips;
-                    res.render('customersManage')
+                   customersDB.setTripsNames(customer, trips);
+                    res.render('customersManage', {title: 'Customers', trips, customer})
                 })
         });
 });
 
 router.post('/update/:id', (req, res) => {
-    res.locals.title = 'Customers';
+    if (!req.body.firstName || !req.body.lastName || !req.body.firstName.trim() || !req.body.lastName.trim()){
+        Promise.all([customersDB.getAll(), tripsDB.getAll()]).then(([customers, trips]) => {
+            customersDB.setTripsNames(customers, trips);
+            res.render('customers', {title: 'Customers', trips, customers});
+        });
+        return;
+    }
     let firstName = req.body.firstName.trim();
     let lastName = req.body.lastName.trim();
-    if (!req.body.trips) req.body.trips = [];
-    if (!Array.isArray(req.body.trips)) req.body.trips =[req.body.trips];
-    customersDB.getAll().then(customers => {
-        tripsDB.getAll()
-            .then(trips => {
-                res.locals.trips = trips;
-                let customer = customers.find(person => person.id === parseInt(req.params.id));
-                if (!customer){
-                    res.locals.errorMessage = 'Клиента нет в базе данных!';
-                    res.redirect('/customers');
-                }
-                customer.firstName = firstName;
-                customer.lastName = lastName;
-                customer.trips = req.body.trips.map(trip => parseInt(trip));
-                customersDB.add(JSON.stringify(customers)).then(() => {
-                    res.redirect('/customers');
-                });
-            })
-    })
+    let requestedTrips = req.body.trips || [];
+    if (!Array.isArray(requestedTrips)) requestedTrips =[requestedTrips];
+
+    Promise.all([customersDB.getAll(), tripsDB.getAll()]).then(([customers, trips]) => {
+        res.locals.trips = trips;
+        let customer = customers.find(person => person.id === parseInt(req.params.id));
+        if (!customer){
+            res.locals.errorMessage = 'Клиента нет в базе данных!';
+            res.redirect('/customers');
+        }
+        customer.firstName = firstName;
+        customer.lastName = lastName;
+        customer.trips = requestedTrips.map(trip => parseInt(trip));
+        customersDB.add(customers).then(() => {
+            res.redirect('/customers');
+        });
+    });
 });
 
 router.get('/delete/:id', (req, res)=> {
@@ -108,7 +95,7 @@ router.get('/delete/:id', (req, res)=> {
         let customerIndex = customers.findIndex(person => person.id === customerId);
         if (customerIndex !== -1){
             customers.splice(customerIndex, 1);
-            customersDB.add(JSON.stringify(customers)).then(() => {
+            customersDB.add(customers).then(() => {
                 res.redirect('/customers');
             })
         } else {

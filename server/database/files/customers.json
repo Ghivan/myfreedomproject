@@ -1,1 +1,1 @@
-[{"id":1,"firstName":"Иван","lastName":"Петров","trips":[1]},{"id":2,"firstName":"Иван","lastName":"Иванов","trips":[1,2]}]
+[{"id":2,"firstName":"Клим","lastName":"Иванов","trips":[1,2,3]},{"id":3,"firstName":"Паша","lastName":"Павлов","trips":[2]}]

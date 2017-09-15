@@ -43,7 +43,7 @@ router.post('/add', (req, res) => {
                     destinationDate: req.body.destinationDate
                 }
             });
-            tripsDB.add(JSON.stringify(trips))
+            tripsDB.add(trips)
                 .then(() => {
                     tripsDB.setLocationsNames(trips, locations);
                     res.render('trips')
@@ -66,7 +66,7 @@ router.get('/delete/:id', (req, res) => {
                     ) !== -1;
                 if (!tripDeleteIsRestricted){
                     trips.splice(tripIndex, 1);
-                    tripsDB.add(JSON.stringify(trips)).then(() => {
+                    tripsDB.add(trips).then(() => {
                         res.redirect('/trips');
                     });
                 } else {
