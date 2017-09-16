@@ -1,0 +1,85 @@
+nav{
+    margin: auto;
+    display: flex;
+    align-content: center;
+}
+nav ul{
+    padding: 0;
+    list-style: none;
+    margin: auto;
+}
+nav ul>li{
+    display: inline-block;
+    text-align: center;
+}
+nav ul>li:hover{
+    background-color: #eee;
+    cursor: pointer;
+}
+nav ul li.active{
+    background-color: #555;
+    color: #fff;
+}
+nav ul li a{
+    display: inline-block;
+    color: black;
+    padding: 5px;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+nav ul li.active a{
+    color: #fff;
+}
+table{
+    width: 80%;
+    margin: auto;
+    border-collapse: collapse;
+    border: 1px solid black;
+}
+table td, table th{
+    padding: 5px;
+    text-align: center;
+}
+table thead{
+    border-bottom: 3px double black;
+}
+table tbody tr:nth-child(2n){
+    background-color: #eee;
+}
+
+.error{
+    text-align: center;
+    padding: 20px;
+}
+
+.danger{
+    color: red;
+}
+form{
+    width: 300px;
+    margin: 20px auto;
+    border: 1px solid black;
+    padding: 5px;
+}
+
+form h3{
+    text-align: center;
+}
+
+.input-group{
+    text-align: left;
+    padding: 5px;
+    margin: auto;
+}
+
+.input-group label{
+    display: inline-block;
+    min-width: 100px;
+    word-wrap: normal;
+    user-select: none;
+}
+button[type="submit"]{
+    display: block;
+    margin: auto;
+}

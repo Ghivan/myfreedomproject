@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+    <title>
+        <%= title %>
+    </title>
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<% include navigation.ejs %>
+<% if (errorMessage) {%>
+<div class="error">
+    <span class="danger">Ошибка!</span> <%= errorMessage %>
+</div>
+<%} %>
+<form action="/customers/update/<%=customer.id%>" method="post">
+    <h3>Изменить данные клиента</h3>
+    <div class="input-group">
+        <label for="firstName">Имя:</label>
+        <input type="text" name="firstName" value="<%=customer.firstName%>" id="firstName" title="firstName" required/>
+    </div>
+    <div class="input-group">
+        <label for="lastName">Фамилия:</label>
+        <input type="text" name="lastName" value="<%=customer.lastName%>" id="lastName" title="lastName" required/>
+    </div>
+    <div class="input-group">
+        <fieldset>
+            <legend>Путешествия:</legend>
+            <% for (let i = 0; i < trips.length; i++) {%>
+            <input type="checkbox" id="<%= trips[i].id %>" value="<%= trips[i].id %>" name="trips" <%= customer.trips.indexOf(trips[i].name) >= 0 ? 'checked' : ''%>/>
+            <label for="<%= trips[i].id %>"> <%= trips[i].name %> </label></br>
+            <%}%>
+        </fieldset>
+    </div>
+    <button type="submit">Изменить</button>
+</form>
+</body>
+</html>

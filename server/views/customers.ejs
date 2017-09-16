@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+    <title>
+        <%= title %>
+    </title>
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<% include navigation.ejs %>
+<% if (errorMessage) {%>
+<div class="error">
+    <span class="danger">Ошибка!</span> <%= errorMessage %>
+</div>
+<%} %>
+<table>
+    <thead>
+    <tr>
+        <th>Имя</th>
+        <th>Фамилия</th>
+        <th>Туры</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <% for (let i = 0; i < customers.length; i++) {%>
+    <tr>
+        <td><%= customers[i].firstName %></td>
+        <td><%= customers[i].lastName %> (<a href="/customers/delete/<%= customers[i].id %>">удалить</a>)</td>
+        <td><%= customers[i].trips %> </td>
+        <td><a href="/customers/manage/<%= customers[i].id %>"><button>Изменить</button></a></td>
+    </tr>
+    <%}%>
+    </tbody>
+</table>
+<form action="/customers/add" method="post">
+    <h3>Добавить клиента</h3>
+    <div class="input-group">
+        <label for="name">Имя:</label>
+        <input type="text" name="firstName" id="name" title="name" required/>
+    </div>
+    <div class="input-group">
+        <label for="name">Фамилия:</label>
+        <input type="text" name="lastName" id="name" title="name" required/>
+    </div>
+    <div class="input-group">
+        <fieldset>
+            <legend>Путешествия:</legend>
+            <% for (let i = 0; i < trips.length; i++) {%>
+            <input type="checkbox" id="<%= trips[i].id %>" value="<%= trips[i].id %>" name="trips"/>
+            <label for="<%= trips[i].id %>"> <%= trips[i].name %> </label></br>
+            <%}%>
+        </fieldset>
+    </div>
+    <button type="submit">Добавить</button>
+</form>
+</body>
+</html>

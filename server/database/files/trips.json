@@ -1,0 +1,1 @@
+[{"id":1,"name":"Зима в Китае","route":{"locations":[0],"arrivalDate":"2017-12-01","destinationDate":"2018-01-01"}},{"id":2,"name":"Вокруг света","route":{"locations":[0,1,4,6],"arrivalDate":"2017-09-01","destinationDate":"2017-09-30"}},{"id":3,"name":"Франция","route":{"locations":[1],"arrivalDate":"2017-09-20","destinationDate":"2017-09-22"}}]
