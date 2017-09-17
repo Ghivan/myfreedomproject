@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const path = require('path');
 
 const router = express.Router();
@@ -11,32 +12,45 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/:id', (req, res, next) => {
-    LocationModel.findById(req.params.id).then(location => res.json(transform(location)), next)
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404);
+        res.end();
+        return next();
+    }
+    LocationModel.findById(req.params.id).then(location => {
+        if (location) {
+            res.json(transform(location))
+        } else {
+            res.status(404);
+            res.end();
+        }
+    }, next)
 });
 
 router.post('/', (req, res, next) => {
     const {city, country} = req.body;
+    const errors = {
+        CITY_IS_EMPTY: !Validator.text(city),
+        COUNTRY_IS_EMPTY: !Validator.text(country)
+    };
+
+    if (errors.CITY_IS_EMPTY || errors.COUNTRY_IS_EMPTY){
+        res.status(400);
+        res.json(errors);
+        res.end();
+        return next();
+    }
+
     LocationModel.findOne({city: new RegExp(city, 'i'), country: new RegExp(country, 'i')}).then(location => {
         if (!location){
-            const errors = {
-                CITY_IS_EMPTY: !Validator.text(city),
-                COUNTRY_IS_EMPTY: !Validator.text(country)
-            };
-
-            if (errors.CITY_IS_EMPTY || errors.COUNTRY_IS_EMPTY){
-                res.status(400);
-                res.json(errors);
-                res.end();
-            }
-
             const NewLocation = new LocationModel({
-                    city,
-                    country
+                    city: city.trim(),
+                    country: country.trim()
                 }
             );
             NewLocation.save().then(location => res.json(transform(location)), next);
         } else {
-            res.status(200);
+            res.status(300);
             res.json(transform(location));
             res.end();
         }
@@ -45,11 +59,16 @@ router.post('/', (req, res, next) => {
 });
 
 router.put('/:id', (req, res, next) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404);
+        res.end();
+        return next();
+    }
     LocationModel.findById(req.params.id).then(location => {
         if (!location) {
             res.status(404);
             res.end();
-            return next(new Error('Location not found'));
+            return next();
         }
 
         const {city, country} = req.body;
@@ -60,11 +79,17 @@ router.put('/:id', (req, res, next) => {
 });
 
 router.delete('/:id', (req, res, next) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(200);
+        res.end();
+        return next();
+    }
+
     LocationModel.findById(req.params.id)
         .then(location => {
                 if (location){
                     location.remove();
-                    res.json(location);
+                    res.json(transform(location));
                 } else {
                     res.status(200);
                     res.end();
@@ -74,8 +99,7 @@ router.delete('/:id', (req, res, next) => {
 });
 
 router.all((err, req, res, next) => {
-    res.status(500);
-    res.send(err);
+    console.log(err)
 });
 
 module.exports = router;

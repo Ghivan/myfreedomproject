@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const path = require('path');
 
 const router = express.Router();
@@ -8,31 +9,115 @@ const Validator = require(path.join(rootDir, 'model', 'validators'));
 
 
 router.get('/', (req, res, next) => {
-    TripModel.find().then(trips => {
-        LocationModel.find().then(locations => {
-            trips = trips.map(trip => {
-                trip.route.locations = trip.route.locations.map(tripLoc =>
-                    transform(locations.find(location => location._id.toString() === tripLoc.toString()))
-                );
-                return transform(trip);
-            });
-            res.json(trips);
+    Promise.all([TripModel.find(), LocationModel.find()]).then(([trips, locations]) => {
+        trips = trips.map(trip => {
+            trip.route.locations = trip.route.locations.map(tripLoc =>
+                transform(locations.find(location => location._id.toString() === tripLoc.toString()))
+            );
+            return transform(trip);
         });
+        res.json(trips);
     }, next)
 });
 
 router.get('/:id', (req, res, next) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404);
+        res.end();
+        return next('Invalid trip Id');
+    }
     TripModel.findById(req.params.id).then(trip => {
-        LocationModel.find({_id :{ $in: trip.route.locations }}).then(locations => {
-            trip.route.locations = trip.route.locations.map(tripLoc =>
-                transform(locations.find(location => location._id.toString() === tripLoc.toString())));
-            res.json(transform(trip));
-        });
+        if (trip){
+            LocationModel.find({_id :{ $in: trip.route.locations }}).then(locations => {
+                trip.route.locations = trip.route.locations.map(tripLoc =>
+                    transform(locations.find(location => location._id.toString() === tripLoc.toString())));
+                res.json(transform(trip));
+            });
+        } else {
+            res.status(404);
+            res.end();
+        }
+
     }, next)
+});
+router.post('/', (req, res, next) => {
+    let {name, arrivalDate, departureDate} = req.body;
+    let requestedLocations = req.body.locations || [];
+    if (!Array.isArray(requestedLocations)) requestedLocations = [requestedLocations];
+    const errors = {
+        TRIP_NAME_IS_EMPTY: !Validator.text(name),
+        LOCATIONS_IS_EMPTY: requestedLocations.length <= 0,
+        ARRIVAL_DATE_IS_NOT_VALID: !Validator.date(arrivalDate),
+        DEPARTURE_DATE_IS_NOT_VALID: !Validator.date(departureDate),
+        DEPARTURE_IS_SOONER_ARRIVAL: new Date(arrivalDate) > new Date(departureDate)
+    };
+
+    if (errors.TRIP_NAME_IS_EMPTY || errors.ARRIVAL_DATE_IS_NOT_VALID ||
+        errors.DEPARTURE_DATE_IS_NOT_VALID || errors.LOCATIONS_IS_EMPTY ||
+        errors.DEPARTURE_IS_SOONER_ARRIVAL){
+        res.status(400);
+        res.json(errors);
+        res.end();
+        return next(errors);
+    }
+    requestedLocations.map(location => {
+        try{
+            location = mongoose.Types.ObjectId(location)
+        } catch (e) {
+            res.status(400);
+            res.json('Invalid locations id');
+            res.end();
+            return next(new Error('Invalid locations id'));
+        }
+    });
+
+    TripModel.findOne({name: new RegExp(name, 'i')}).then(trip => {
+        if (!trip){
+            LocationModel.find({_id :{ $in: requestedLocations }}).then(locations => {
+                if (locations.length !== requestedLocations.length){
+                    res.status(400);
+                    res.json('Check location existence!');
+                    res.end();
+                    return next();
+                }
+                const NewTrip = new TripModel({
+                    name: name.trim(),
+                    route: {
+                        locations: requestedLocations,
+                        arrivalDate: new Date(arrivalDate),
+                        departureDate: new Date(departureDate)
+                    }
+                });
+                NewTrip.save().then(trip => res.json(transform(trip)), next);
+            })
+        } else {
+            res.status(300);
+            res.json(transform(trip));
+            res.end();
+        }
+    });
+});
+
+router.delete('/:id', (req, res, next) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(200);
+        res.end();
+        return next();
+    }
+    TripModel.findById(req.params.id)
+        .then(trip => {
+                if (trip){
+                    trip.remove();
+                    res.json(transform(trip));
+                } else {
+                    res.status(200);
+                    res.end();
+                }
+            }, next
+        );
 });
 
 router.all((err, req, res, next) => {
-    res.status(500);
-    res.send(err);
+    console.log(err)
 });
 module.exports = router;

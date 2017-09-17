@@ -1,5 +1,7 @@
 const textValidator = require('./text');
+const dateValidator = require('./date');
 
 module.exports = {
-  text: textValidator
+    text: textValidator,
+    date: dateValidator
 };
