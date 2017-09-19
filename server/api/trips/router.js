@@ -152,7 +152,7 @@ router.put('/:id', (req, res, next) => {
         res.status(400);
         res.json(errors);
         res.end();
-        return next(new Error('Put request error'));
+        return next();
     }
 
     TripModel.findById(req.params.id).then(trip => {
@@ -166,7 +166,7 @@ router.put('/:id', (req, res, next) => {
         if (arrivalDate) {
             if (new Date(trip.route.departureDate) < arrivalDate) {
                 res.status(400);
-                res.json('New arrival date later than departure date');
+                res.json('New arrival date is later than departure date');
                 res.end();
                 return next();
             } else {
@@ -176,7 +176,7 @@ router.put('/:id', (req, res, next) => {
         if (departureDate){
             if (new Date(trip.route.arrivalDate) > departureDate) {
                 res.status(400);
-                res.json('New departure date later than departure date');
+                res.json('New departure date is sooner than arrival date');
                 res.end();
                 return next();
             } else {
