@@ -4,12 +4,10 @@ const bodyParser = require('body-parser');
 const router = require('./api/router');
 
 const app = express();
+const PORT = 3000;
 app.use(express.static(path.join(__dirname,'static')));
 app.use(router);
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-
-app.listen(3000, () => {
-    console.log('Server works on port 3000.');
+app.listen(PORT, () => {
+    console.log('Server works on port ' + PORT + '.');
 });

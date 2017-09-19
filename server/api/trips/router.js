@@ -26,20 +26,22 @@ router.get('/:id', (req, res, next) => {
         res.end();
         return next('Invalid trip Id');
     }
-    TripModel.findById(req.params.id).then(trip => {
-        if (trip){
-            LocationModel.find({_id :{ $in: trip.route.locations }}).then(locations => {
-                trip.route.locations = trip.route.locations.map(tripLoc =>
-                    transform(locations.find(location => location._id.toString() === tripLoc.toString())));
-                res.json(transform(trip));
-            });
-        } else {
-            res.status(404);
-            res.end();
-        }
+    TripModel.findById(req.params.id)
+        .then(trip => {
+            if (trip){
+                LocationModel.find({_id :{ $in: trip.route.locations }}).then(locations => {
+                    trip.route.locations = trip.route.locations.map(tripLoc =>
+                        transform(locations.find(location => location._id.toString() === tripLoc.toString())));
+                    res.json(transform(trip));
+                });
+            } else {
+                res.status(404);
+                res.end();
+            }
 
-    }, next)
+        }, next)
 });
+
 router.post('/', (req, res, next) => {
     let {name, arrivalDate, departureDate} = req.body;
     let requestedLocations = req.body.locations || [];
@@ -58,7 +60,7 @@ router.post('/', (req, res, next) => {
         res.status(400);
         res.json(errors);
         res.end();
-        return next(errors);
+        return next();
     }
     requestedLocations.map(location => {
         try{
@@ -76,7 +78,7 @@ router.post('/', (req, res, next) => {
             LocationModel.find({_id :{ $in: requestedLocations }}).then(locations => {
                 if (locations.length !== requestedLocations.length){
                     res.status(400);
-                    res.json('Check location existence!');
+                    res.json('Check locations existence!');
                     res.end();
                     return next();
                 }
@@ -115,9 +117,9 @@ router.put('/:id', (req, res, next) => {
         } else {
             requestedLocations = req.body.locations;
         }
-        requestedLocations.map(location => {
+        requestedLocations.map(locationId => {
             try{
-                location = mongoose.Types.ObjectId(location)
+                locationId = mongoose.Types.ObjectId(locationId)
             } catch (e) {
                 errors.push('Invalid locations id');
             }
@@ -187,7 +189,7 @@ router.put('/:id', (req, res, next) => {
             LocationModel.find({_id :{ $in: requestedLocations }}).then(locations => {
                 if (locations.length !== requestedLocations.length){
                     res.status(400);
-                    res.json('Check location existence!');
+                    res.json('Check locations existence!');
                     res.end();
                     return next();
                 }
