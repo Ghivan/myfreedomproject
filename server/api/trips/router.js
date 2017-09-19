@@ -98,6 +98,111 @@ router.post('/', (req, res, next) => {
     });
 });
 
+
+router.put('/:id', (req, res, next) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status(404);
+        res.end();
+        return next();
+    }
+    let {name, arrivalDate, departureDate} = req.body;
+    let requestedLocations = null;
+    let errors = [];
+
+    if (req.body.locations) {
+        if (!Array.isArray(req.body.locations)){
+            requestedLocations = [req.body.locations];
+        } else {
+            requestedLocations = req.body.locations;
+        }
+        requestedLocations.map(location => {
+            try{
+                location = mongoose.Types.ObjectId(location)
+            } catch (e) {
+                errors.push('Invalid locations id');
+            }
+        });
+    }
+
+    if (name){
+        if (!Validator.text(name)){
+            errors.push('Invalid trip\'s name');
+        } else {
+            name = name.trim()
+        }
+    }
+
+    if (arrivalDate) {
+        if (!Validator.date(arrivalDate)){
+            errors.push('Invalid arrival date');
+        } else {
+            arrivalDate = new Date(arrivalDate)
+        }
+    }
+
+    if (departureDate) {
+        if (!Validator.date(departureDate)){
+            errors.push('Invalid departure date');
+        } else {
+            departureDate = new Date(departureDate)
+        }
+    }
+
+    if (errors.length > 0){
+        res.status(400);
+        res.json(errors);
+        res.end();
+        return next(new Error('Put request error'));
+    }
+
+    TripModel.findById(req.params.id).then(trip => {
+        if (!trip) {
+            res.status(404);
+            res.end();
+            return next();
+        }
+
+        if (name) trip.name = name;
+        if (arrivalDate) {
+            if (new Date(trip.route.departureDate) < arrivalDate) {
+                res.status(400);
+                res.json('New arrival date later than departure date');
+                res.end();
+                return next();
+            } else {
+                trip.route.arrivalDate = arrivalDate;
+            }
+        }
+        if (departureDate){
+            if (new Date(trip.route.arrivalDate) > departureDate) {
+                res.status(400);
+                res.json('New departure date later than departure date');
+                res.end();
+                return next();
+            } else {
+                trip.route.departureDate = departureDate;
+            }
+        }
+        if (requestedLocations){
+            LocationModel.find({_id :{ $in: requestedLocations }}).then(locations => {
+                if (locations.length !== requestedLocations.length){
+                    res.status(400);
+                    res.json('Check location existence!');
+                    res.end();
+                    return next();
+                }
+
+                trip.route.locations = requestedLocations;
+                trip.save().then(trip => res.json(transform(trip)), next);
+            })
+        } else {
+            trip.save().then(trip => res.json(transform(trip)), next);
+        }
+
+    })
+
+});
+
 router.delete('/:id', (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)){
         res.status(200);
