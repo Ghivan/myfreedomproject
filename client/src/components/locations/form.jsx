@@ -51,7 +51,7 @@ class LocationsForm extends React.Component {
                             if (!this.state.city.trim()){
                                 errors.push('City should not be empty.')
                             }
-                            if (!this.state.city.trim()){
+                            if (!this.state.country.trim()){
                                 errors.push('Country should not be empty.')
                             }
                             if (errors.length > 0){

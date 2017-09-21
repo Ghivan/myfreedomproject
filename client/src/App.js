@@ -23,9 +23,15 @@ class App extends React.Component {
             errors: ''
         };
         this.state[Entities.LOCATION] = [];
+        this.state[Entities.TRIP] = [];
+        this.state[Entities.CUSTOMER] = [];
     }
 
     componentDidMount(){
+        this.updateAllData();
+    }
+
+    updateAllData = () => {
         APIDriver.getAll(Entities.LOCATION)
             .then(locations => {
                 this.setState((prevState)=>{
@@ -44,13 +50,14 @@ class App extends React.Component {
                     prevState[Entities.CUSTOMER] = customers
                 });
             });
-    }
+    };
 
     changeScreen = (screen) =>{
         this.setState({
             _currentScreen: screen,
             errors: ''}
-        )
+        );
+        this.updateAllData();
     };
 
     add = (entity) => {
@@ -128,7 +135,14 @@ class App extends React.Component {
                     <MainMenu screens={Screens}
                               activeScreen={this.state._currentScreen}
                               changeScreen={this.changeScreen} />
+                    <ErrorBlock message={this.state.errors}
+                                clearError={()=>this.setState({errors: ''})}
+                    />
                     <Trips trips={this.state[Entities.TRIP]}
+                           add={this.add(Entities.TRIP)}
+                           remove={this.remove(Entities.TRIP)}
+                           getById={this.getById(Entities.TRIP)}
+                           update={this.update(Entities.TRIP)}
                     />
                 </div>
             );
@@ -139,7 +153,14 @@ class App extends React.Component {
                     <MainMenu screens={Screens}
                               activeScreen={this.state._currentScreen}
                               changeScreen={this.changeScreen} />
+                    <ErrorBlock message={this.state.errors}
+                                clearError={()=>this.setState({errors: ''})}
+                    />
                     <Customers customers={this.state[Entities.CUSTOMER]}
+                               add={this.add(Entities.CUSTOMER)}
+                               remove={this.remove(Entities.CUSTOMER)}
+                               getById={this.getById(Entities.CUSTOMER)}
+                               update={this.update(Entities.CUSTOMER)}
                     />
                 </div>
             );

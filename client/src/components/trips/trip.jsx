@@ -2,6 +2,7 @@ import React from 'react';
 
 import {ConfirmBlock} from '../popups/confirm'
 import TripsTable from './table';
+import TripsForm from './form';
 
 const ViewTypes = {
     TABLE: 'table',
@@ -25,7 +26,7 @@ class Trip extends React.Component {
     }
     componentWillReceiveProps(nextProps){
         if (nextProps['trips']){
-            this.setState({locations: nextProps['trips']});
+            this.setState({trips: nextProps['trips']});
         }
     }
 
@@ -68,7 +69,6 @@ class Trip extends React.Component {
                                 remove={this.props.remove}
                                 showPopup={this.showPopup}
                                 hidePopup={this.hidePopup}
-                                showDetails={this.showDetails}
                     />
                 </div>
             );

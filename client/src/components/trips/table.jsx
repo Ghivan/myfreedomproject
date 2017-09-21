@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const TripsTable = ({trips}) =>
+const TripsTable = ({trips, remove, showPopup, hidePopup}) =>
     (
         <table className="table table-responsive table-striped table-hover">
             <thead>
@@ -10,6 +10,7 @@ const TripsTable = ({trips}) =>
                 <th>Locations</th>
                 <th>Arrival date</th>
                 <th>Departure date</th>
+                <th>Operations</th>
             </tr>
             </thead>
             <tbody>
@@ -27,6 +28,24 @@ const TripsTable = ({trips}) =>
                             </td>
                             <td>{new Date(trip.route.arrivalDate).toLocaleDateString()}</td>
                             <td>{new Date(trip.route.departureDate).toLocaleDateString()}</td>
+                            <td>
+                                <a href="#"
+                                   className="btn btn-danger btn-sm"
+                                   onClick={
+                                       e => {
+                                           e.preventDefault();
+                                           showPopup(
+                                               `Do you really want to delete trip: "${trip.name}"`,
+                                               () => {
+                                                   remove(trip.id);
+                                                   hidePopup()
+                                               },
+                                               () => hidePopup()
+                                           );
+                                       }
+                                   }
+                                >Delete</a>
+                            </td>
                         </tr>
                     )
                 })

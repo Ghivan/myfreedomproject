@@ -8,7 +8,7 @@ export const ConfirmBlock = ({status, message, resolve, reject}) => {
                 <p>{message}</p>
                 <hr/>
                 <button type="button"
-                        className="btn btn-primary"
+                        className="btn btn-danger"
                         onClick={() => resolve()}
                 >OK</button>
                 <button type="button"

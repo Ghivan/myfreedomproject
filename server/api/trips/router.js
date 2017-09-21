@@ -4,7 +4,7 @@ const path = require('path');
 
 const router = express.Router();
 const rootDir = path.dirname(require.main.filename);
-const {TripModel, LocationModel, transform} = require(path.join(rootDir, 'model', 'database'));
+const {CustomerModel, TripModel, LocationModel, transform} = require(path.join(rootDir, 'model', 'database'));
 const Validator = require(path.join(rootDir, 'model', 'validators'));
 
 
@@ -94,8 +94,11 @@ router.post('/', (req, res, next) => {
                 NewTrip.save().then(trip => res.json(transform(trip)), next);
             })
         } else {
-            res.status(200);
-            res.json(transform(trip));
+            res.status(400);
+            res.json({
+                error: 'Trip already exists',
+                details: transform(trip)
+            });
             res.end();
         }
     });
@@ -165,7 +168,10 @@ router.put('/:id', (req, res, next) => {
             return next();
         }
 
-        if (name) trip.name = name;
+        if (name) {
+            trip.name = name;
+        }
+
         if (arrivalDate) {
             if (new Date(trip.route.departureDate) < arrivalDate) {
                 res.status(400);
@@ -194,7 +200,6 @@ router.put('/:id', (req, res, next) => {
                     res.end();
                     return next();
                 }
-
                 trip.route.locations = requestedLocations;
                 trip.save().then(trip => res.json(transform(trip)), next);
             })
@@ -214,13 +219,21 @@ router.delete('/:id', (req, res, next) => {
     }
     TripModel.findById(req.params.id)
         .then(trip => {
-                if (trip){
+            CustomerModel.find({
+                'trips': {$in: [req.params.id]}
+            }).then(customers => {
+                if(customers.length > 0) {
+                    res.status(400);
+                    res.json({
+                        error: "Trip is used by Customers",
+                        details: customers.map(transform)
+                    });
+                    res.end();
+                } else {
                     trip.remove();
                     res.json(transform(trip));
-                } else {
-                    res.status(200);
-                    res.end();
                 }
+            });
             }, next
         );
 });

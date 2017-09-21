@@ -25,7 +25,7 @@ class Customer extends React.Component {
     }
     componentWillReceiveProps(nextProps){
         if (nextProps['customers']){
-            this.setState({locations: nextProps['customers']});
+            this.setState({customers: nextProps['customers']});
         }
     }
 
@@ -65,6 +65,9 @@ class Customer extends React.Component {
                                   reject={this.state.popup.onReject}
                     />
                     <CustomersTable customers={this.state.customers}
+                                    remove={this.props.remove}
+                                    showPopup={this.showPopup}
+                                    hidePopup={this.hidePopup}
                     />
                 </div>
             );

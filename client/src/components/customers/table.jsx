@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const CustomersTable = ({customers}) =>
+const CustomersTable = ({customers, remove, showPopup, hidePopup }) =>
     (
         <table className="table table-responsive table-striped table-hover">
             <thead>
@@ -24,6 +24,24 @@ const CustomersTable = ({customers}) =>
                                         return <li key={trip.id}>{trip.name}</li>
                                     })}
                                 </ul>
+                            </td>
+                            <td>
+                                <a href="#"
+                                   className="btn btn-danger btn-sm"
+                                   onClick={
+                                       e => {
+                                           e.preventDefault();
+                                           showPopup(
+                                               `Do you really want to delete location: "${customer.firstName} ${customer.lastName}"`,
+                                               () => {
+                                                   remove(customer.id);
+                                                   hidePopup()
+                                               },
+                                               () => hidePopup()
+                                           );
+                                       }
+                                   }
+                                >Delete</a>
                             </td>
                         </tr>
                     )
