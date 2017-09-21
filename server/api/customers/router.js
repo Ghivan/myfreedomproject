@@ -78,7 +78,7 @@ router.post('/', (req, res, next) => {
                     res.end();
                     return next();
                 }
-
+                res.status(201);
                 NewCustomer.save().then(customer => res.json(transform(customer)), next);
             })
             .catch(err => {
@@ -88,6 +88,7 @@ router.post('/', (req, res, next) => {
                 return next();
             })
     } else {
+        res.status(201);
         NewCustomer.save().then(customer => res.json(transform(customer)), next);
     }
 });
@@ -154,9 +155,11 @@ router.put('/:id', (req, res, next) => {
                     return next();
                 }
                 customer.trips = requestedTrips;
+                res.status(200);
                 customer.save().then(customer => res.json(transform(customer)), next);
             })
         } else {
+            res.status(200);
             customer.save().then(customer => res.json(transform(customer)), next);
         }
     })
@@ -165,7 +168,7 @@ router.put('/:id', (req, res, next) => {
 
 router.delete('/:id', (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)){
-        res.status(200);
+        res.status(404);
         res.end();
         return next();
     }

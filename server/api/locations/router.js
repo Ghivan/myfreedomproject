@@ -4,7 +4,7 @@ const path = require('path');
 
 const router = express.Router();
 const rootDir = path.dirname(require.main.filename);
-const {LocationModel, transform} = require(path.join(rootDir, 'model', 'database'));
+const {TripModel, LocationModel, transform} = require(path.join(rootDir, 'model', 'database'));
 const Validator = require(path.join(rootDir, 'model', 'validators'));
 
 router.get('/', (req, res, next) => {
@@ -36,7 +36,7 @@ router.post('/', (req, res, next) => {
 
     if (errors.CITY_IS_EMPTY || errors.COUNTRY_IS_EMPTY){
         res.status(400);
-        res.json(errors);
+        res.json({error: "Empty fields", details: errors});
         res.end();
         return next();
     }
@@ -48,10 +48,16 @@ router.post('/', (req, res, next) => {
                     country: country.trim()
                 }
             );
-            NewLocation.save().then(location => res.json(transform(location)), next);
+            NewLocation.save().then(location => {
+                    res.status(201);
+                    res.json(transform(location))
+                }, next
+            );
         } else {
-            res.status(300);
-            res.json(transform(location));
+            res.status(400);
+            res.json({
+                error: 'Location already exists',
+                details: transform(location)});
             res.end();
         }
 
@@ -74,7 +80,18 @@ router.put('/:id', (req, res, next) => {
         const {city, country} = req.body;
         location.city = (Validator.text(city)) ? city.trim() : location.city;
         location.country = (Validator.text(country)) ? country.trim() : location.country;
-        location.save().then(location => res.json(transform(location)), next);
+        LocationModel.findOne({city: new RegExp(location.city + '$', 'i'), country: new RegExp(location.country + '$', 'i')})
+            .then(testedLocation => {
+                if (!testedLocation){
+                    location.save().then(location => res.json(transform(location)), next);
+                } else {
+                    res.status(400);
+                    res.json({
+                        error: 'Location already exists',
+                        details: transform(testedLocation)});
+                    res.end();
+                }
+            });
     })
 });
 
@@ -84,12 +101,26 @@ router.delete('/:id', (req, res, next) => {
         res.end();
         return next();
     }
-
     LocationModel.findById(req.params.id)
         .then(location => {
                 if (location){
-                    location.remove();
-                    res.json(transform(location));
+                    TripModel.find({
+                        'route.locations': {$in: [req.params.id]}
+                    })
+                        .then(trips => {
+                            if(trips.length > 0) {
+                                res.status(400);
+                                res.json({
+                                    error: "Location is used in Trip",
+                                    details: trips.map(transform)
+                                });
+                                res.end();
+                            } else {
+                                location.remove();
+                                res.json(transform(location));
+                            }
+                        });
+
                 } else {
                     res.status(200);
                     res.end();

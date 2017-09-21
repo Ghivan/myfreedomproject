@@ -90,10 +90,11 @@ router.post('/', (req, res, next) => {
                         departureDate: new Date(departureDate)
                     }
                 });
+                res.status(201);
                 NewTrip.save().then(trip => res.json(transform(trip)), next);
             })
         } else {
-            res.status(300);
+            res.status(200);
             res.json(transform(trip));
             res.end();
         }
