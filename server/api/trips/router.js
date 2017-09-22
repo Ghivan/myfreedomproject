@@ -58,7 +58,10 @@ router.post('/', (req, res, next) => {
         errors.DEPARTURE_DATE_IS_NOT_VALID || errors.LOCATIONS_IS_EMPTY ||
         errors.DEPARTURE_IS_SOONER_ARRIVAL){
         res.status(400);
-        res.json(errors);
+        res.json({
+            error: 'Errors in sent data',
+            details: errors
+        });
         res.end();
         return next();
     }
@@ -67,7 +70,9 @@ router.post('/', (req, res, next) => {
             location = mongoose.Types.ObjectId(location)
         } catch (e) {
             res.status(400);
-            res.json('Invalid locations id');
+            res.json({
+                error: 'Invalid locations id'
+            });
             res.end();
             return next(new Error('Invalid locations id'));
         }
@@ -78,7 +83,9 @@ router.post('/', (req, res, next) => {
             LocationModel.find({_id :{ $in: requestedLocations }}).then(locations => {
                 if (locations.length !== requestedLocations.length){
                     res.status(400);
-                    res.json('Check locations existence!');
+                    res.json({
+                        error: 'Check locations existence!'
+                    });
                     res.end();
                     return next();
                 }
@@ -156,7 +163,10 @@ router.put('/:id', (req, res, next) => {
 
     if (errors.length > 0){
         res.status(400);
-        res.json(errors);
+        res.json({
+            error: errors.concat(' '),
+            details: errors
+        });
         res.end();
         return next();
     }
@@ -175,7 +185,9 @@ router.put('/:id', (req, res, next) => {
         if (arrivalDate) {
             if (new Date(trip.route.departureDate) < arrivalDate) {
                 res.status(400);
-                res.json('New arrival date is later than departure date');
+                res.json({
+                    error: 'New arrival date is later than departure date'
+                });
                 res.end();
                 return next();
             } else {
@@ -185,7 +197,9 @@ router.put('/:id', (req, res, next) => {
         if (departureDate){
             if (new Date(trip.route.arrivalDate) > departureDate) {
                 res.status(400);
-                res.json('New departure date is sooner than arrival date');
+                res.json({
+                    error: 'New departure date is sooner than arrival date'
+                });
                 res.end();
                 return next();
             } else {
@@ -196,7 +210,9 @@ router.put('/:id', (req, res, next) => {
             LocationModel.find({_id :{ $in: requestedLocations }}).then(locations => {
                 if (locations.length !== requestedLocations.length){
                     res.status(400);
-                    res.json('Check locations existence!');
+                    res.json({
+                        error: 'Check locations existence!'
+                    });
                     res.end();
                     return next();
                 }

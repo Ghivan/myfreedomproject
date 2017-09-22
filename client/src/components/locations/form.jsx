@@ -22,6 +22,44 @@ class LocationsForm extends React.Component {
         }
     }
 
+    handleActionBtn = e => {
+        e.preventDefault();
+        let errors = [];
+        if (!this.state.city.trim()){
+            errors.push('City should not be empty.')
+        }
+        if (!this.state.country.trim()){
+            errors.push('Country should not be empty.')
+        }
+        if (errors.length > 0){
+            this.setState({errors: errors.concat(' ')});
+            return;
+        }
+        switch (e.target.innerText){
+            case 'Add':
+                this.props.add({
+                    city: this.state.city,
+                    country: this.state.country
+                });
+                this.props.cancel();
+                break;
+            case 'Update':
+                this.props.showPopup(
+                    `Do you really want to change location to: "${this.state.city} (${this.state.country})"`,
+                    () => {
+                        this.props.update(this.state.id, {
+                            city: this.state.city,
+                            country: this.state.country
+                        });
+                        this.props.hidePopup();
+                        this.props.cancel();
+                    },
+                    () => this.props.hidePopup()
+                );
+                break;
+        }
+    };
+
     render() {
         return (
             <form>
@@ -45,43 +83,7 @@ class LocationsForm extends React.Component {
                            placeholder="Country"/>
                 </div>
                 <button className="btn btn-primary"
-                        onClick={e => {
-                            e.preventDefault();
-                            let errors = [];
-                            if (!this.state.city.trim()){
-                                errors.push('City should not be empty.')
-                            }
-                            if (!this.state.country.trim()){
-                                errors.push('Country should not be empty.')
-                            }
-                            if (errors.length > 0){
-                                this.setState({errors: errors.concat(' ')});
-                                return;
-                            }
-                            switch (e.target.innerText){
-                                case 'Add':
-                                    this.props.add({
-                                        city: this.state.city,
-                                        country: this.state.country
-                                    });
-                                    this.props.cancel();
-                                    break;
-                                case 'Update':
-                                    this.props.showPopup(
-                                        `Do you really want to change location to: "${this.state.city} (${this.state.country})"`,
-                                        () => {
-                                            this.props.update(this.state.id, {
-                                                city: this.state.city,
-                                                country: this.state.country
-                                            });
-                                            this.props.hidePopup();
-                                            this.props.cancel();
-                                        },
-                                        () => this.props.hidePopup()
-                                    );
-                                    break;
-                            }
-                        }}
+                        onClick={this.handleActionBtn}
                 >{this.state.id ? 'Update' : 'Add'}</button>
                 <button className="btn btn-default"
                         onClick={e => {

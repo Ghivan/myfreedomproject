@@ -11,8 +11,10 @@ class TripsForm extends React.Component {
             arrivalDate: props.arrivalDate || '',
             departureDate: props.departureDate || '',
             trips: props.trips || '',
+            locations: props.locations,
             allTrips: [],
-            id: props.id || null
+            id: props.id || null,
+            selectedLocations: []
         };
         if (this.state.id){
             this.props.getById(this.state.id)
@@ -24,6 +26,59 @@ class TripsForm extends React.Component {
                 })
         }
     }
+
+    handleSelectedLocations =  e => {
+        let index =  this.state.selectedLocations.indexOf(e.target.value),
+            selectedLocations = this.state.selectedLocations;
+        if (e.target.checked){
+            selectedLocations.push(e.target.value);
+            this.setState({
+                selectedLocations: selectedLocations
+            })
+        } else {
+            if (index > -1) selectedLocations.splice(index, 1);
+            this.setState({
+                selectedLocations: selectedLocations
+            })
+        }
+        console.log(selectedLocations)
+    };
+
+    handleActionBtn = e => {
+        e.preventDefault();
+        switch (e.target.innerText){
+            case 'Add':
+                console.log({
+                    name: this.state.name,
+                    arrivalDate: this.state.arrivalDate,
+                    departureDate: this.state.departureDate,
+                    locations: this.state.selectedLocations
+                });
+                this.props.add({
+                    name: this.state.name,
+                    arrivalDate: this.state.arrivalDate,
+                    departureDate: this.state.departureDate,
+                    locations: this.state.selectedLocations
+                });
+                this.props.cancel();
+                break;
+            case 'Update':
+                this.props.showPopup(
+                    `Do you really want to change location to: "${this.state.city} (${this.state.country})"`,
+                    () => {
+                        this.props.update(this.state.id, {
+                            city: this.state.city,
+                            country: this.state.country
+                        });
+                        this.props.hidePopup();
+                        this.props.cancel();
+                    },
+                    () => this.props.hidePopup()
+                );
+                break;
+        }
+    };
+
     render() {
         return (
             <form>
@@ -56,7 +111,32 @@ class TripsForm extends React.Component {
                            onChange={(e) => this.setState({departureDate: e.target.value})}
                     />
                 </div>
+                <div>
+                    <div>
+                        <label>Select locations:</label>
+                    </div>
+                    {this.state.locations.map(location => {
+                        return (
+                            <div className="form-check form-check-inline"  key={location.id}>
+                                <label className="form-check-label"
+                                       htmlFor={location.id}
 
+                                >
+                                    <input className="form-check-input"
+                                           id={location.id}
+                                           type="checkbox"
+                                           value={location.id}
+                                           name="locations"
+                                           onChange={this.handleSelectedLocations}
+                                    />
+                                    {`${location.city} (${location.country})`}</label>
+                            </div>
+                        )
+                    })}
+                </div>
+                <button className="btn btn-primary"
+                        onClick={this.handleActionBtn}
+                >{this.state.id ? 'Update' : 'Add'}</button>
                 <button className="btn btn-default"
                         onClick={e => {
                             e.preventDefault();

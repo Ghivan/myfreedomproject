@@ -14,14 +14,18 @@ class Trip extends React.Component {
         super(props);
         this.state = {
             _currentView: ViewTypes.TABLE,
-            trips: this.props.trips,
+            trips: props.trips,
+            locations: props.locations,
             tripDetailsId: null,
             popup: {
                 isShown: false,
                 message: '',
                 onResolve: null,
                 onReject: null
-            }
+            },
+            remove: props.remove,
+            getById: props.getById,
+            add: props.add
         };
     }
     componentWillReceiveProps(nextProps){
@@ -66,9 +70,31 @@ class Trip extends React.Component {
                                   reject={this.state.popup.onReject}
                     />
                     <TripsTable trips={this.state.trips}
-                                remove={this.props.remove}
+                                remove={this.state.remove}
                                 showPopup={this.showPopup}
                                 hidePopup={this.hidePopup}
+                    />
+                    <button onClick={() => {
+                        this.setState({tripDetailsId: null});
+                        this.changeView(ViewTypes.DETAILS)()
+                    }} className="btn btn-success">Add</button>
+                </div>
+            );
+        }
+        if (this.state._currentView === ViewTypes.DETAILS){
+            return (
+                <div>
+                    <ConfirmBlock status={this.state.popup.isShown}
+                                  message={this.state.popup.message}
+                                  resolve={this.state.popup.onResolve}
+                                  reject={this.state.popup.onReject}
+                    />
+                    <TripsForm  cancel={this.changeView(ViewTypes.TABLE)}
+                                showPopup={this.showPopup}
+                                hidePopup={this.hidePopup}
+                                locations={this.state.locations}
+                                update={this.state.getById}
+                                add={this.state.add}
                     />
                 </div>
             );

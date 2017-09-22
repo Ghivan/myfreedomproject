@@ -68,9 +68,7 @@ class App extends React.Component {
                     this.setState({errors: newData.error});
                     console.warn(newData)
                 } else {
-                    this.setState((prevState)=>{
-                        prevState[entity].push(newData);
-                    });
+                    this.updateAllData()
                 }
             })
     };
@@ -83,10 +81,7 @@ class App extends React.Component {
                     this.setState({errors: deletedEntity.error});
                     console.warn(deletedEntity)
                 } else {
-                    this.setState((prevState)=>{
-                        let index = prevState[entity].findIndex((elem) => elem.id === deletedEntity.id);
-                        prevState[entity].splice(index,1);
-                    });
+                    this.updateAllData()
                 }
             });
     };
@@ -139,6 +134,7 @@ class App extends React.Component {
                                 clearError={()=>this.setState({errors: ''})}
                     />
                     <Trips trips={this.state[Entities.TRIP]}
+                           locations={this.state[Entities.LOCATION]}
                            add={this.add(Entities.TRIP)}
                            remove={this.remove(Entities.TRIP)}
                            getById={this.getById(Entities.TRIP)}
