@@ -73,8 +73,12 @@ class TripsForm extends React.Component {
             errors.push('Departure is sooner than arrival')
         }
 
+        if (this.state.selectedLocations.length === 0){
+            errors.push('Locations should not be empty')
+        }
+
         if (errors.length > 0){
-            this.setState({errors: errors.concat(' ')});
+            this.setState({errors: errors.concat('  ')});
             return;
         }
         switch (e.target.innerText) {

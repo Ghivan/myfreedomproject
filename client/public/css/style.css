@@ -17,3 +17,20 @@ form{
     width: 50%;
     margin: 20px auto;
 }
+.pagination{
+    margin: 10px;
+}
+
+@keyframes markItem {
+    50% {
+        background-color: green;
+        color: white;
+        font-weight: bold;
+    }
+}
+
+.updated{
+    animation-name: markItem;
+    animation-duration: 2s;
+    animation-iteration-count: 1;
+}

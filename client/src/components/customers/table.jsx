@@ -37,7 +37,7 @@ const CustomersTable = ({customers, remove, showPopup, hidePopup, showDetails}) 
             {
                 customers.map(customer => {
                     return (
-                        <tr key={customer.id}>
+                        <tr key={customer.id} className={`${customer.updated ? 'updated' : ''}`}>
                             <td>{customer.firstName}</td>
                             <td>{customer.lastName}</td>
                             <td>

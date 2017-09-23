@@ -36,7 +36,7 @@ const LocationsTable = ({locations, remove, showPopup, hidePopup, showDetails}) 
             {
                 locations.map(location => {
                     return (
-                        <tr key={location.id}>
+                        <tr key={location.id} className={`${location.updated ? 'updated' : ''}`}>
                             <td>{location.city}</td>
                             <td>{location.country}</td>
                             <td>

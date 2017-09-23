@@ -38,7 +38,7 @@ const TripsTable = ({trips, remove, showPopup, hidePopup, showDetails}) =>
             {
                 trips.map(trip => {
                     return (
-                        <tr key={trip.id}>
+                        <tr key={trip.id} className={`${trip.updated ? 'updated' : ''}`}>
                             <td>{trip.name}</td>
                             <td>
                                 <ul>
