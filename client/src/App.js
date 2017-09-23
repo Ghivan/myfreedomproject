@@ -136,85 +136,66 @@ class App extends React.Component {
         }
     };
 
-    render() {
-        if (this.state._currentScreen === Screens.LOCATIONS){
+    renderScreen(){
+        if (this.state._currentScreen === Screens.LOCATIONS) {
             return (
-                <div>
-                    <MainMenu screens={Screens}
-                              activeScreen={this.state._currentScreen}
-                              changeScreen={this.changeScreen} />
-                    <ErrorBlock message={this.state.errors}
-                                clearError={this.clearError}
-                    />
-                    <ConfirmBlock status={this.state.popup.isShown}
-                                  message={this.state.popup.message}
-                                  resolve={this.state.popup.onResolve}
-                                  reject={this.state.popup.onReject}
-                    />
-                    <Locations locations={this.state.locations}
-                               add={this.add(Entities.LOCATION)}
-                               remove={this.remove(Entities.LOCATION)}
-                               getById={this.getById(Entities.LOCATION)}
-                               update={this.update(Entities.LOCATION)}
-                               showPopup={this.showPopup}
-                               hidePopup={this.hidePopup}
-                    />
-                </div>
-            );
+                <Locations locations={this.state.locations}
+                           add={this.add(Entities.LOCATION)}
+                           remove={this.remove(Entities.LOCATION)}
+                           getById={this.getById(Entities.LOCATION)}
+                           update={this.update(Entities.LOCATION)}
+                           showPopup={this.showPopup}
+                           hidePopup={this.hidePopup}
+                />
+            )
         }
         if (this.state._currentScreen === Screens.TRIPS){
             return (
-                <div>
-                    <MainMenu screens={Screens}
-                              activeScreen={this.state._currentScreen}
-                              changeScreen={this.changeScreen} />
-                    <ErrorBlock message={this.state.errors}
-                                clearError={()=>this.setState({errors: ''})}
-                    />
-                    <ConfirmBlock status={this.state.popup.isShown}
-                                  message={this.state.popup.message}
-                                  resolve={this.state.popup.onResolve}
-                                  reject={this.state.popup.onReject}
-                    />
-                    <Trips trips={this.state.trips}
-                           locations={this.state.locations}
-                           add={this.add(Entities.TRIP)}
-                           remove={this.remove(Entities.TRIP)}
-                           getById={this.getById(Entities.TRIP)}
-                           update={this.update(Entities.TRIP)}
-                           showPopup={this.showPopup}
-                           hidePopup={this.hidePopup}
-                    />
-                </div>
-            );
+                <Trips trips={this.state.trips}
+                       locations={this.state.locations}
+                       add={this.add(Entities.TRIP)}
+                       remove={this.remove(Entities.TRIP)}
+                       getById={this.getById(Entities.TRIP)}
+                       update={this.update(Entities.TRIP)}
+                       showPopup={this.showPopup}
+                       hidePopup={this.hidePopup}
+                />
+            )
         }
         if (this.state._currentScreen === Screens.CUSTOMERS){
             return (
-                <div>
-                    <MainMenu screens={Screens}
-                              activeScreen={this.state._currentScreen}
-                              changeScreen={this.changeScreen} />
-                    <ErrorBlock message={this.state.errors}
-                                clearError={()=>this.setState({errors: ''})}
-                    />
-                    <ConfirmBlock status={this.state.popup.isShown}
-                                  message={this.state.popup.message}
-                                  resolve={this.state.popup.onResolve}
-                                  reject={this.state.popup.onReject}
-                    />
-                    <Customers customers={this.state.customers}
-                               trips={this.state.trips}
-                               add={this.add(Entities.CUSTOMER)}
-                               remove={this.remove(Entities.CUSTOMER)}
-                               getById={this.getById(Entities.CUSTOMER)}
-                               update={this.update(Entities.CUSTOMER)}
-                               showPopup={this.showPopup}
-                               hidePopup={this.hidePopup}
-                    />
-                </div>
+                <Customers customers={this.state.customers}
+                           trips={this.state.trips}
+                           add={this.add(Entities.CUSTOMER)}
+                           remove={this.remove(Entities.CUSTOMER)}
+                           getById={this.getById(Entities.CUSTOMER)}
+                           update={this.update(Entities.CUSTOMER)}
+                           showPopup={this.showPopup}
+                           hidePopup={this.hidePopup}
+                />
             );
         }
 
+    }
+
+    render() {
+
+        return (
+            <div>
+                <MainMenu screens={Screens}
+                          activeScreen={this.state._currentScreen}
+                          changeScreen={this.changeScreen} />
+                <ErrorBlock message={this.state.errors}
+                            clearError={this.clearError}
+                />
+                <ConfirmBlock status={this.state.popup.isShown}
+                              message={this.state.popup.message}
+                              resolve={this.state.popup.onResolve}
+                              reject={this.state.popup.onReject}
+                />
+                {this.renderScreen()}
+            </div>
+        );
     }
 }
 

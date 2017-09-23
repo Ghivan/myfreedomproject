@@ -43,7 +43,7 @@ router.post('/', (req, res, next) => {
         return next();
     }
 
-    LocationModel.findOne({city: new RegExp(escapeRegExp(city) + '$', 'i'), country: new RegExp(escapeRegExp(country) + '$', 'i')}).then(location => {
+    LocationModel.findOne({city: new RegExp('^' + escapeRegExp(city) + '$', 'i'), country: new RegExp('^' + escapeRegExp(country) + '$', 'i')}).then(location => {
         if (!location){
             const NewLocation = new LocationModel({
                     city: city.trim(),
@@ -82,7 +82,7 @@ router.put('/:id', (req, res, next) => {
         const {city, country} = req.body;
         location.city = (Validator.text(city)) ? city.trim() : location.city;
         location.country = (Validator.text(country)) ? country.trim() : location.country;
-        LocationModel.findOne({city: new RegExp(escapeRegExp(location.city) + '$', 'i'), country: new RegExp(escapeRegExp(location.country) + '$', 'i')})
+        LocationModel.findOne({city: new RegExp('^' + escapeRegExp(location.city) + '$', 'i'), country: new RegExp('^' + escapeRegExp(location.country) + '$', 'i')})
             .then(testedLocation => {
                 if (!testedLocation){
                     location.save().then(location => res.json(transform(location)), next);

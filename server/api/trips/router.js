@@ -79,7 +79,7 @@ router.post('/', (req, res, next) => {
         }
     });
 
-    TripModel.findOne({name: new RegExp(escapeRegExp(name) + '$', 'i')}).then(trip => {
+    TripModel.findOne({name: new RegExp('^' + escapeRegExp(name) + '$', 'i')}).then(trip => {
         if (!trip){
             LocationModel.find({_id :{ $in: requestedLocations }}).then(locations => {
                 if (locations.length !== requestedLocations.length){
