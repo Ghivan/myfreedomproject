@@ -1,8 +1,13 @@
 import React from 'react';
 
 const renderPageButtons = (current, max, goToPage) => {
+    const linksNumber = 7;
+    const linksDepth = Math.floor(linksNumber / 2);
+    let start = current > linksDepth ? (current - linksDepth) : 1;
+    let end = max >= (current + linksDepth) ? current + linksDepth : max;
+
     const btns = [];
-    for (let i = 1; i <= max; i++){
+    for (let i = start; i <= end; i++){
         btns.push(
             <li className={`page-item ${i === current ? 'active' : ''}`}
                 key={i}
