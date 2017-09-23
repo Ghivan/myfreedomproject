@@ -1,7 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const CustomersTable = ({customers, remove, showPopup, hidePopup }) =>
+
+const handleUpdateBtn = (id, callback) => {
+    return (e) => {
+        e.preventDefault();
+        callback(id)
+    }
+};
+
+const handleDeleteCustomerBtn = (customer, showPopup, onAccept, hidePopup) => {
+    return e => {
+        e.preventDefault();
+        showPopup(
+            `Do you really want to delete customer: "${customer.firstName} ${customer.lastName}"?`,
+            () => {
+                onAccept(customer.id);
+                hidePopup()
+            },
+            () => hidePopup()
+        );
+    }
+};
+
+const CustomersTable = ({customers, remove, showPopup, hidePopup, showDetails}) =>
     (
         <table className="table table-responsive table-striped table-hover">
             <thead>
@@ -27,20 +49,12 @@ const CustomersTable = ({customers, remove, showPopup, hidePopup }) =>
                             </td>
                             <td>
                                 <a href="#"
+                                   className="btn btn-info btn-sm"
+                                   onClick={handleUpdateBtn(customer.id, showDetails)}
+                                >Update</a>
+                                <a href="#"
                                    className="btn btn-danger btn-sm"
-                                   onClick={
-                                       e => {
-                                           e.preventDefault();
-                                           showPopup(
-                                               `Do you really want to delete location: "${customer.firstName} ${customer.lastName}"`,
-                                               () => {
-                                                   remove(customer.id);
-                                                   hidePopup()
-                                               },
-                                               () => hidePopup()
-                                           );
-                                       }
-                                   }
+                                   onClick={handleDeleteCustomerBtn(customer, showPopup, remove, hidePopup)}
                                 >Delete</a>
                             </td>
                         </tr>

@@ -8,7 +8,8 @@ export const ErrorBlock = ({message, clearError}) => {
                  role="alert"
                  onClick={() => clearError()}
             >
-                {message} (click to hide)
+                {message}
+                <br />(click to hide)
             </div>
         )
     } else {

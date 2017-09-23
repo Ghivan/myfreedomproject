@@ -7,6 +7,7 @@ const rootDir = path.dirname(require.main.filename);
 const {CustomerModel, TripModel, LocationModel, transform} = require(path.join(rootDir, 'model', 'database'));
 const Validator = require(path.join(rootDir, 'model', 'validators'));
 
+const {escapeRegExp} = require('../../utils');
 
 router.get('/', (req, res, next) => {
     Promise.all([TripModel.find(), LocationModel.find()]).then(([trips, locations]) => {
@@ -78,7 +79,7 @@ router.post('/', (req, res, next) => {
         }
     });
 
-    TripModel.findOne({name: new RegExp(name, 'i')}).then(trip => {
+    TripModel.findOne({name: new RegExp(escapeRegExp(name) + '$', 'i')}).then(trip => {
         if (!trip){
             LocationModel.find({_id :{ $in: requestedLocations }}).then(locations => {
                 if (locations.length !== requestedLocations.length){
@@ -164,7 +165,7 @@ router.put('/:id', (req, res, next) => {
     if (errors.length > 0){
         res.status(400);
         res.json({
-            error: errors.concat(' '),
+            error: 'Errors in sent data',
             details: errors
         });
         res.end();

@@ -7,12 +7,11 @@ class LocationsForm extends React.Component {
         super(props);
         this.state = {
             errors: '',
-            city: props.city || '',
-            country: props.country || '',
-            id: props.id || null
+            city: '',
+            country: '',
         };
-        if (this.state.id){
-            this.props.getById(this.state.id)
+        if (this.props.id){
+            this.props.getById(this.props.id)
                 .then(location => {
                     this.setState({
                         city: location.city,
@@ -45,9 +44,9 @@ class LocationsForm extends React.Component {
                 break;
             case 'Update':
                 this.props.showPopup(
-                    `Do you really want to change location to: "${this.state.city} (${this.state.country})"`,
+                    `Do you really want to change location to: "${this.state.city} (${this.state.country})"?`,
                     () => {
-                        this.props.update(this.state.id, {
+                        this.props.update(this.props.id, {
                             city: this.state.city,
                             country: this.state.country
                         });
@@ -58,6 +57,19 @@ class LocationsForm extends React.Component {
                 );
                 break;
         }
+    };
+
+    handleCancelBtn = e => {
+        e.preventDefault();
+        this.props.cancel();
+    };
+
+    handleCityInput = e => {
+        this.setState({city: e.target.value})
+    };
+
+    handleCountryInput = e => {
+        this.setState({country: e.target.value})
     };
 
     render() {
@@ -71,7 +83,7 @@ class LocationsForm extends React.Component {
                     <input className="form-control"
                            id="city"
                            value={this.state.city}
-                           onChange={(e) => this.setState({city: e.target.value})}
+                           onChange={this.handleCityInput}
                            placeholder="City"/>
                 </div>
                 <div className="form-group">
@@ -79,17 +91,14 @@ class LocationsForm extends React.Component {
                     <input className="form-control"
                            id="Country"
                            value={this.state.country}
-                           onChange={(e) => this.setState({country: e.target.value})}
+                           onChange={this.handleCountryInput}
                            placeholder="Country"/>
                 </div>
                 <button className="btn btn-primary"
                         onClick={this.handleActionBtn}
-                >{this.state.id ? 'Update' : 'Add'}</button>
+                >{this.props.id ? 'Update' : 'Add'}</button>
                 <button className="btn btn-default"
-                        onClick={e => {
-                            e.preventDefault();
-                            this.props.cancel();
-                        }}
+                        onClick={this.handleCancelBtn}
                 >Cancel</button>
             </form>
         );

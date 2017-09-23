@@ -2,58 +2,83 @@ import React from 'react';
 
 import {ErrorBlock} from '../errors/error';
 
+const formatDate = (date) => {
+    date = new Date(date);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${String(year)}-${month < 10 ? '0' + String(month) : String(month)}-${day < 10 ? '0' + String(day) : String(day)}`
+};
+
+const getLocationsIdsFromTrip = (trip) => {
+  return trip.route.locations.reduce((prev, curr) => {
+      if (curr.id) prev.push(curr.id);
+      return prev;
+  }, [])
+};
+
 class TripsForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             errors: '',
-            name: props.name || '',
-            arrivalDate: props.arrivalDate || '',
-            departureDate: props.departureDate || '',
-            trips: props.trips || '',
-            locations: props.locations,
-            allTrips: [],
-            id: props.id || null,
+            name: '',
+            arrivalDate: formatDate(Date.now()),
+            departureDate: formatDate(Date.now()),
             selectedLocations: []
         };
-        if (this.state.id){
-            this.props.getById(this.state.id)
-                .then(location => {
+        if (this.props.id) {
+            this.props.getById(this.props.id)
+                .then(trip => {
                     this.setState({
-                        name: location.name,
-                        arrivalDate: location.arrivalDate
+                        name: trip.name,
+                        arrivalDate: formatDate(trip.route.arrivalDate),
+                        departureDate: formatDate(trip.route.departureDate),
+                        selectedLocations: getLocationsIdsFromTrip(trip)
                     })
                 })
         }
     }
 
-    handleSelectedLocations =  e => {
-        let index =  this.state.selectedLocations.indexOf(e.target.value),
+    handleSelectedLocations = e => {
+        let index = this.state.selectedLocations.indexOf(e.target.value),
             selectedLocations = this.state.selectedLocations;
-        if (e.target.checked){
+        if (e.target.checked) {
             selectedLocations.push(e.target.value);
             this.setState({
-                selectedLocations: selectedLocations
+                selectedLocations
             })
         } else {
             if (index > -1) selectedLocations.splice(index, 1);
             this.setState({
-                selectedLocations: selectedLocations
+                selectedLocations
             })
         }
-        console.log(selectedLocations)
     };
 
     handleActionBtn = e => {
         e.preventDefault();
-        switch (e.target.innerText){
+        let errors = [];
+        if (!this.state.name.trim()){
+            errors.push('Trip name should not be empty.')
+        }
+        if (!this.state.arrivalDate.trim()){
+            errors.push('Arrival date should not be empty.')
+        }
+        if (!this.state.departureDate.trim()){
+            errors.push('Arrival date should not be empty.')
+        }
+
+        if (new Date(this.state.arrivalDate) > new Date(this.state.departureDate)){
+            errors.push('Departure is sooner than arrival')
+        }
+
+        if (errors.length > 0){
+            this.setState({errors: errors.concat(' ')});
+            return;
+        }
+        switch (e.target.innerText) {
             case 'Add':
-                console.log({
-                    name: this.state.name,
-                    arrivalDate: this.state.arrivalDate,
-                    departureDate: this.state.departureDate,
-                    locations: this.state.selectedLocations
-                });
                 this.props.add({
                     name: this.state.name,
                     arrivalDate: this.state.arrivalDate,
@@ -64,11 +89,13 @@ class TripsForm extends React.Component {
                 break;
             case 'Update':
                 this.props.showPopup(
-                    `Do you really want to change location to: "${this.state.city} (${this.state.country})"`,
+                    'Do you really want to change this trip?',
                     () => {
-                        this.props.update(this.state.id, {
-                            city: this.state.city,
-                            country: this.state.country
+                        this.props.update(this.props.id, {
+                            name: this.state.name,
+                            arrivalDate: this.state.arrivalDate,
+                            departureDate: this.state.departureDate,
+                            locations: this.state.selectedLocations
                         });
                         this.props.hidePopup();
                         this.props.cancel();
@@ -77,6 +104,11 @@ class TripsForm extends React.Component {
                 );
                 break;
         }
+    };
+
+    handleCancelBtn = e => {
+        e.preventDefault();
+        this.props.cancel();
     };
 
     render() {
@@ -115,19 +147,19 @@ class TripsForm extends React.Component {
                     <div>
                         <label>Select locations:</label>
                     </div>
-                    {this.state.locations.map(location => {
+                    {this.props.allLocations.map(location => {
                         return (
                             <div className="form-check form-check-inline"  key={location.id}>
                                 <label className="form-check-label"
                                        htmlFor={location.id}
-
                                 >
                                     <input className="form-check-input"
                                            id={location.id}
                                            type="checkbox"
                                            value={location.id}
                                            name="locations"
-                                           onChange={this.handleSelectedLocations}
+                                           checked={(this.state.selectedLocations.indexOf(location.id) > -1)}
+                                           onClick={this.handleSelectedLocations}
                                     />
                                     {`${location.city} (${location.country})`}</label>
                             </div>
@@ -136,14 +168,12 @@ class TripsForm extends React.Component {
                 </div>
                 <button className="btn btn-primary"
                         onClick={this.handleActionBtn}
-                >{this.state.id ? 'Update' : 'Add'}</button>
+                >{this.props.id ? 'Update' : 'Add'}</button>
                 <button className="btn btn-default"
-                        onClick={e => {
-                            e.preventDefault();
-                            this.props.cancel();
-                        }}
+                        onClick={this.handleCancelBtn}
                 >Cancel</button>
             </form>
+
         );
     };
 }

@@ -74,7 +74,9 @@ router.post('/', (req, res, next) => {
             .then(trips => {
                 if (trips.length !== requestedTrips.length){
                     res.status(400);
-                    res.json('Check trips existence!');
+                    res.json({
+                        error: 'Check trips existence!'
+                    });
                     res.end();
                     return next();
                 }
@@ -83,7 +85,9 @@ router.post('/', (req, res, next) => {
             })
             .catch(err => {
                 res.status(400);
-                res.json('Invalid trips id');
+                res.json({
+                    error: 'Invalid trips id'
+                });
                 res.end();
                 return next();
             })
@@ -137,7 +141,10 @@ router.put('/:id', (req, res, next) => {
 
     if (errors.length > 0){
         res.status(400);
-        res.json(errors);
+        res.json({
+            error: errors.concat(' '),
+            details: errors
+        });
         res.end();
         return next();
     }
@@ -150,7 +157,9 @@ router.put('/:id', (req, res, next) => {
             TripModel.find({_id :{ $in: requestedTrips }}).then(trips => {
                 if (trips.length !== requestedTrips.length){
                     res.status(400);
-                    res.json('Check trips existence!');
+                    res.json({
+                        error: 'Check trips existence!'
+                    });
                     res.end();
                     return next();
                 }

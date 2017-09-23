@@ -7,6 +7,8 @@ const rootDir = path.dirname(require.main.filename);
 const {TripModel, LocationModel, transform} = require(path.join(rootDir, 'model', 'database'));
 const Validator = require(path.join(rootDir, 'model', 'validators'));
 
+const {escapeRegExp} = require('../../utils');
+
 router.get('/', (req, res, next) => {
     LocationModel.find().then(locations => res.json(locations.map(transform)), next)
 });
@@ -41,7 +43,7 @@ router.post('/', (req, res, next) => {
         return next();
     }
 
-    LocationModel.findOne({city: new RegExp(city, 'i'), country: new RegExp(country, 'i')}).then(location => {
+    LocationModel.findOne({city: new RegExp(escapeRegExp(city) + '$', 'i'), country: new RegExp(escapeRegExp(country) + '$', 'i')}).then(location => {
         if (!location){
             const NewLocation = new LocationModel({
                     city: city.trim(),
@@ -80,7 +82,7 @@ router.put('/:id', (req, res, next) => {
         const {city, country} = req.body;
         location.city = (Validator.text(city)) ? city.trim() : location.city;
         location.country = (Validator.text(country)) ? country.trim() : location.country;
-        LocationModel.findOne({city: new RegExp(location.city + '$', 'i'), country: new RegExp(location.country + '$', 'i')})
+        LocationModel.findOne({city: new RegExp(escapeRegExp(location.city) + '$', 'i'), country: new RegExp(escapeRegExp(location.country) + '$', 'i')})
             .then(testedLocation => {
                 if (!testedLocation){
                     location.save().then(location => res.json(transform(location)), next);

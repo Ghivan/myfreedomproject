@@ -1,6 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+const handleUpdateBtn = (id, callback) => {
+    return (e) => {
+        e.preventDefault();
+        callback(id)
+    }
+};
+
+const handleDeleteLocationBtn = (location, showPopup, onAccept, hidePopup) => {
+    return e => {
+        e.preventDefault();
+        showPopup(
+            `Do you really want to delete location: "${location.city} (${location.country})"?`,
+            () => {
+                onAccept(location.id);
+                hidePopup()
+            },
+            () => hidePopup()
+        );
+    }
+};
+
 const LocationsTable = ({locations, remove, showPopup, hidePopup, showDetails}) =>
     (
         <table className="table table-responsive table-striped table-hover">
@@ -18,30 +39,14 @@ const LocationsTable = ({locations, remove, showPopup, hidePopup, showDetails}) 
                         <tr key={location.id}>
                             <td>{location.city}</td>
                             <td>{location.country}</td>
-                            <td><a href="#"
+                            <td>
+                                <a href="#"
                                    className="btn btn-info btn-sm"
-                                   onClick={
-                                       e => {
-                                           e.preventDefault();
-                                           showDetails(location.id)
-                                       }
-                                   }
-                            >Update</a>
+                                   onClick={handleUpdateBtn(location.id, showDetails)}
+                                >Update</a>
                                 <a href="#"
                                    className="btn btn-danger btn-sm"
-                                   onClick={
-                                       e => {
-                                           e.preventDefault();
-                                           showPopup(
-                                               `Do you really want to delete location: "${location.city} (${location.country})"`,
-                                               () => {
-                                                   remove(location.id);
-                                                   hidePopup()
-                                               },
-                                               () => hidePopup()
-                                           );
-                                       }
-                                   }
+                                   onClick={handleDeleteLocationBtn(location, showPopup,remove, hidePopup)}
                                 >Delete</a>
                             </td>
                         </tr>

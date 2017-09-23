@@ -1,7 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const TripsTable = ({trips, remove, showPopup, hidePopup}) =>
+const handleUpdateBtn = (id, callback) => {
+    return (e) => {
+        e.preventDefault();
+        callback(id)
+    }
+};
+
+const handleDeleteTripBtn = (trip, showPopup, onAccept, hidePopup) => {
+    return e => {
+        e.preventDefault();
+        showPopup(
+            `Do you really want to delete trip: "${trip.name}"?`,
+            () => {
+                onAccept(trip.id);
+                hidePopup()
+            },
+            () => hidePopup()
+        );
+    }
+};
+
+const TripsTable = ({trips, remove, showPopup, hidePopup, showDetails}) =>
     (
         <table className="table table-responsive table-striped table-hover">
             <thead>
@@ -30,20 +51,12 @@ const TripsTable = ({trips, remove, showPopup, hidePopup}) =>
                             <td>{new Date(trip.route.departureDate).toLocaleDateString()}</td>
                             <td>
                                 <a href="#"
+                                   className="btn btn-info btn-sm"
+                                   onClick={handleUpdateBtn(trip.id, showDetails)}
+                                >Update</a>
+                                <a href="#"
                                    className="btn btn-danger btn-sm"
-                                   onClick={
-                                       e => {
-                                           e.preventDefault();
-                                           showPopup(
-                                               `Do you really want to delete trip: "${trip.name}"`,
-                                               () => {
-                                                   remove(trip.id);
-                                                   hidePopup()
-                                               },
-                                               () => hidePopup()
-                                           );
-                                       }
-                                   }
+                                   onClick={handleDeleteTripBtn(trip,showPopup,remove,hidePopup)}
                                 >Delete</a>
                             </td>
                         </tr>

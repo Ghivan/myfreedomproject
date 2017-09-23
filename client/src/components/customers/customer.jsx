@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {ConfirmBlock} from '../popups/confirm'
 import CustomersTable from './table';
+import CustomersForm from './form';
 
 const ViewTypes = {
     TABLE: 'table',
@@ -13,61 +13,50 @@ class Customer extends React.Component {
         super(props);
         this.state = {
             _currentView: ViewTypes.TABLE,
-            customers: this.props.customers,
-            customerDetailsId: null,
-            popup: {
-                isShown: false,
-                message: '',
-                onResolve: null,
-                onReject: null
-            }
+            customerDetailsId: null
         };
-    }
-    componentWillReceiveProps(nextProps){
-        if (nextProps['customers']){
-            this.setState({customers: nextProps['customers']});
-        }
     }
 
     changeView = (viewType) =>{
         return () => this.setState({_currentView: viewType})
     };
 
-    showPopup = (message, onResolve, onReject) => {
-        this.setState({
-            popup: {
-                isShown: true,
-                message,
-                onResolve,
-                onReject
-            }
-        })
-    };
-
-    hidePopup = () => {
-        this.setState({
-            popup: {
-                isShown: false,
-                message: '',
-                onResolve: null,
-                onReject: null
-            }
-        })
+    showDetails = (id) => {
+        this.setState({customerDetailsId: id});
+        this.changeView(ViewTypes.DETAILS)();
     };
 
     render() {
         if (this.state._currentView === ViewTypes.TABLE){
             return (
                 <div>
-                    <ConfirmBlock status={this.state.popup.isShown}
-                                  message={this.state.popup.message}
-                                  resolve={this.state.popup.onResolve}
-                                  reject={this.state.popup.onReject}
-                    />
-                    <CustomersTable customers={this.state.customers}
+                    <button onClick={() => {
+                        this.setState({
+                            customerDetailsId: null
+                        });
+                        this.changeView(ViewTypes.DETAILS)()
+                    }} className="btn btn-success float-right"
+                    >Add new customer</button>
+                    <CustomersTable customers={this.props.customers}
                                     remove={this.props.remove}
-                                    showPopup={this.showPopup}
-                                    hidePopup={this.hidePopup}
+                                    showDetails={this.showDetails}
+                                    showPopup={this.props.showPopup}
+                                    hidePopup={this.props.hidePopup}
+                    />
+                </div>
+            );
+        }
+        if (this.state._currentView === ViewTypes.DETAILS){
+            return (
+                <div>
+                    <CustomersForm  id={this.state.customerDetailsId}
+                                    allTrips={this.props.trips}
+                                    cancel={this.changeView(ViewTypes.TABLE)}
+                                    add={this.props.add}
+                                    getById={this.props.getById}
+                                    update={this.props.update}
+                                    showPopup={this.props.showPopup}
+                                    hidePopup={this.props.hidePopup}
                     />
                 </div>
             );
