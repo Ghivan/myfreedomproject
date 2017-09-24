@@ -145,7 +145,7 @@ class App extends React.Component {
                             index = 1;
                             break;
                     }
-                    this.goToPage(getPageNumberForItem(index, this.state.paginatorConfig.totalPages));
+                    this.goToPage(getPageNumberForItem(index, this.state.paginatorConfig.ITEMS_PER_PAGE));
                 }
                 if (props.pageToGo){
                     this.goToPage(props.pageToGo);
