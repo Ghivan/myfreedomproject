@@ -18,7 +18,10 @@ class Trip extends React.Component {
     }
 
     changeView = (viewType) =>{
-        return () => this.setState({_currentView: viewType})
+        return () => {
+            this.setState({_currentView: viewType});
+            this.props.toggleDisplayPagination(viewType !== ViewTypes.DETAILS);
+        }
     };
 
     showDetails = (id) => {

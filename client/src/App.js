@@ -73,6 +73,21 @@ class App extends React.Component {
         });
     };
 
+    toggleDisplayPagination = (isShown) => {
+        let status = this.state.paginatorConfig.totalPages > 1;
+        if (typeof isShown !== "undefined" && status){
+            status = Boolean(isShown)
+        }
+        this.setState((prevState) => {
+            return {
+                paginatorConfig: {
+                    ...prevState.paginatorConfig,
+                    isShown: status
+                }
+            }
+        });
+    };
+
     goToPage = (pageNumber) => {
         pageNumber = parseInt(pageNumber, 10);
         if (pageNumber > 0 && pageNumber <= this.state.paginatorConfig.totalPages){
@@ -264,6 +279,7 @@ class App extends React.Component {
                                update={this.update(Entities.LOCATION)}
                                showPopup={this.showPopup}
                                hidePopup={this.hidePopup}
+                               toggleDisplayPagination={this.toggleDisplayPagination}
                     />
                 </div>
             )
@@ -278,6 +294,7 @@ class App extends React.Component {
                        update={this.update(Entities.TRIP)}
                        showPopup={this.showPopup}
                        hidePopup={this.hidePopup}
+                       toggleDisplayPagination={this.toggleDisplayPagination}
                 />
             )
         }
@@ -291,6 +308,7 @@ class App extends React.Component {
                            update={this.update(Entities.CUSTOMER)}
                            showPopup={this.showPopup}
                            hidePopup={this.hidePopup}
+                           toggleDisplayPagination={this.toggleDisplayPagination}
                 />
             );
         }

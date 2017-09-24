@@ -3,10 +3,22 @@ import React from 'react';
 const renderPageButtons = (current, max, goToPage) => {
     const linksNumber = 7;
     const linksDepth = Math.floor(linksNumber / 2);
-    let start = current > linksDepth ? (current - linksDepth) : 1;
-    let end = max >= (current + linksDepth) ? current + linksDepth : max;
-
-    const btns = [];
+    let start = current - linksDepth;
+    let end = current + linksDepth;
+    if (max >= linksNumber){
+        if (start<=1)  {
+            start =  1;
+            end = start + linksNumber - 1;
+        }
+        if (end > max) {
+            end = max;
+            start = max - linksNumber + 1;
+        }
+    } else {
+        start = 1;
+        end = max;
+    }
+    let btns = [];
     for (let i = start; i <= end; i++){
         btns.push(
             <li className={`page-item ${i === current ? 'active' : ''}`}
