@@ -148,9 +148,9 @@ class TripsForm extends React.Component {
                     />
                 </div>
                 <div>
-                    <div>
-                        <label>Select locations:</label>
-                    </div>
+                    <label>Select locations:</label>
+                </div>
+                <fieldset className="form-group">
                     {this.props.allLocations.map(location => {
                         return (
                             <div className="form-check form-check-inline"  key={location.id}>
@@ -165,11 +165,12 @@ class TripsForm extends React.Component {
                                            checked={(this.state.selectedLocations.indexOf(location.id) > -1)}
                                            onClick={this.handleSelectedLocations}
                                     />
-                                    {`${location.city} (${location.country})`}</label>
+                                    <span className="checkbox-label">{`${location.city} (${location.country})`}</span>
+                                </label>
                             </div>
                         )
                     })}
-                </div>
+                </fieldset>
                 <button className="btn btn-primary"
                         onClick={this.handleActionBtn}
                 >{this.props.id ? 'Update' : 'Add'}</button>

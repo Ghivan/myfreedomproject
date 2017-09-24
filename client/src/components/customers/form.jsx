@@ -114,9 +114,9 @@ class CustomersForm extends React.Component {
                            placeholder="Last name"/>
                 </div>
                 <div>
-                    <div>
-                        <label>Select trips:</label>
-                    </div>
+                    <label>Select trips:</label>
+                </div>
+                <fieldset className="form-group">
                     {this.props.allTrips.map(trip => {
                         return (
                             <div className="form-check form-check-inline"  key={trip.id}>
@@ -131,11 +131,12 @@ class CustomersForm extends React.Component {
                                            checked={(this.state.selectedTrips.indexOf(trip.id) > -1)}
                                            onClick={this.handleSelectedTrips}
                                     />
-                                    {trip.name}</label>
+                                    <span className="checkbox-label">{trip.name}</span>
+                                    </label>
                             </div>
                         )
                     })}
-                </div>
+                </fieldset>
                 <button className="btn btn-primary"
                         onClick={this.handleActionBtn}
                 >{this.props.id ? 'Update' : 'Add'}</button>
