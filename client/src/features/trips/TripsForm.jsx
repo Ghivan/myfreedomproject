@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ErrorBlock} from '../errors/error';
+import {ErrorBlock} from '../global/errors/error';
 
 const formatDate = (date) => {
     date = new Date(date);
@@ -82,15 +82,6 @@ class TripsForm extends React.Component {
             return;
         }
         switch (e.target.innerText) {
-            case 'Add':
-                this.props.add({
-                    name: this.state.name,
-                    arrivalDate: this.state.arrivalDate,
-                    departureDate: this.state.departureDate,
-                    locations: this.state.selectedLocations
-                });
-                this.props.cancel();
-                break;
             case 'Update':
                 this.props.showPopup(
                     'Do you really want to change this trip?',
@@ -102,17 +93,26 @@ class TripsForm extends React.Component {
                             locations: this.state.selectedLocations
                         });
                         this.props.hidePopup();
-                        this.props.cancel();
+                        this.props.history.push('/trips');
                     },
                     () => this.props.hidePopup()
                 );
+                break;
+            default:
+                this.props.add({
+                    name: this.state.name,
+                    arrivalDate: this.state.arrivalDate,
+                    departureDate: this.state.departureDate,
+                    locations: this.state.selectedLocations
+                });
+                this.props.history.push('/trips');
                 break;
         }
     };
 
     handleCancelBtn = e => {
         e.preventDefault();
-        this.props.cancel();
+        this.props.history.push('/trips');
     };
 
     render() {

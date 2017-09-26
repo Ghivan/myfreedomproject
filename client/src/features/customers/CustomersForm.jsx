@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ErrorBlock} from '../errors/error';
+import {ErrorBlock} from '../global/errors/error';
 
 const getTripsIdsFromCustomer = (customer) => {
     return customer.trips.reduce((prev, curr) => {
@@ -60,14 +60,6 @@ class CustomersForm extends React.Component {
             return;
         }
         switch (e.target.innerText) {
-            case 'Add':
-                this.props.add({
-                    firstName: this.state.firstName,
-                    lastName: this.state.lastName,
-                    trips: this.state.selectedTrips
-                });
-                this.props.cancel();
-                break;
             case 'Update':
                 this.props.showPopup(
                     'Do you really want to change this customer?',
@@ -78,17 +70,26 @@ class CustomersForm extends React.Component {
                             trips: this.state.selectedTrips
                         });
                         this.props.hidePopup();
-                        this.props.cancel();
+                        this.props.history.push('/customers');
                     },
                     () => this.props.hidePopup()
                 );
                 break;
+            default:
+                this.props.add({
+                    firstName: this.state.firstName,
+                    lastName: this.state.lastName,
+                    trips: this.state.selectedTrips
+                });
+                this.props.history.push('/customers');
+                break;
         }
+        return false;
     };
 
     handleCancelBtn = e => {
         e.preventDefault();
-        this.props.cancel();
+        this.props.history.push('/customers');
     };
 
     render() {
@@ -132,7 +133,7 @@ class CustomersForm extends React.Component {
                                            onClick={this.handleSelectedTrips}
                                     />
                                     <span className="checkbox-label">{trip.name}</span>
-                                    </label>
+                                </label>
                             </div>
                         )
                     })}

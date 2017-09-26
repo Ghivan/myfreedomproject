@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ErrorBlock} from '../errors/error';
+import {ErrorBlock} from '../global/errors/error';
 
 class LocationsForm extends React.Component {
     constructor(props) {
@@ -35,13 +35,6 @@ class LocationsForm extends React.Component {
             return;
         }
         switch (e.target.innerText){
-            case 'Add':
-                this.props.add({
-                    city: this.state.city,
-                    country: this.state.country
-                });
-                this.props.cancel();
-                break;
             case 'Update':
                 this.props.showPopup(
                     `Do you really want to change location to: "${this.state.city} (${this.state.country})"?`,
@@ -51,17 +44,24 @@ class LocationsForm extends React.Component {
                             country: this.state.country
                         });
                         this.props.hidePopup();
-                        this.props.cancel();
+                        this.props.history.push('/locations');
                     },
                     () => this.props.hidePopup()
                 );
+                break;
+            default:
+                this.props.add({
+                    city: this.state.city,
+                    country: this.state.country
+                });
+                this.props.history.push('/locations');
                 break;
         }
     };
 
     handleCancelBtn = e => {
         e.preventDefault();
-        this.props.cancel();
+        this.props.history.push('/locations');
     };
 
     handleCityInput = e => {

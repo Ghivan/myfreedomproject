@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const ConfirmBlock = ({status, message, resolve, reject}) => {
+export const ConfirmationBlock = ({status, message, resolve, reject}) => {
     if (status) {
         return (
             <div className="alert alert-danger float-alert" role="alert">

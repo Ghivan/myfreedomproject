@@ -25,11 +25,11 @@ const makeRequestWithBody = (url, method, bodyObject) => {
 };
 
 export const APIDriver = {
-    getAll: (entityType) => fetch(`${entityType}`).then(checkOk),
-    getById: (entityType, id) => fetch(`${entityType}/${id}`).then(checkOk),
+    getAll: (entityType) => fetch(`/${entityType}`).then(checkOk),
+    getById: (entityType, id) => fetch(`/${entityType}/${id}`).then(checkOk),
     remove:(entityType, id) =>
-        fetch(`${entityType}/${id}`, {method: 'DELETE'}).then(checkOk),
+        fetch(`/${entityType}/${id}`, {method: 'DELETE'}).then(checkOk),
     update: (entityType, id, object) =>
-        makeRequestWithBody(`${entityType}/${id}`, 'PUT', object),
-    add: (entityType, object) => makeRequestWithBody(`${entityType}`, 'POST', object)
+        makeRequestWithBody(`/${entityType}/${id}`, 'PUT', object),
+    add: (entityType, object) => makeRequestWithBody(`/${entityType}`, 'POST', object)
 };

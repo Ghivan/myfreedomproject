@@ -1,19 +1,19 @@
 import React from 'react';
 
-import LocationsTable from './table';
-import LocationsForm from './form';
+import CustomersTable from './CustomersTable';
+import CustomersForm from './CustomersForm';
 
 const ViewTypes = {
     TABLE: 'table',
     DETAILS: 'details'
 };
 
-class Location extends React.Component {
+class Customer extends React.Component {
     constructor(props){
         super(props);
         this.state = {
             _currentView: ViewTypes.TABLE,
-            locationDetailsId: null
+            customerDetailsId: null
         };
     }
 
@@ -25,7 +25,7 @@ class Location extends React.Component {
     };
 
     showDetails = (id) => {
-        this.setState({locationDetailsId: id});
+        this.setState({customerDetailsId: id});
         this.changeView(ViewTypes.DETAILS)();
     };
 
@@ -35,39 +35,37 @@ class Location extends React.Component {
                 <div>
                     <button onClick={() => {
                         this.setState({
-                            locationDetailsId: null
+                            customerDetailsId: null
                         });
                         this.changeView(ViewTypes.DETAILS)()
-                    }
-                    }
-                            className="btn btn-success float-right"
-                    >Add new location</button>
-                    <LocationsTable locations={this.props.locations}
+                    }} className="btn btn-success float-right"
+                    >Add new customer</button>
+                    <CustomersTable customers={this.props.customers}
                                     remove={this.props.remove}
+                                    showDetails={this.showDetails}
                                     showPopup={this.props.showPopup}
                                     hidePopup={this.props.hidePopup}
-                                    showDetails={this.showDetails}
                     />
-
                 </div>
             );
         }
-
         if (this.state._currentView === ViewTypes.DETAILS){
             return (
                 <div>
-                    <LocationsForm id={this.state.locationDetailsId}
-                                   cancel={this.changeView(ViewTypes.TABLE)}
-                                   add={this.props.add}
-                                   getById={this.props.getById}
-                                   update={this.props.update}
-                                   showPopup={this.props.showPopup}
-                                   hidePopup={this.props.hidePopup}
+                    <CustomersForm  id={this.state.customerDetailsId}
+                                    allTrips={this.props.trips}
+                                    cancel={this.changeView(ViewTypes.TABLE)}
+                                    add={this.props.add}
+                                    getById={this.props.getById}
+                                    update={this.props.update}
+                                    showPopup={this.props.showPopup}
+                                    hidePopup={this.props.hidePopup}
                     />
                 </div>
             );
         }
+
     }
 }
 
-export default Location;
+export default Customer;
