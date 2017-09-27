@@ -1,101 +1,113 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 
-const renderPageButtons = (current, max, goToPage) => {
+const getPagesTotalNumber = (totalItems, itemsPerPage) => Math.ceil(totalItems/itemsPerPage);
+
+const getPageNumberForItem = (itemIndex, itemsPerPage) => Math.floor(itemIndex/itemsPerPage) + 1;
+
+const renderPageButtons = (currentPage, lastPageNumber, urlPrefix) => {
     const linksNumber = 5;
     const linksDepth = Math.floor(linksNumber / 2);
-    let start = current - linksDepth;
-    let end = current + linksDepth;
-    if (max >= linksNumber){
+    let start = currentPage - linksDepth;
+    let end = currentPage + linksDepth;
+    if (lastPageNumber >= linksNumber){
         if (start<=1)  {
             start =  1;
             end = start + linksNumber - 1;
         }
-        if (end > max) {
-            end = max;
-            start = max - linksNumber + 1;
+        if (end > lastPageNumber) {
+            end = lastPageNumber;
+            start = lastPageNumber - linksNumber + 1;
         }
     } else {
         start = 1;
-        end = max;
+        end = lastPageNumber;
     }
     let btns = [];
     for (let i = start; i <= end; i++){
         btns.push(
-            <li className={`page-item ${i === current ? 'active' : ''}`}
+            <li className={`page-item ${i === currentPage ? 'active' : ''}`}
                 key={i}
             >
-                <a className="page-link"
-                   href="#"
-                   onClick={e => {
-                       e.preventDefault();
-                       goToPage(i);
-                   }}
-                >{i}</a>
+                <Link className="page-link"
+                      to={urlPrefix + '?page=' + String(i)}
+                >{i}</Link>
             </li>
         )
     }
     return btns
 };
 
-export const Paginator = ({isShown, totalPages, currentPage, goToPage}) => {
+export const Paginator = ({
+                              isShown,
+                              itemsPerPage,
+                              currentElementIndex,
+                              currentPage,
+                              totalItems,
+                              urlPrefix
+                          }) => {
     if (isShown){
+        const pagesTotalNumber = getPagesTotalNumber(totalItems, itemsPerPage);
+        currentPage = parseInt(currentPage) <= pagesTotalNumber ? parseInt(currentPage) : pagesTotalNumber;
+        if(currentElementIndex) {
+            currentPage = getPageNumberForItem(currentElementIndex, itemsPerPage);
+        }
+
         return (
             <nav>
                 <ul className="pagination justify-content-center">
                     <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}
                     >
-                        <a className="page-link"
-                           href="#"
+                        <Link className="page-link"
+                           to={urlPrefix + '?page=' + String(1)}
                            onClick={e => {
-                               e.preventDefault();
-                               if (currentPage !== 1){
-                                   goToPage(1);
+                               if (currentPage === 1){
+                                   e.preventDefault();
                                }
                            }}
-                        >First</a>
+                        >First</Link>
                     </li>
                     <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                        <a className="page-link"
-                           href="#"
+                        <Link className="page-link"
+                           to={urlPrefix + '?page=' + String(currentPage - 1)}
+                           aria-label="Previous"
                            onClick={e => {
-                               e.preventDefault();
-                               if (currentPage !== 1){
-                                   goToPage(currentPage - 1);
+                               if (currentPage === 1){
+                                   e.preventDefault();
                                }
                            }}
-                           aria-label="Previous"
                         >
                             <span aria-hidden="true">&laquo;</span>
                             <span className="sr-only">Previous</span>
-                        </a>
+                        </Link>
                     </li>
-                    {renderPageButtons(currentPage, totalPages, goToPage).map(link => link)}
-                    <li className={`page-item ${totalPages === currentPage ? 'disabled' : ''}`}>
-                        <a className="page-link"
-                           href="#"
+
+                    {renderPageButtons(currentPage, pagesTotalNumber, urlPrefix).map(link => link)}
+
+                    <li className={`page-item ${pagesTotalNumber === currentPage ? 'disabled' : ''}`}>
+                        <Link className="page-link"
+                              to={urlPrefix + '?page=' + String(currentPage + 1)}
+                           aria-label="Next"
                            onClick={e => {
-                               e.preventDefault();
-                               if (currentPage !== totalPages){
-                                   goToPage(currentPage + 1);
+                               if (currentPage === pagesTotalNumber){
+                                   e.preventDefault();
                                }
                            }}
-                           aria-label="Next"
                         >
                             <span aria-hidden="true">&raquo;</span>
                             <span className="sr-only">Next</span>
-                        </a>
+                        </Link>
                     </li>
-                    <li className={`page-item ${totalPages === currentPage ? 'disabled' : ''}`}
+                    <li className={`page-item ${pagesTotalNumber === currentPage ? 'disabled' : ''}`}
                     >
-                        <a className="page-link"
-                           href="#"
+                        <Link className="page-link"
+                              to={urlPrefix + '?page=' + String(pagesTotalNumber)}
                            onClick={e => {
-                               e.preventDefault();
-                               if (currentPage !== totalPages){
-                                   goToPage(totalPages);
+                               if (currentPage === pagesTotalNumber){
+                                   e.preventDefault();
                                }
                            }}
-                        >Last</a>
+                        >Last</Link>
                     </li>
                 </ul>
             </nav>

@@ -13,10 +13,15 @@ class LocationsForm extends React.Component {
         if (this.props.id){
             this.props.getById(this.props.id)
                 .then(location => {
-                    this.setState({
-                        city: location.city,
-                        country: location.country
-                    })
+                    if (location !== '404') {
+                        this.setState({
+                            city: location.city,
+                            country: location.country
+                        })
+                    } else {
+                        props.history.replace('/notFound');
+                    }
+
                 })
         }
     }

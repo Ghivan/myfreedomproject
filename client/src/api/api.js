@@ -6,10 +6,12 @@ const checkOk = response => {
         }
         throw new Error(response.json());
     } else {
-        if (response.status === 400){
+        if (response.status === 400) {
             return response.json()
-        } else {
-            throw new Error('Bad connection');
+        }
+
+        if (response.status === 404){
+            return '404'
         }
     }
 };

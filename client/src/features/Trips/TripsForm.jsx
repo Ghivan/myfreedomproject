@@ -11,10 +11,10 @@ const formatDate = (date) => {
 };
 
 const getLocationsIdsFromTrip = (trip) => {
-  return trip.route.locations.reduce((prev, curr) => {
-      if (curr.id) prev.push(curr.id);
-      return prev;
-  }, [])
+    return trip.route.locations.reduce((prev, curr) => {
+        if (curr.id) prev.push(curr.id);
+        return prev;
+    }, [])
 };
 
 class TripsForm extends React.Component {
@@ -30,12 +30,16 @@ class TripsForm extends React.Component {
         if (this.props.id) {
             this.props.getById(this.props.id)
                 .then(trip => {
-                    this.setState({
-                        name: trip.name,
-                        arrivalDate: formatDate(trip.route.arrivalDate),
-                        departureDate: formatDate(trip.route.departureDate),
-                        selectedLocations: getLocationsIdsFromTrip(trip)
-                    })
+                    if (trip !== '404') {
+                        this.setState({
+                            name: trip.name,
+                            arrivalDate: formatDate(trip.route.arrivalDate),
+                            departureDate: formatDate(trip.route.departureDate),
+                            selectedLocations: getLocationsIdsFromTrip(trip)
+                        })
+                    } else {
+                        props.history.replace('/notFound');
+                    }
                 })
         }
     }

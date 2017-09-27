@@ -26,6 +26,18 @@ const Entities ={
     CUSTOMER: 'customers'
 };
 
+const parseQueryString = (queryString) => {
+    return queryString.split('&').reduce(
+        (prev, curr) => {
+            let currentPare = curr.split('=');
+            if (currentPare.length === 2){
+                prev[currentPare[0]] = currentPare[1];
+            }
+            return prev
+        }, {}
+    );
+};
+
 const RouteredLocationsForm = withRouter(LocationsForm);
 const RouteredTripsForm = withRouter(TripsForm);
 const RouteredCustomersForm = withRouter(CustomersForm);
@@ -37,6 +49,7 @@ class App extends React.Component {
             locations: [],
             trips: [],
             customers: [],
+            itemsPerPage: 2,
             confirmationBlockConfig: {
                 isShown: false,
                 message: '',
@@ -139,34 +152,70 @@ class App extends React.Component {
             })
     };
 
-
-    renderLocationsTable = () => {
-        return <LocationsTable locations={this.state.locations}
-                               remove={this.remove(Entities.LOCATION)}
-                               showPopup={this.showConfirmationBlock}
-                               hidePopup={this.hideConfirmationBlock}
-        />
+    getDisplayedItems = (items, pageNumber) => {
+        let startIndex = pageNumber*this.state.itemsPerPage - this.state.itemsPerPage;
+        if (startIndex >= items.length) {
+            return items.slice(-this.state.itemsPerPage)
+        } else {
+            return items.slice(startIndex, startIndex + this.state.itemsPerPage)
+        }
     };
 
-    renderLocationsForm = ({match}) => (
+
+    renderLocationsTable = ({match}) => {
+        const queryParams = parseQueryString(window.location.search.substr(1));
+        let currentPage = queryParams.page >= 1 ? parseInt(queryParams.page) : 1;
+        return (
+            <div>
+                <LocationsTable locations={this.getDisplayedItems(this.state.locations, currentPage)}
+                                remove={this.remove(Entities.LOCATION)}
+                                showPopup={this.showConfirmationBlock}
+                                hidePopup={this.hideConfirmationBlock}
+                />
+                <Paginator isShown={this.state.locations.length > this.state.itemsPerPage}
+                           currentPage={currentPage}
+                           currentElementIndex={null}
+                           totalItems={this.state.locations.length}
+                           itemsPerPage={this.state.itemsPerPage}
+                           urlPrefix={'/locations'}
+                />
+            </div>
+        )
+    };
+
+    renderLocationsForm = ({match, history}) => (
         <RouteredLocationsForm  id={match.params.id}
                                 add={this.add(Entities.LOCATION)}
                                 getById={this.getById(Entities.LOCATION)}
                                 update={this.update(Entities.LOCATION)}
                                 showPopup={this.showConfirmationBlock}
                                 hidePopup={this.hideConfirmationBlock}
+                                history={history}
         />
     );
 
-    renderTripsTable = () => (
-        <TripsTable trips={this.state.trips}
-                    remove={this.remove(Entities.TRIP)}
-                    showPopup={this.showConfirmationBlock}
-                    hidePopup={this.hideConfirmationBlock}
-        />
-    );
+    renderTripsTable = () => {
+        const queryParams = parseQueryString(window.location.search.substr(1));
+        let currentPage = queryParams.page >= 1 ? parseInt(queryParams.page) : 1;
+        return (
+            <div>
+                <TripsTable trips={this.getDisplayedItems(this.state.trips, currentPage)}
+                            remove={this.remove(Entities.TRIP)}
+                            showPopup={this.showConfirmationBlock}
+                            hidePopup={this.hideConfirmationBlock}
+                />
+                <Paginator isShown={this.state.trips.length > this.state.itemsPerPage}
+                           currentPage={currentPage}
+                           currentElementIndex={null}
+                           totalItems={this.state.trips.length}
+                           itemsPerPage={this.state.itemsPerPage}
+                           urlPrefix={'/trips'}
+                />
+            </div>
+        )
+    };
 
-    renderTripsForm = ({match}) => (
+    renderTripsForm = ({match, history}) => (
         <RouteredTripsForm  id={match.params.id}
                             allLocations={this.state.locations}
                             add={this.add(Entities.TRIP)}
@@ -174,18 +223,33 @@ class App extends React.Component {
                             update={this.update(Entities.TRIP)}
                             showPopup={this.showConfirmationBlock}
                             hidePopup={this.hideConfirmationBlock}
+                            history={history}
         />
     );
 
     renderCustomersTable = () => {
-        return <CustomersTable customers={this.state.customers}
-                               remove={this.remove(Entities.CUSTOMER)}
-                               showPopup={this.showConfirmationBlock}
-                               hidePopup={this.hideConfirmationBlock}
-        />
+        const queryParams = parseQueryString(window.location.search.substr(1));
+        let currentPage = queryParams.page >= 1 ? parseInt(queryParams.page) : 1;
+        return (
+            <div>
+                <CustomersTable customers={this.getDisplayedItems(this.state.customers, currentPage)}
+                                remove={this.remove(Entities.CUSTOMER)}
+                                showPopup={this.showConfirmationBlock}
+                                hidePopup={this.hideConfirmationBlock}
+                />
+                <Paginator isShown={this.state.customers.length > this.state.itemsPerPage}
+                           currentPage={currentPage}
+                           currentElementIndex={null}
+                           totalItems={this.state.customers.length}
+                           itemsPerPage={this.state.itemsPerPage}
+                           urlPrefix={'/customers'}
+                />
+            </div>
+
+        )
     };
 
-    renderCustomersForm = ({match}) => {
+    renderCustomersForm = ({match, history}) => {
         return <RouteredCustomersForm  id={match.params.id}
                                        allTrips={this.state.trips}
                                        add={this.add(Entities.CUSTOMER)}
@@ -193,6 +257,7 @@ class App extends React.Component {
                                        update={this.update(Entities.CUSTOMER)}
                                        showPopup={this.showConfirmationBlock}
                                        hidePopup={this.hideConfirmationBlock}
+                                       history={history}
         />
     };
 
@@ -224,6 +289,8 @@ class App extends React.Component {
                         <Route exact path="/customers" render={this.renderCustomersTable}/>
                         <Route exact path="/customers/add" render={this.renderCustomersForm}/>
                         <Route exact path="/customers/:id" render={this.renderCustomersForm}/>
+
+                        <Route path="/" render={() => <h1>Not found</h1>}/>
                     </Switch>
                 </div>
             </Router>
