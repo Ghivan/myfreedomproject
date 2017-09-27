@@ -8,17 +8,17 @@ import {
 
 import {APIDriver} from './api/api';
 
-import {MainMenu} from './features/global/menu/menu';
-import {ErrorBlock} from './features/global/errors/error';
-import {ConfirmationBlock} from './features/global/popups/ConfirmationBlock'
-import {Paginator} from './features/global/Paginator/paginator';
+import {MainMenu} from './features/Global/Menu/Menu';
+import {ErrorBlock} from './features/Global/Errors/ErrorMessage';
+import {ConfirmationBlock} from './features/Global/Popups/ConfirmationBlock'
+import {Paginator} from './features/Global/Paginator/Paginator';
 
-import LocationsTable from "./features/locations/LocationsTable";
-import LocationsForm from "./features/locations/LocationsForm";
-import TripsTable from "./features/trips/TripsTable";
-import TripsForm from "./features/trips/TripsForm";
-import CustomersTable from "./features/customers/CustomersTable";
-import CustomersForm from "./features/customers/CustomersForm";
+import LocationsTable from "./features/Locations/LocationsTable";
+import LocationsForm from "./features/Locations/LocationsForm";
+import TripsTable from "./features/Trips/TripsTable";
+import TripsForm from "./features/Trips/TripsForm";
+import CustomersTable from "./features/Customers/CustomersTable";
+import CustomersForm from "./features/Customers/CustomersForm";
 
 const Entities ={
     LOCATION: 'locations',

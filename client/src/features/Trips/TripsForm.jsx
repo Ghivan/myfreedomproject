@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ErrorBlock} from '../global/errors/error';
+import {ErrorBlock} from '../Global/Errors/ErrorMessage';
 
 const formatDate = (date) => {
     date = new Date(date);
@@ -78,7 +78,7 @@ class TripsForm extends React.Component {
         }
 
         if (errors.length > 0){
-            this.setState({errors: errors.concat('  ')});
+            this.setState({errors: errors.join(' ')});
             return;
         }
         switch (e.target.innerText) {

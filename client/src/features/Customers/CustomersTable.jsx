@@ -16,7 +16,7 @@ const handleDeleteCustomerBtn = (customer, showPopup, onAccept, hidePopup) => {
     }
 };
 
-const CustomersTable = ({customers, remove, showPopup, hidePopup, showDetails}) =>
+const CustomersTable = ({customers, remove, showPopup, hidePopup}) =>
     (
         <div>
             <table className="table table-responsive table-striped table-hover">

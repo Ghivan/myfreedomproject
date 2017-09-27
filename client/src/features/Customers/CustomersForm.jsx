@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ErrorBlock} from '../global/errors/error';
+import {ErrorBlock} from '../Global/Errors/ErrorMessage';
 
 const getTripsIdsFromCustomer = (customer) => {
     return customer.trips.reduce((prev, curr) => {
@@ -56,7 +56,7 @@ class CustomersForm extends React.Component {
             errors.push('Last name should not be empty.')
         }
         if (errors.length > 0){
-            this.setState({errors: errors.concat(' ')});
+            this.setState({errors: errors.join(' ')});
             return;
         }
         switch (e.target.innerText) {

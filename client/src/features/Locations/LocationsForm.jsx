@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ErrorBlock} from '../global/errors/error';
+import {ErrorBlock} from '../Global/Errors/ErrorMessage';
 
 class LocationsForm extends React.Component {
     constructor(props) {
@@ -31,7 +31,7 @@ class LocationsForm extends React.Component {
             errors.push('Country should not be empty.')
         }
         if (errors.length > 0){
-            this.setState({errors: errors.concat(' ')});
+            this.setState({errors: errors.join(' ')});
             return;
         }
         switch (e.target.innerText){
