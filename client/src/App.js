@@ -164,7 +164,7 @@ class App extends React.Component {
 
     renderLocationsTable = ({match}) => {
         const queryParams = parseQueryString(window.location.search.substr(1));
-        let currentPage = queryParams.page >= 1 ? parseInt(queryParams.page) : 1;
+        let currentPage = queryParams.page >= 1 ? parseInt(queryParams.page, 10) : 1;
         return (
             <div>
                 <LocationsTable locations={this.getDisplayedItems(this.state.locations, currentPage)}
@@ -196,7 +196,7 @@ class App extends React.Component {
 
     renderTripsTable = () => {
         const queryParams = parseQueryString(window.location.search.substr(1));
-        let currentPage = queryParams.page >= 1 ? parseInt(queryParams.page) : 1;
+        let currentPage = queryParams.page >= 1 ? parseInt(queryParams.page, 10) : 1;
         return (
             <div>
                 <TripsTable trips={this.getDisplayedItems(this.state.trips, currentPage)}
@@ -229,7 +229,7 @@ class App extends React.Component {
 
     renderCustomersTable = () => {
         const queryParams = parseQueryString(window.location.search.substr(1));
-        let currentPage = queryParams.page >= 1 ? parseInt(queryParams.page) : 1;
+        let currentPage = queryParams.page >= 1 ? parseInt(queryParams.page, 10) : 1;
         return (
             <div>
                 <CustomersTable customers={this.getDisplayedItems(this.state.customers, currentPage)}

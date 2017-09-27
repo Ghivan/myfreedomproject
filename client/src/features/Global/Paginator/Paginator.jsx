@@ -48,7 +48,8 @@ export const Paginator = ({
                           }) => {
     if (isShown){
         const pagesTotalNumber = getPagesTotalNumber(totalItems, itemsPerPage);
-        currentPage = parseInt(currentPage) <= pagesTotalNumber ? parseInt(currentPage) : pagesTotalNumber;
+        currentPage = parseInt(currentPage, 10) ;
+        currentPage = (currentPage <= pagesTotalNumber) ? currentPage : pagesTotalNumber;
         if(currentElementIndex) {
             currentPage = getPageNumberForItem(currentElementIndex, itemsPerPage);
         }
