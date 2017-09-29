@@ -49,7 +49,7 @@ class App extends React.Component {
             locations: [],
             trips: [],
             customers: [],
-            itemsPerPage: 2,
+            itemsPerPage: 5,
             confirmationBlockConfig: {
                 isShown: false,
                 message: '',
@@ -264,7 +264,10 @@ class App extends React.Component {
     render() {
 
         return (
-            <Router>
+            <Router  getUserConfirmation={((message, callback) => {
+                const allowTransition = window.confirm(message)
+                callback(allowTransition)
+            })}>
                 <div>
                     <MainMenu />
                     <ErrorBlock message={this.state.errors}

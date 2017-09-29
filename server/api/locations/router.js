@@ -1,11 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const path = require('path');
 
 const router = express.Router();
-const rootDir = path.dirname(require.main.filename);
-const {TripModel, LocationModel, transform} = require(path.join(rootDir, 'model', 'database'));
-const Validator = require(path.join(rootDir, 'model', 'validators'));
+const {TripModel, LocationModel, transform} = require('../../model/database');
+const Validator = require('../../model/validators');
 
 const {escapeRegExp} = require('../../utils');
 

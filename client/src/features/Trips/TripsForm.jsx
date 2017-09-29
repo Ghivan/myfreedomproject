@@ -85,32 +85,29 @@ class TripsForm extends React.Component {
             this.setState({errors: errors.join(' ')});
             return;
         }
-        switch (e.target.innerText) {
-            case 'Update':
-                this.props.showPopup(
-                    'Do you really want to change this trip?',
-                    () => {
-                        this.props.update(this.props.id, {
-                            name: this.state.name,
-                            arrivalDate: this.state.arrivalDate,
-                            departureDate: this.state.departureDate,
-                            locations: this.state.selectedLocations
-                        });
-                        this.props.hidePopup();
-                        this.props.history.push('/trips');
-                    },
-                    () => this.props.hidePopup()
-                );
-                break;
-            default:
-                this.props.add({
-                    name: this.state.name,
-                    arrivalDate: this.state.arrivalDate,
-                    departureDate: this.state.departureDate,
-                    locations: this.state.selectedLocations
-                });
-                this.props.history.push('/trips');
-                break;
+        if (this.props.id) {
+            this.props.showPopup(
+                'Do you really want to change this trip?',
+                () => {
+                    this.props.update(this.props.id, {
+                        name: this.state.name,
+                        arrivalDate: this.state.arrivalDate,
+                        departureDate: this.state.departureDate,
+                        locations: this.state.selectedLocations
+                    });
+                    this.props.hidePopup();
+                    this.props.history.push('/trips');
+                },
+                () => this.props.hidePopup()
+            );
+        } else {
+            this.props.add({
+                name: this.state.name,
+                arrivalDate: this.state.arrivalDate,
+                departureDate: this.state.departureDate,
+                locations: this.state.selectedLocations
+            });
+            this.props.history.push('/trips');
         }
     };
 
@@ -167,7 +164,7 @@ class TripsForm extends React.Component {
                                            value={location.id}
                                            name="locations"
                                            checked={(this.state.selectedLocations.indexOf(location.id) > -1)}
-                                           onClick={this.handleSelectedLocations}
+                                           onChange={this.handleSelectedLocations}
                                     />
                                     <span className="checkbox-label">{`${location.city} (${location.country})`}</span>
                                 </label>

@@ -63,30 +63,27 @@ class CustomersForm extends React.Component {
             this.setState({errors: errors.join(' ')});
             return;
         }
-        switch (e.target.innerText) {
-            case 'Update':
-                this.props.showPopup(
-                    'Do you really want to change this customer?',
-                    () => {
-                        this.props.update(this.props.id, {
-                            firstName: this.state.firstName,
-                            lastName: this.state.lastName,
-                            trips: this.state.selectedTrips
-                        });
-                        this.props.hidePopup();
-                        this.props.history.push('/customers');
-                    },
-                    () => this.props.hidePopup()
-                );
-                break;
-            default:
-                this.props.add({
-                    firstName: this.state.firstName,
-                    lastName: this.state.lastName,
-                    trips: this.state.selectedTrips
-                });
-                this.props.history.push('/customers');
-                break;
+        if (this.props.id) {
+            this.props.showPopup(
+                'Do you really want to change this customer?',
+                () => {
+                    this.props.update(this.props.id, {
+                        firstName: this.state.firstName,
+                        lastName: this.state.lastName,
+                        trips: this.state.selectedTrips
+                    });
+                    this.props.hidePopup();
+                    this.props.history.push('/customers');
+                },
+                () => this.props.hidePopup()
+            );
+        } else {
+            this.props.add({
+                firstName: this.state.firstName,
+                lastName: this.state.lastName,
+                trips: this.state.selectedTrips
+            });
+            this.props.history.push('/customers');
         }
         return false;
     };
@@ -134,7 +131,7 @@ class CustomersForm extends React.Component {
                                            value={trip.id}
                                            name="locations"
                                            checked={(this.state.selectedTrips.indexOf(trip.id) > -1)}
-                                           onClick={this.handleSelectedTrips}
+                                           onChange={this.handleSelectedTrips}
                                     />
                                     <span className="checkbox-label">{trip.name}</span>
                                 </label>

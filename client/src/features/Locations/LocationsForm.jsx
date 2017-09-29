@@ -39,28 +39,25 @@ class LocationsForm extends React.Component {
             this.setState({errors: errors.join(' ')});
             return;
         }
-        switch (e.target.innerText){
-            case 'Update':
-                this.props.showPopup(
-                    `Do you really want to change location to: "${this.state.city} (${this.state.country})"?`,
-                    () => {
-                        this.props.update(this.props.id, {
-                            city: this.state.city,
-                            country: this.state.country
-                        });
-                        this.props.hidePopup();
-                        this.props.history.push('/locations');
-                    },
-                    () => this.props.hidePopup()
-                );
-                break;
-            default:
+        if (this.props.id) {
+            this.props.showPopup(
+                `Do you really want to change location to: "${this.state.city} (${this.state.country})"?`,
+                () => {
+                    this.props.update(this.props.id, {
+                        city: this.state.city,
+                        country: this.state.country
+                    });
+                    this.props.hidePopup();
+                    this.props.history.push('/locations');
+                },
+                () => this.props.hidePopup()
+            );
+        } else {
                 this.props.add({
                     city: this.state.city,
                     country: this.state.country
                 });
                 this.props.history.push('/locations');
-                break;
         }
     };
 

@@ -1,22 +1,19 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const path = require('path');
+const _ = require('lodash');
 
 const router = express.Router();
-const rootDir = path.dirname(require.main.filename);
-const {TripModel, CustomerModel, transform} = require(path.join(rootDir, 'model', 'database'));
-const Validator = require(path.join(rootDir, 'model', 'validators'));
+const {TripModel, CustomerModel, transform} = require('../../model/database');
+const Validator = require('../../model/validators');
 
 
 router.get('/', (req, res, next) => {
     Promise.all([TripModel.find(), CustomerModel.find()]).then(([trips, customers]) => {
-        customers = customers.map(customer => {
-            customer.trips = customer.trips.map(customerTrip =>
-                transform(trips.find(trip => trip._id.toString() === customerTrip.toString()))
-            );
-            return transform(customer);
+        const normalizedTrips =_.keyBy(trips.map(transform), trip => trip.id);
+        customers.forEach(customer => {
+            customer.trips = customer.trips.map(tripId => normalizedTrips[tripId]);
         });
-        res.json(customers);
+        res.json(customers.map(transform));
     }, next)
 });
 
@@ -48,8 +45,7 @@ router.get('/:id', (req, res, next) => {
 
 router.post('/', (req, res, next) => {
     let {firstName, lastName} = req.body;
-    let requestedTrips = req.body.trips || [];
-    if (!Array.isArray(requestedTrips)) requestedTrips = [requestedTrips];
+    let requestedTrips = req.body.trips;
 
     const errors = {
         CUSTOMER_FIRST_NAME_IS_EMPTY: !Validator.text(firstName),
@@ -58,7 +54,10 @@ router.post('/', (req, res, next) => {
 
     if (errors.CUSTOMER_FIRST_NAME_IS_EMPTY || errors.CUSTOMER_LAST_NAME_IS_EMPTY){
         res.status(400);
-        res.json(errors);
+        res.json({
+            error: 'Errors in sent data',
+            details: errors
+        });
         res.end();
         return next();
     }
@@ -80,19 +79,19 @@ router.post('/', (req, res, next) => {
                     res.end();
                     return next();
                 }
-                res.status(201);
+                res.status(200);
                 NewCustomer.save().then(customer => res.json(transform(customer)), next);
             })
             .catch(err => {
-                res.status(400);
+                res.status(500);
                 res.json({
-                    error: 'Invalid trips id'
+                    error: err.message
                 });
                 res.end();
                 return next();
             })
     } else {
-        res.status(201);
+        res.status(200);
         NewCustomer.save().then(customer => res.json(transform(customer)), next);
     }
 });
@@ -125,11 +124,8 @@ router.put('/:id', (req, res, next) => {
     }
 
     if (req.body.trips) {
-        if (!Array.isArray(req.body.trips)){
-            requestedTrips = [req.body.trips];
-        } else {
-            requestedTrips = req.body.trips;
-        }
+        requestedTrips = req.body.trips;
+
         requestedTrips.map(tripId => {
             try{
                 tripId = mongoose.Types.ObjectId(tripId)
@@ -142,7 +138,7 @@ router.put('/:id', (req, res, next) => {
     if (errors.length > 0){
         res.status(400);
         res.json({
-            error: errors.concat(' '),
+            error: errors.join(' '),
             details: errors
         });
         res.end();
