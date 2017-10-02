@@ -40,7 +40,7 @@ export default class LocationsRouter extends React.Component{
                            currentPage={currentPage}
                            currentElementIndex={null}
                            totalItems={this.props.trips.length}
-                           itemsPerPage={this.props.itemsPerPage}
+                           itemsPerPage={this.state.itemsPerPage}
                            urlPrefix={'/trips'}
                 />
             </div>

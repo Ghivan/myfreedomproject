@@ -2,7 +2,6 @@ import React from 'react';
 import {NavLink} from 'react-router-dom';
 
 import {MenuItems} from "../Global/Menu/MenuItems";
-import Logo from '../Global/Menu/react.svg'
 
 export const MainPage = () => {
   return (
