@@ -3,20 +3,7 @@ import {NavLink} from 'react-router-dom';
 
 import Logo from './react.svg'
 
-const MenuItems = [
-    {
-        label: 'Locations',
-        path: '/locations'
-    },
-    {
-        label: 'Trips',
-        path: '/trips'
-    },
-    {
-        label: 'Customers',
-        path: '/customers'
-    },
-];
+import {MenuItems} from "./MenuItems";
 
 export const MainMenu = () => (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">

@@ -50,14 +50,17 @@ router.post('/', (req, res, next) => {
     const errors = {
         CUSTOMER_FIRST_NAME_IS_EMPTY: !Validator.text(firstName),
         CUSTOMER_LAST_NAME_IS_EMPTY: !Validator.text(lastName),
+        toString: () => {
+            let message = '';
+            if (this.CUSTOMER_FIRST_NAME_IS_EMPTY) message += ' You should provide first name.';
+            if (this.CUSTOMER_LAST_NAME_IS_EMPTY) message += ' You should provide last name.';
+            return message;
+        }
     };
 
     if (errors.CUSTOMER_FIRST_NAME_IS_EMPTY || errors.CUSTOMER_LAST_NAME_IS_EMPTY){
+        res.statusMessage = errors.toString();
         res.status(400);
-        res.json({
-            error: 'Errors in sent data',
-            details: errors
-        });
         res.end();
         return next();
     }
@@ -72,10 +75,8 @@ router.post('/', (req, res, next) => {
         TripModel.find({_id :{ $in: requestedTrips }})
             .then(trips => {
                 if (trips.length !== requestedTrips.length){
+                    res.statusMessage = 'Check trips existence!';
                     res.status(400);
-                    res.json({
-                        error: 'Check trips existence!'
-                    });
                     res.end();
                     return next();
                 }
@@ -136,11 +137,8 @@ router.put('/:id', (req, res, next) => {
     }
 
     if (errors.length > 0){
+        res.statusMessage = errors.join(' ');
         res.status(400);
-        res.json({
-            error: errors.join(' '),
-            details: errors
-        });
         res.end();
         return next();
     }
@@ -152,10 +150,8 @@ router.put('/:id', (req, res, next) => {
         if (requestedTrips){
             TripModel.find({_id :{ $in: requestedTrips }}).then(trips => {
                 if (trips.length !== requestedTrips.length){
+                    res.statusMessage = 'Check trips existence!';
                     res.status(400);
-                    res.json({
-                        error: 'Check trips existence!'
-                    });
                     res.end();
                     return next();
                 }

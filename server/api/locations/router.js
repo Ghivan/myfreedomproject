@@ -31,12 +31,18 @@ router.post('/', (req, res, next) => {
     const {city, country} = req.body;
     const errors = {
         CITY_IS_EMPTY: !Validator.text(city),
-        COUNTRY_IS_EMPTY: !Validator.text(country)
+        COUNTRY_IS_EMPTY: !Validator.text(country),
+        toString: () => {
+            let message = '';
+            if (this.CITY_IS_EMPTY) message += ' You should provide city name.';
+            if (this.COUNTRY_IS_EMPTY) message += ' You should provide country name.';
+            return message;
+        }
     };
 
     if (errors.CITY_IS_EMPTY || errors.COUNTRY_IS_EMPTY){
+        res.statusMessage = errors.toString();
         res.status(400);
-        res.json({error: "Empty fields", details: errors});
         res.end();
         return next();
     }
@@ -54,10 +60,8 @@ router.post('/', (req, res, next) => {
                 }, next
             );
         } else {
+            res.statusMessage = 'Location already exists';
             res.status(400);
-            res.json({
-                error: 'Location already exists',
-                details: transform(location)});
             res.end();
         }
 
@@ -85,10 +89,9 @@ router.put('/:id', (req, res, next) => {
                 if (!testedLocation){
                     location.save().then(location => res.json(transform(location)), next);
                 } else {
+                    res.statusMessage = 'Location already exists';
                     res.status(400);
-                    res.json({
-                        error: 'Location already exists',
-                        details: transform(testedLocation)});
+                    res.end();
                     res.end();
                 }
             });
@@ -109,11 +112,9 @@ router.delete('/:id', (req, res, next) => {
                     })
                         .then(trips => {
                             if(trips.length > 0) {
+                                res.statusMessage = 'Location is used in trip';
                                 res.status(400);
-                                res.json({
-                                    error: "Location is used in Trip",
-                                    details: trips.map(transform)
-                                });
+                                res.end();
                                 res.end();
                             } else {
                                 location.remove();

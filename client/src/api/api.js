@@ -1,17 +1,16 @@
 const checkOk = response => {
     if (response.ok) {
         if (response.status === 200 || response.status === 201) {
-
             return response.json();
         }
-        throw new Error(response.json());
+        throw new Error(response.statusText);
     } else {
         if (response.status === 400) {
-            return response.json()
+            throw new Error(response.statusText);
         }
 
         if (response.status === 404){
-            return '404'
+            throw new Error(response.status);
         }
     }
 };
@@ -23,7 +22,6 @@ const makeRequestWithBody = (url, method, bodyObject) => {
 
     return fetch(url, {method, body, headers})
         .then(checkOk)
-        .catch((err) => console.warn(err));
 };
 
 export const APIDriver = {

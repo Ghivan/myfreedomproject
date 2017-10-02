@@ -21,15 +21,14 @@ class CustomersForm extends React.Component {
         if (this.props.id) {
             this.props.getById(this.props.id)
                 .then(customer => {
-                    if (customer !== '404') {
-                        this.setState({
-                            firstName: customer.firstName,
-                            lastName: customer.lastName,
-                            selectedTrips: getTripsIdsFromCustomer(customer)
-                        })
-                    } else {
-                        props.history.replace('/notFound');
+                    if (!customer) {
+                        return props.history.replace('/notFound');
                     }
+                    this.setState({
+                        firstName: customer.firstName,
+                        lastName: customer.lastName,
+                        selectedTrips: getTripsIdsFromCustomer(customer)
+                    })
                 })
         }
     }

@@ -30,16 +30,15 @@ class TripsForm extends React.Component {
         if (this.props.id) {
             this.props.getById(this.props.id)
                 .then(trip => {
-                    if (trip !== '404') {
-                        this.setState({
-                            name: trip.name,
-                            arrivalDate: formatDate(trip.route.arrivalDate),
-                            departureDate: formatDate(trip.route.departureDate),
-                            selectedLocations: getLocationsIdsFromTrip(trip)
-                        })
-                    } else {
-                        props.history.replace('/notFound');
+                    if (!trip) {
+                        return props.history.replace('/notFound');
                     }
+                    this.setState({
+                        name: trip.name,
+                        arrivalDate: formatDate(trip.route.arrivalDate),
+                        departureDate: formatDate(trip.route.departureDate),
+                        selectedLocations: getLocationsIdsFromTrip(trip)
+                    })
                 })
         }
     }
@@ -63,25 +62,25 @@ class TripsForm extends React.Component {
     handleActionBtn = e => {
         e.preventDefault();
         let errors = [];
-        if (!this.state.name.trim()){
+        if (!this.state.name.trim()) {
             errors.push('Trip name should not be empty.')
         }
-        if (!this.state.arrivalDate.trim()){
+        if (!this.state.arrivalDate.trim()) {
             errors.push('Arrival date should not be empty.')
         }
-        if (!this.state.departureDate.trim()){
+        if (!this.state.departureDate.trim()) {
             errors.push('Arrival date should not be empty.')
         }
 
-        if (new Date(this.state.arrivalDate) > new Date(this.state.departureDate)){
+        if (new Date(this.state.arrivalDate) > new Date(this.state.departureDate)) {
             errors.push('Departure is sooner than arrival')
         }
 
-        if (this.state.selectedLocations.length === 0){
+        if (this.state.selectedLocations.length === 0) {
             errors.push('Locations should not be empty')
         }
 
-        if (errors.length > 0){
+        if (errors.length > 0) {
             this.setState({errors: errors.join(' ')});
             return;
         }
@@ -120,7 +119,7 @@ class TripsForm extends React.Component {
         return (
             <form>
                 <ErrorBlock message={this.state.errors}
-                            clearError={()=>this.setState({errors: ''})}
+                            clearError={() => this.setState({errors: ''})}
                 />
                 <div className="form-group">
                     <label htmlFor="tripName">Trip Name</label>
@@ -154,7 +153,7 @@ class TripsForm extends React.Component {
                 <fieldset className="form-group">
                     {this.props.allLocations.map(location => {
                         return (
-                            <div className="form-check form-check-inline"  key={location.id}>
+                            <div className="form-check form-check-inline" key={location.id}>
                                 <label className="form-check-label"
                                        htmlFor={location.id}
                                 >
@@ -177,7 +176,8 @@ class TripsForm extends React.Component {
                 >{this.props.id ? 'Update' : 'Add'}</button>
                 <button className="btn btn-default"
                         onClick={this.handleCancelBtn}
-                >Cancel</button>
+                >Cancel
+                </button>
             </form>
 
         );

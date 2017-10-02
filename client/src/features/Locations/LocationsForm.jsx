@@ -13,15 +13,13 @@ class LocationsForm extends React.Component {
         if (this.props.id){
             this.props.getById(this.props.id)
                 .then(location => {
-                    if (location !== '404') {
-                        this.setState({
-                            city: location.city,
-                            country: location.country
-                        })
-                    } else {
-                        props.history.replace('/notFound');
+                    if (!location) {
+                       return props.history.replace('/notFound');
                     }
-
+                    this.setState({
+                        city: location.city,
+                        country: location.country
+                    })
                 })
         }
     }
@@ -53,11 +51,11 @@ class LocationsForm extends React.Component {
                 () => this.props.hidePopup()
             );
         } else {
-                this.props.add({
-                    city: this.state.city,
-                    country: this.state.country
-                });
-                this.props.history.push('/locations');
+            this.props.add({
+                city: this.state.city,
+                country: this.state.country
+            });
+            this.props.history.push('/locations');
         }
     };
 

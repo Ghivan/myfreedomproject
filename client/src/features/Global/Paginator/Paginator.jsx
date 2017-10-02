@@ -38,6 +38,15 @@ const renderPageButtons = (currentPage, lastPageNumber, urlPrefix) => {
     return btns
 };
 
+export const getDisplayedItems = (items, pageNumber, itemsPerPage) => {
+    let startIndex = pageNumber*itemsPerPage - itemsPerPage;
+    if (startIndex >= items.length) {
+        return items.slice(-itemsPerPage)
+    } else {
+        return items.slice(startIndex, startIndex + itemsPerPage)
+    }
+};
+
 export const Paginator = ({
                               isShown,
                               itemsPerPage,
