@@ -1,0 +1,50 @@
+.alert {
+    margin: 1rem;
+}
+
+.btn{
+    margin: 5px;
+}
+
+form{
+    width: 50%;
+    margin: 20px auto;
+}
+
+.pagination{
+    margin: 10px;
+}
+
+@keyframes markItem {
+    50% {
+        background-color: green;
+        color: white;
+        font-weight: bold;
+    }
+}
+
+.updated{
+    animation-name: markItem;
+    animation-duration: 2s;
+    animation-iteration-count: 1;
+}
+
+fieldset{
+    border: 1px solid gray;
+    margin: 5px auto;
+    padding: 20px;
+}
+
+.form-check-inline+.form-check-inline{
+    margin: 0;
+}
+
+fieldset .form-check{
+    width: 30%;
+    margin: 0;
+}
+
+fieldset .form-check .checkbox-label{
+    display: inline-block;
+    margin-left: 10px;
+}

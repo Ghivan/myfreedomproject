@@ -1,0 +1,21 @@
+.messageWrapper{
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,.8);
+    z-index: 999;
+}
+
+.messageBlock{
+    z-index: 1000;
+    max-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+}
