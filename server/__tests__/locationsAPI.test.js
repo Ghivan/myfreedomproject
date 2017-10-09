@@ -10,6 +10,10 @@ beforeEach(() => {
     return LocationModel.remove({});
 });
 
+afterAll(() => {
+    return LocationModel.remove({});
+});
+
 it('GET /locations', () => {
     const params = {
         city: 'Moscow',
@@ -36,7 +40,7 @@ it('DELETE /locations', () => {
     };
 
     const location = new LocationModel(params);
-    return location.save().then((location) =>{
+    return location.save().then((location) => {
         return agent.del(`${LOCATIONS_API_URL}${location._id}`)
             .then(response => {
                 expect(response.status).toBe(200);
@@ -61,7 +65,7 @@ it('PUT /locations', () => {
     };
 
     const location = new LocationModel(initialParams);
-    return location.save().then((location) =>{
+    return location.save().then((location) => {
         return agent.put(`${LOCATIONS_API_URL}${location._id}`)
             .send(newParams)
             .then(response => {
@@ -82,13 +86,13 @@ it('POST /locations', () => {
         country: 'Russia'
     };
     return agent.post(`${LOCATIONS_API_URL}`)
-            .send(params)
-            .then(response => {
-                expect(response.status).toBe(200);
-                expect(response.body).toMatchObject(params);
-                return LocationModel.findById(response.body.id)
-                    .then(location => {
-                        expect(location.toObject()).toMatchObject(params);
-                    })
-            })
+        .send(params)
+        .then(response => {
+            expect(response.status).toBe(200);
+            expect(response.body).toMatchObject(params);
+            return LocationModel.findById(response.body.id)
+                .then(location => {
+                    expect(location.toObject()).toMatchObject(params);
+                })
+        })
 });
