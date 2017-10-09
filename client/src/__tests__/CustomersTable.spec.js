@@ -1,94 +1,81 @@
 import React from 'react';
 import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-15';
-import { shallow, mount, render } from 'enzyme';
+import { mount } from 'enzyme';
 Enzyme.configure({ adapter: new Adapter() });
 
-import {BrowserRouter as Router} from 'react-router-dom';
-import CustomersTable from './CustomersTable';
+import {MemoryRouter, Link} from 'react-router-dom';
+import CustomersTable from '../features/Customers/CustomersTable';
+
+const getCustomers = () => [
+    {
+        id: '1e2ghd',
+        firstName: 'John',
+        lastName: 'Johnson',
+        trips: [
+            {
+                id: "1",
+                name: "Rally"
+            }
+        ]
+    },
+    {
+        id: '1e2g323hd',
+        firstName: 'John',
+        lastName: 'Johnson',
+        trips: [
+            {
+                id: "1",
+                name: "Rally"
+            }
+        ]
+    }
+];
 
 it('passes customers property right', () => {
-    const customers = [
-        {
-            id: '1e2ghd',
-            firstName: 'John',
-            lastName: 'Johnson',
-            trips: [
-                {
-                    id: "1",
-                    name: "Rally"
-                }
-            ]
-        }
-    ];
-
+    const customers = getCustomers();
     const wrapper = mount(
-        <Router>
+        <MemoryRouter>
             <CustomersTable customers={customers} />
-        </Router>
+        </MemoryRouter>
     );
 
    expect(wrapper.find(CustomersTable).prop('customers')).toEqual(customers)
 });
 
 it('click calls showPopup function', () => {
-    const customers = [
-        {
-            id: '1e2ghd',
-            firstName: 'John',
-            lastName: 'Johnson',
-            trips: [
-                {
-                    id: "1",
-                    name: "Rally"
-                }
-            ]
-        }
-    ];
+    const customers = getCustomers();
 
     const showPopupFn = jest.fn();
 
     const wrapper = mount(
-        <Router>
+        <MemoryRouter>
             <CustomersTable customers={customers}
                             showPopup={showPopupFn}
             />
-        </Router>
+        </MemoryRouter>
     );
-    wrapper.find(CustomersTable).find('.btn-danger').simulate('click');
+    wrapper.find(CustomersTable).find('.btn-danger').first().simulate('click');
     expect(showPopupFn.mock.calls.length).toBe(1)
 });
 
 it('perform deleting customer by calling remove and hidePopup functions', () => {
-    const customers = [
-        {
-            id: '1e2ghd',
-            firstName: 'John',
-            lastName: 'Johnson',
-            trips: [
-                {
-                    id: "1",
-                    name: "Rally"
-                }
-            ]
-        }
-    ];
-
+    const customers = getCustomers();
     const showPopupFn = jest.fn();
     const hidePopupFn = jest.fn();
     const removeCustomerFn = jest.fn();
 
     const wrapper = mount(
-        <Router>
+        <MemoryRouter>
             <CustomersTable customers={customers}
                             showPopup={showPopupFn}
                             hidePopup={hidePopupFn}
                             remove={removeCustomerFn}
             />
-        </Router>
+        </MemoryRouter>
     );
 
-    wrapper.find(CustomersTable).find('.btn-danger').simulate('click');
+    wrapper.find(CustomersTable).find('.btn-danger').first().simulate('click');
     showPopupFn.mock.calls[0][1]();
 
     expect(removeCustomerFn.mock.calls.length).toBe(1);
@@ -96,36 +83,41 @@ it('perform deleting customer by calling remove and hidePopup functions', () => 
 });
 
 it('calls hidePopup function without calling remove', () => {
-    const customers = [
-        {
-            id: '1e2ghd',
-            firstName: 'John',
-            lastName: 'Johnson',
-            trips: [
-                {
-                    id: "1",
-                    name: "Rally"
-                }
-            ]
-        }
-    ];
-
+    const customers = getCustomers();
     const showPopupFn = jest.fn();
     const hidePopupFn = jest.fn();
     const removeCustomerFn = jest.fn();
 
     const wrapper = mount(
-        <Router>
+        <MemoryRouter>
             <CustomersTable customers={customers}
                             showPopup={showPopupFn}
                             hidePopup={hidePopupFn}
                             remove={removeCustomerFn}
             />
-        </Router>
+        </MemoryRouter>
     );
 
-    wrapper.find(CustomersTable).find('.btn-danger').simulate('click');
+    wrapper.find(CustomersTable).find('.btn-danger').first().simulate('click');
     showPopupFn.mock.calls[0][2]();
 
     expect(removeCustomerFn.mock.calls.length).toBe(0);
+});
+
+it('link should redirect to right page', () => {
+    const customers = getCustomers();
+    const showPopupFn = jest.fn();
+    const hidePopupFn = jest.fn();
+    const removeCustomerFn = jest.fn();
+
+    const wrapper = mount(
+        <MemoryRouter>
+            <CustomersTable customers={customers}
+                            showPopup={showPopupFn}
+                            hidePopup={hidePopupFn}
+                            remove={removeCustomerFn}
+            />
+        </MemoryRouter>
+    );
+    expect(wrapper.find(Link).get(0).props.to).toMatch(new RegExp(customers[0].id))
 });
