@@ -10,10 +10,6 @@ beforeEach(() => {
     return LocationModel.remove({});
 });
 
-afterAll(() => {
-    return LocationModel.remove({});
-});
-
 it('GET /locations', () => {
     const params = {
         city: 'Moscow',

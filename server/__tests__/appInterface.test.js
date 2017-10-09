@@ -19,11 +19,6 @@ beforeEach((done) => {
         .then(() => done());
 });
 
-afterAll((done) => {
-    Promise.all([LocationModel.remove({}), TripModel.remove({}), CustomerModel.remove({})])
-        .then(() => done());
-});
-
 it('should create 2 locations, 1 trip and 1 customer', () => {
     const locations = [
         {
