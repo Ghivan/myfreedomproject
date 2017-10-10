@@ -1,6 +1,6 @@
 const {LocationModel, TripModel, CustomerModel, transform} = require('../model/database');
 const webdriver = require('selenium-webdriver');
-const {By, until} = webdriver;
+const {By, until, Key} = webdriver;
 
 const TIME_FOR_TEST = 15000;
 const PAUSE = {
@@ -8,18 +8,20 @@ const PAUSE = {
     middle: 2000,
     long: 3000
 };
+const TARGET_BROWSER = webdriver.Browser.FIREFOX;
+
 const setPause = timeout => new Promise(resolve => {
     setTimeout(resolve, timeout);
 });
 
+const clearInputValue = (locator) => {
+    locator.sendKeys(Key.CONTROL + "a");
+    locator.sendKeys(Key.DELETE);
+};
+
 jest.setTimeout(TIME_FOR_TEST);
 
 beforeEach((done) => {
-    Promise.all([LocationModel.remove({}), TripModel.remove({}), CustomerModel.remove({})])
-        .then(() => done());
-});
-
-afterAll((done) => {
     Promise.all([LocationModel.remove({}), TripModel.remove({}), CustomerModel.remove({})])
         .then(() => done());
 });
@@ -38,8 +40,8 @@ it('should create 2 locations, 1 trip and 1 customer', () => {
     const trips = [
         {
             name: 'From Paris with love',
-            arrivalDate: '12-01-2017',
-            departureDate: '20-01-2017'
+            arrivalDate: TARGET_BROWSER === webdriver.Browser.CHROME ? '20-01-2017' : '2017-01-20',
+            departureDate: TARGET_BROWSER === webdriver.Browser.CHROME ? '29-01-2017' : '2017-01-29'
         }
     ];
     const customers = [
@@ -48,7 +50,7 @@ it('should create 2 locations, 1 trip and 1 customer', () => {
             lastName: 'Johnson'
         }
     ];
-    const driver = new webdriver.Builder().forBrowser('chrome').build();
+    const driver = new webdriver.Builder().forBrowser(TARGET_BROWSER).build();
     driver.manage().window().setSize(1024, 768);
     return driver.get('http://localhost:3000')
         .then(() => driver.wait(until.elementLocated(By.partialLinkText('Locations'))))
@@ -86,6 +88,9 @@ it('should create 2 locations, 1 trip and 1 customer', () => {
             const arrivalInput = driver.findElement(By.id('arrivalDate'));
             const departureInput = driver.findElement(By.id('departureDate'));
             const addButton = driver.findElement(By.className('btn-primary'));
+            clearInputValue(nameInput);
+            clearInputValue(arrivalInput);
+            clearInputValue(departureInput);
             nameInput.sendKeys(trips[0].name);
             arrivalInput.sendKeys(trips[0].arrivalDate);
             departureInput.sendKeys(trips[0].departureDate);
