@@ -77,7 +77,6 @@ it('should create 2 locations, 1 trip and 1 customer', () => {
             countryInput.sendKeys(locations[1].country);
             addButton.click();
         })
-        .then(() => setPause(PAUSE.short))
         .then(() => driver.wait(until.elementLocated(By.partialLinkText('Trips'))))
         .then(element => element.click())
         .then(() => driver.wait(until.elementLocated(By.linkText('Add new trip'))))
@@ -104,7 +103,6 @@ it('should create 2 locations, 1 trip and 1 customer', () => {
                 }));
             addButton.click();
         })
-        .then(() => setPause(PAUSE.short))
         .then(() => driver.wait(until.elementLocated(By.partialLinkText('Customers'))))
         .then(element => element.click())
         .then(() => driver.wait(until.elementLocated(By.linkText('Add new customer'))))
