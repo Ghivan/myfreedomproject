@@ -8,7 +8,7 @@ const PAUSE = {
     middle: 2000,
     long: 3000
 };
-const TARGET_BROWSER = webdriver.Browser.FIREFOX;
+const TARGET_BROWSER = webdriver.Browser.CHROME;
 
 const setPause = timeout => new Promise(resolve => {
     setTimeout(resolve, timeout);
@@ -125,6 +125,7 @@ it('should create 2 locations, 1 trip and 1 customer', () => {
                 }));
             addButton.click();
         })
+        .then(() => setPause(PAUSE.short))
         .then(() => Promise.all([LocationModel.find({}), TripModel.find({}), CustomerModel.find({})]))
         .then(([receivedLocations, receivedTrips, receivedCustomers]) => {
             expect(receivedLocations.map(transform)).toMatchObject(locations);
