@@ -55,7 +55,7 @@ router.post('/', (req, res, next) => {
                 }
             );
             NewLocation.save().then(location => {
-                    res.status(201);
+                    res.status(200);
                     res.json(transform(location))
                 }, next
             );
