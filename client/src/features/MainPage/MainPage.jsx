@@ -9,6 +9,10 @@ export const MainPage = () => {
           <h1 className="display-3">Welcome to our Agency!</h1>
           <hr className="my-4" />
           <nav className="lead navbar navbar-expand-lg navbar-light bg-light">
+              <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                  <span className="navbar-toggler-icon" />
+              </button>
+              <div className="collapse navbar-collapse" id="navbarNav">
                   <ul className="navbar-nav">
                       {MenuItems.map(item => (
                           <li className={`nav-item`}
@@ -17,10 +21,12 @@ export const MainPage = () => {
                                        to={item.path}
                               >
                                   {item.label}
+                                  <span className="sr-only">(current)</span>
                               </NavLink>
                           </li>
                       ))}
                   </ul>
+              </div>
           </nav>
       </div>
   )
