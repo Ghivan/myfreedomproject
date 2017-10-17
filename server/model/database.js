@@ -9,7 +9,8 @@ const DBNames = {
 };
 
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGO_CONNECTION || 'mongodb://localhost/touristsDB', {useMongoClient: true});
+mongoose.connect('mongodb://localhost/touristsDB', {useMongoClient: true});
+
 
 const LocationModel = mongoose.model(DBNames.LOCATIONS, LocationSchema);
 const TripModel = mongoose.model(DBNames.TRIPS, TripSchema);

@@ -63,15 +63,11 @@ const CustomersTable = ({customers, remove, showPopup, hidePopup}) =>
     );
 
 CustomersTable.propTypes = {
-    customers: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
+    locationsList: PropTypes.arrayOf(PropTypes.shape({
         firstName: PropTypes.string.isRequired,
         lastName: PropTypes.string.isRequired,
         trips: PropTypes.array
-    })),
-    remove: PropTypes.func,
-    showPopup: PropTypes.func,
-    hidePopup: PropTypes.func
+    }))
 };
 
 export default CustomersTable;

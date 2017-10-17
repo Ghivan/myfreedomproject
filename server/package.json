@@ -11,20 +11,9 @@
     "moment": "^2.18.1",
     "mongoose": "^4.11.11"
   },
-  "devDependencies": {
-    "cross-env": "^5.0.5",
-    "jest": "^21.2.1",
-    "selenium-webdriver": "^3.6.0",
-    "supertest": "^3.0.0"
-  },
-  "jest": {
-    "testRegex": "(/__tests__/.*\\.test)\\.(js)$"
-  },
+  "devDependencies": {},
   "scripts": {
-    "start": "node index.js",
-    "start:debug": "node --inspect --inspect-brk index.js",
-    "start:test": "cross-env MONGO_CONNECTION=mongodb://localhost/test-db node index.js",
-    "test": "cross-env MONGO_CONNECTION=mongodb://localhost/test-db jest  --forceExit"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC"
