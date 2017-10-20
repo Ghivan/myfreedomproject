@@ -7,45 +7,46 @@ class LocationsForm extends React.Component {
         super(props);
         this.state = {
             errors: '',
+            id: '',
             city: '',
-            country: '',
+            country: ''
         };
-        if (this.props.id){
-            this.props.getById(this.props.id)
-                .then(location => {
-                    if (!location) {
-                       return props.history.replace('/notFound');
-                    }
-                    this.setState({
-                        city: location.city,
-                        country: location.country
-                    })
-                })
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.selectedLocation &&
+            nextProps.selectedLocation.id !== this.state.id) {
+            this.setState({
+                id: nextProps.selectedLocation.id,
+                city: nextProps.selectedLocation.city,
+                country: nextProps.selectedLocation.country
+            })
         }
     }
 
     handleActionBtn = e => {
         e.preventDefault();
         let errors = [];
-        if (!this.state.city.trim()){
+        if (!this.state.city.trim()) {
             errors.push('City should not be empty.')
         }
-        if (!this.state.country.trim()){
+        if (!this.state.country.trim()) {
             errors.push('Country should not be empty.')
         }
-        if (errors.length > 0){
+        if (errors.length > 0) {
             this.setState({errors: errors.join(' ')});
             return;
         }
-        if (this.props.id) {
+        if (this.props.selectedLocation) {
             this.props.showPopup(
                 `Do you really want to change location to: "${this.state.city} (${this.state.country})"?`,
                 () => {
-                    this.props.update(this.props.id, {
+                    this.props.update(this.state.id, {
                         city: this.state.city,
                         country: this.state.country
                     });
                     this.props.hidePopup();
+                    this.props.clearSelectedLocation();
                     this.props.history.push('/locations');
                 },
                 () => this.props.hidePopup()
@@ -55,12 +56,14 @@ class LocationsForm extends React.Component {
                 city: this.state.city,
                 country: this.state.country
             });
+            this.props.clearSelectedLocation();
             this.props.history.push('/locations');
         }
     };
 
     handleCancelBtn = e => {
         e.preventDefault();
+        this.props.clearSelectedLocation();
         this.props.history.push('/locations');
     };
 
@@ -76,7 +79,7 @@ class LocationsForm extends React.Component {
         return (
             <form>
                 <ErrorBlock message={this.state.errors}
-                            clearError={()=>this.setState({errors: ''})}
+                            clearError={() => this.setState({errors: ''})}
                 />
                 <div className="form-group">
                     <label htmlFor="city">City</label>
@@ -96,10 +99,11 @@ class LocationsForm extends React.Component {
                 </div>
                 <button className="btn btn-primary"
                         onClick={this.handleActionBtn}
-                >{this.props.id ? 'Update' : 'Add'}</button>
+                >{this.props.selectedLocation ? 'Update' : 'Add'}</button>
                 <button className="btn btn-default"
                         onClick={this.handleCancelBtn}
-                >Cancel</button>
+                >Cancel
+                </button>
             </form>
         );
     };
