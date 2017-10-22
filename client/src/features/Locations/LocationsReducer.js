@@ -1,32 +1,57 @@
-export const ActionTypes = {
+const ActionTypes = {
     GET_LIST: 'LOCATIONS/ GET LIST',
     SELECT: 'LOCATIONS/ SELECT',
     CLEAR_SELECTED_LOCATION: 'LOCATIONS/ CLEAR SELECTED',
-    ADD_LOCATION: 'LOCATIONS/ UPDATE',
-    UPDATE_LOCATION: 'LOCATIONS/ ADD',
+    ADD_LOCATION: 'LOCATIONS/ ADD',
+    UPDATE_LOCATION: 'LOCATIONS/ UPDATE',
     DELETE_LOCATION: 'LOCATIONS/ DELETE',
     ERROR_OCCURRED: 'LOCATIONS/ ERROR OCCURRED'
 };
 
 const initialState = {
-    locations: [],
+    list: [],
     errorMessage: '',
     selectedLocation: null
 };
 
-const __getLocationsList = (state, action) => {
+export const fetchLocationsList = (dispatch, locations) => {
+    dispatch({
+        type: ActionTypes.GET_LIST,
+        payload: {
+            locations
+        }
+    })
+};
+
+const __fetchLocationsList = (state, action) => {
     return {
         ...state,
-        locations: action.payload.locations
+        list: action.payload.locations
     };
 };
 
+
+export const selectLocation = (dispatch, id) => {
+    dispatch({
+        type: ActionTypes.SELECT,
+        payload: {
+            selectedLocation: id
+        }
+    })
+};
+
 const __selectLocation = (state, action) => {
-    const location = state.locations.find(item => item.id === action.payload.selectedLocation);
+    const location = state.list.find(item => item.id === action.payload.selectedLocation);
     return {
         ...state,
         selectedLocation: location
     };
+};
+
+export const clearSelectedLocation = (dispatch) => {
+    dispatch({
+        type: ActionTypes.CLEAR_SELECTED_LOCATION
+    })
 };
 
 const __clearSelectedLocation = (state) => {
@@ -36,33 +61,69 @@ const __clearSelectedLocation = (state) => {
     };
 };
 
+export const addLocation = (dispatch, location) => {
+    dispatch({
+        type: ActionTypes.ADD_LOCATION,
+        payload: {
+            location
+        }
+    })
+};
+
 const __addLocation = (state, action) => {
-    const newLocationsList = state.locations.slice();
+    const newLocationsList = state.list.slice();
     newLocationsList.push(action.payload.location);
     return {
         ...state,
-        locations: newLocationsList
+        list: newLocationsList
     };
+};
+
+export const updateLocation = (dispatch, location) => {
+    dispatch({
+        type: ActionTypes.UPDATE_LOCATION,
+        payload: {
+            location
+        }
+    })
 };
 
 const __updateLocation = (state, action) => {
-    const newLocationsList = state.locations.slice();
+    const newLocationsList = state.list.slice();
     const index = newLocationsList.findIndex(item => item.id === action.payload.location.id);
-    newLocationsList.splice(index, 1, action.payload.location)
+    newLocationsList.splice(index, 1, action.payload.location);
     return {
         ...state,
-        locations: newLocationsList
+        list: newLocationsList
     };
 };
 
+export const deleteLocation = (dispatch, locationId) => {
+    dispatch({
+        type: ActionTypes.DELETE_LOCATION,
+        payload: {
+            id: locationId
+        }
+    })
+};
+
 const __deleteLocation = (state, action) => {
-    const newLocationsList = state.locations.slice();
+    const newLocationsList = state.list.slice();
     const index = newLocationsList.findIndex(item => item.id === action.payload.id);
     newLocationsList.splice(index, 1);
     return {
         ...state,
-        locations: newLocationsList
+        list: newLocationsList
     };
+};
+
+export const setError = (dispatch, message) => {
+    dispatch({
+        type: ActionTypes.ERROR_OCCURRED,
+        payload: {
+            errorMessage: message
+        }
+    })
 };
 
 const __setError = (state, action) => {
@@ -75,7 +136,7 @@ const __setError = (state, action) => {
 export default (state = initialState, action) => {
     switch (action.type) {
         case ActionTypes.GET_LIST:
-            return __getLocationsList(state, action);
+            return __fetchLocationsList(state, action);
         case ActionTypes.SELECT:
             return __selectLocation(state, action);
         case ActionTypes.CLEAR_SELECTED_LOCATION:

@@ -24,6 +24,10 @@ class LocationsForm extends React.Component {
         }
     }
 
+    componentWillUnmount(){
+        this.props.clearSelectedLocation();
+    }
+
     handleActionBtn = e => {
         e.preventDefault();
         let errors = [];
@@ -46,7 +50,6 @@ class LocationsForm extends React.Component {
                         country: this.state.country
                     });
                     this.props.hidePopup();
-                    this.props.clearSelectedLocation();
                     this.props.history.push('/locations');
                 },
                 () => this.props.hidePopup()
@@ -56,14 +59,12 @@ class LocationsForm extends React.Component {
                 city: this.state.city,
                 country: this.state.country
             });
-            this.props.clearSelectedLocation();
             this.props.history.push('/locations');
         }
     };
 
     handleCancelBtn = e => {
         e.preventDefault();
-        this.props.clearSelectedLocation();
         this.props.history.push('/locations');
     };
 

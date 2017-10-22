@@ -58,13 +58,13 @@ export default class LocationsRouter extends React.Component {
                 this.props.selectLocation(match.params.id)
             }
         }
+
         return (
             <RoutedLocationsForm selectedLocation={this.props.selectedLocation}
                                  add={this.props.add}
                                  update={this.props.update}
                                  showPopup={this.props.showConfirmationBlock}
                                  hidePopup={this.props.hideConfirmationBlock}
-                                 selectLocation={this.props.selectLocation}
                                  clearSelectedLocation={this.props.clearSelectedLocation}
                                  history={history}
             />

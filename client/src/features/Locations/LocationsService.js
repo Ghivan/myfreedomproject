@@ -1,45 +1,36 @@
 import {APIDriver} from '../../api/api';
-import {ActionTypes} from './LocationsReducer';
+import {
+    fetchLocationsList,
+    selectLocation,
+    clearSelectedLocation,
+    addLocation,
+    updateLocation,
+    deleteLocation,
+    setError
+} from './LocationsReducer';
 
 export const LocationService = {
-    getLocations: () => {
+    fetchLocations: () => {
         return (dispatch) => {
             APIDriver.getAll('locations')
                 .then((locations) => {
-                    dispatch({
-                        type: ActionTypes.GET_LIST,
-                        payload: {
-                            locations
-                        }
-                    })
+                    fetchLocationsList(dispatch, locations);
                 })
                 .catch(err => {
-                    dispatch({
-                        type: ActionTypes.ERROR_OCCURRED,
-                        payload: {
-                            errorMessage: err.message
-                        }
-                    })
+                    setError(dispatch, err.message)
                 })
         };
     },
 
     selectLocation: (id) => {
         return dispatch => {
-            dispatch({
-                type: ActionTypes.SELECT,
-                payload: {
-                    selectedLocation: id
-                }
-            })
+            selectLocation(dispatch, id);
         }
     },
 
     clearSelectedLocation: () => {
         return dispatch => {
-            dispatch({
-                type: ActionTypes.CLEAR_SELECTED_LOCATION
-            })
+            clearSelectedLocation(dispatch)
         }
     },
 
@@ -47,42 +38,22 @@ export const LocationService = {
         return (dispatch) => {
             APIDriver.add('locations', location)
                 .then((location) => {
-                    dispatch({
-                        type: ActionTypes.ADD_LOCATION,
-                        payload: {
-                            location
-                        }
-                    })
+                    addLocation(dispatch, location)
                 })
                 .catch(err => {
-                    dispatch({
-                        type: ActionTypes.ERROR_OCCURRED,
-                        payload: {
-                            errorMessage: err.message
-                        }
-                    })
+                    setError(dispatch, err.message)
                 })
         };
     },
 
-    updateLocation: (locationId, newLocation) => {
+    updateLocation: (locationId, updatedLocation) => {
         return (dispatch) => {
-            APIDriver.update('locations', locationId, newLocation)
+            APIDriver.update('locations', locationId, updatedLocation)
                 .then((location) => {
-                    dispatch({
-                        type: ActionTypes.UPDATE_LOCATION,
-                        payload: {
-                            location
-                        }
-                    })
+                    updateLocation(dispatch, location);
                 })
                 .catch(err => {
-                    dispatch({
-                        type: ActionTypes.ERROR_OCCURRED,
-                        payload: {
-                            errorMessage: err.message
-                        }
-                    })
+                    setError(dispatch, err.message)
                 })
         };
     },
@@ -91,20 +62,10 @@ export const LocationService = {
         return (dispatch) => {
             APIDriver.remove('locations', locationId)
                 .then((location) => {
-                    dispatch({
-                        type: ActionTypes.DELETE_LOCATION,
-                        payload: {
-                            id: location.id
-                        }
-                    })
+                    deleteLocation(dispatch, locationId);
                 })
                 .catch(err => {
-                    dispatch({
-                        type: ActionTypes.ERROR_OCCURRED,
-                        payload: {
-                            errorMessage: err.message
-                        }
-                    })
+                    setError(dispatch, err.message)
                 })
         };
     }

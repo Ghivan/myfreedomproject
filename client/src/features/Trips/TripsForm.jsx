@@ -22,30 +22,34 @@ class TripsForm extends React.Component {
         super(props);
         this.state = {
             errors: '',
+            id: '',
             name: '',
             arrivalDate: formatDate(Date.now()),
             departureDate: formatDate(Date.now()),
             selectedLocations: []
         };
-        if (this.props.id) {
-            this.props.getById(this.props.id)
-                .then(trip => {
-                    if (!trip) {
-                        return props.history.replace('/notFound');
-                    }
-                    this.setState({
-                        name: trip.name,
-                        arrivalDate: formatDate(trip.route.arrivalDate),
-                        departureDate: formatDate(trip.route.departureDate),
-                        selectedLocations: getLocationsIdsFromTrip(trip)
-                    })
-                })
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.selectedTrip &&
+            nextProps.selectedTrip.id !== this.state.id) {
+            this.setState({
+                id: nextProps.selectedTrip.id,
+                name: nextProps.selectedTrip.name,
+                arrivalDate: formatDate(nextProps.selectedTrip.route.arrivalDate),
+                departureDate: formatDate(nextProps.selectedTrip.route.departureDate),
+                selectedLocations: getLocationsIdsFromTrip(nextProps.selectedTrip)
+            })
         }
+    }
+
+    componentWillUnmount(){
+        this.props.clearSelectedTrip();
     }
 
     handleSelectedLocations = e => {
         let index = this.state.selectedLocations.indexOf(e.target.value),
-            selectedLocations = this.state.selectedLocations;
+            selectedLocations = this.state.selectedLocations.slice();
         if (e.target.checked) {
             selectedLocations.push(e.target.value);
             this.setState({
@@ -84,11 +88,11 @@ class TripsForm extends React.Component {
             this.setState({errors: errors.join(' ')});
             return;
         }
-        if (this.props.id) {
+        if (this.props.selectedTrip) {
             this.props.showPopup(
                 'Do you really want to change this trip?',
                 () => {
-                    this.props.update(this.props.id, {
+                    this.props.update(this.props.selectedTrip.id, {
                         name: this.state.name,
                         arrivalDate: this.state.arrivalDate,
                         departureDate: this.state.departureDate,
@@ -173,7 +177,7 @@ class TripsForm extends React.Component {
                 </fieldset>
                 <button className="btn btn-primary"
                         onClick={this.handleActionBtn}
-                >{this.props.id ? 'Update' : 'Add'}</button>
+                >{this.props.selectedTrip ? 'Update' : 'Add'}</button>
                 <button className="btn btn-default"
                         onClick={this.handleCancelBtn}
                 >Cancel

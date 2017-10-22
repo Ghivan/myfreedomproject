@@ -27,7 +27,8 @@ export class AppRouter extends React.Component {
                 onReject: null
             }
         };
-        this.props.getLocations();
+        this.props.fetchLocations();
+        this.props.fetchTrips();
     }
 
 
@@ -71,15 +72,28 @@ export class AppRouter extends React.Component {
                     <Switch>
                         <Route exact path="/" component={MainPage}/>
                         <Route path="/locations">
-                            <LocationsRouter locations={this.props.locations}
+                            <LocationsRouter locations={this.props.locations.list}
                                              remove={this.props.deleteLocation}
                                              add={this.props.addLocation}
-                                             selectedLocation={this.props.selectedLocation}
+                                             selectedLocation={this.props.locations.selectedLocation}
                                              selectLocation={this.props.selectLocation}
                                              clearSelectedLocation={this.props.clearSelectedLocation}
                                              update={this.props.updateLocation}
                                              showConfirmationBlock={this.showConfirmationBlock}
                                              hideConfirmationBlock={this.hideConfirmationBlock}
+                            />
+                        </Route>
+                        <Route path="/trips">
+                            <TripsRouter trips={this.props.trips.list}
+                                         remove={this.props.deleteTrip}
+                                         allLocations={this.props.locations.list}
+                                         add={this.props.addTrip}
+                                         update={this.props.updateTrip}
+                                         selectedTrip={this.props.trips.selectedTrip}
+                                         selectTrip={this.props.selectTrip}
+                                         clearSelectedTrip={this.props.clearSelectedTrip}
+                                         showConfirmationBlock={this.showConfirmationBlock}
+                                         hideConfirmationBlock={this.hideConfirmationBlock}
                             />
                         </Route>
                         <Route path="/"

@@ -4,14 +4,14 @@ import {connect, Provider} from 'react-redux';
 
 import store from '../store';
 import {bindActionCreators} from '../utils/utils';
-import {
-    LocationService
-} from './Locations/LocationsService';
+import {LocationService} from './Locations/LocationsService';
+import {TripsService} from './Trips/TripsService';
 
 import {AppRouter} from './AppRouter';
 
 const ActionCreator = {
-    ...LocationService
+    ...LocationService,
+    ...TripsService
 };
 
 const mapStateToProps = state => state;

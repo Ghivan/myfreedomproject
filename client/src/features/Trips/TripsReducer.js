@@ -1,0 +1,155 @@
+const ActionTypes = {
+    GET_LIST: 'TRIPS/ GET LIST',
+    SELECT: 'TRIPS/ SELECT',
+    CLEAR_SELECTED_TRIP: 'TRIPS/ CLEAR SELECTED',
+    ADD_TRIP: 'TRIPS/ ADD',
+    UPDATE_TRIP: 'TRIPS/ UPDATE',
+    DELETE_TRIP: 'TRIPS/ DELETE',
+    ERROR_OCCURRED: 'TRIPS/ ERROR OCCURRED'
+};
+
+const initialState = {
+    list: [],
+    errorMessage: '',
+    selectedTrip: null
+};
+
+export const fetchTripsList = (dispatch, trips) => {
+    dispatch({
+        type: ActionTypes.GET_LIST,
+        payload: {
+            trips
+        }
+    })
+};
+
+const __fetchTripsList = (state, action) => {
+    return {
+        ...state,
+        list: action.payload.trips
+    };
+};
+
+
+export const selectTrip = (dispatch, id) => {
+    dispatch({
+        type: ActionTypes.SELECT,
+        payload: {
+            selectedTrip: id
+        }
+    })
+};
+
+const __selectTrip = (state, action) => {
+    const trip = state.list.find(item => item.id === action.payload.selectedTrip);
+    return {
+        ...state,
+        selectedTrip: trip
+    };
+};
+
+export const clearSelectedTrip = (dispatch) => {
+    dispatch({
+        type: ActionTypes.CLEAR_SELECTED_TRIP
+    })
+};
+
+const __clearSelectedTrip = (state) => {
+    return {
+        ...state,
+        selectedTrip: null
+    };
+};
+
+export const addTrip = (dispatch, trip) => {
+    dispatch({
+        type: ActionTypes.ADD_TRIP,
+        payload: {
+            trip
+        }
+    })
+};
+
+const __addTrip = (state, action) => {
+    const newTripsList = state.list.slice();
+    newTripsList.push(action.payload.trip);
+    return {
+        ...state,
+        list: newTripsList
+    };
+};
+
+export const updateTrip = (dispatch, trip) => {
+    dispatch({
+        type: ActionTypes.UPDATE_TRIP,
+        payload: {
+            trip
+        }
+    })
+};
+
+const __updateTrip = (state, action) => {
+    const newTripsList = state.list.slice();
+    const index = newTripsList.findIndex(item => item.id === action.payload.trip.id);
+    newTripsList.splice(index, 1, action.payload.trip);
+    return {
+        ...state,
+        list: newTripsList
+    };
+};
+
+export const deleteTrip = (dispatch, tripId) => {
+    dispatch({
+        type: ActionTypes.DELETE_TRIP,
+        payload: {
+            id: tripId
+        }
+    })
+};
+
+const __deleteTrip = (state, action) => {
+    const newTripsList = state.list.slice();
+    const index = newTripsList.findIndex(item => item.id === action.payload.id);
+    newTripsList.splice(index, 1);
+    return {
+        ...state,
+        list: newTripsList
+    };
+};
+
+export const setError = (dispatch, message) => {
+    dispatch({
+        type: ActionTypes.ERROR_OCCURRED,
+        payload: {
+            errorMessage: message
+        }
+    })
+};
+
+const __setError = (state, action) => {
+    return {
+        ...state,
+        errorMessage: action.payload.errorMessage
+    };
+};
+
+export default (state = initialState, action) => {
+    switch (action.type) {
+        case ActionTypes.GET_LIST:
+            return __fetchTripsList(state, action);
+        case ActionTypes.SELECT:
+            return __selectTrip(state, action);
+        case ActionTypes.CLEAR_SELECTED_TRIP:
+            return __clearSelectedTrip(state);
+        case ActionTypes.ADD_TRIP:
+            return __addTrip(state, action);
+        case ActionTypes.UPDATE_TRIP:
+            return __updateTrip(state, action);
+        case ActionTypes.DELETE_TRIP:
+            return __deleteTrip(state, action);
+        case ActionTypes.ERROR_OCCURRED:
+            return __setError(state, action);
+        default:
+            return state
+    }
+};

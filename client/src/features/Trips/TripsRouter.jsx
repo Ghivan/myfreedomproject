@@ -12,7 +12,7 @@ import {parseQueryString} from "../../utils/utils";
 
 const RoutedTripsForm = withRouter(TripsForm);
 
-export default class LocationsRouter extends React.Component{
+export default class TripsRouter extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -47,17 +47,28 @@ export default class LocationsRouter extends React.Component{
         )
     };
 
-    renderTripsForm = ({match, history}) => (
-        <RoutedTripsForm  id={match.params.id}
-                          allLocations={this.props.allLocations}
-                          add={this.props.add}
-                          getById={this.props.getById}
-                          update={this.props.update}
-                          showPopup={this.props.showConfirmationBlock}
-                          hidePopup={this.props.hideConfirmationBlock}
-                          history={history}
-        />
-    );
+    renderTripsForm = ({match, history}) => {
+        if (match.params.id){
+            if (this.props.selectedTrip){
+                if (this.props.selectedTrip.id !== match.params.id){
+                    this.props.selectTrip(match.params.id);
+                }
+            } else {
+                this.props.selectTrip(match.params.id)
+            }
+        }
+        return (
+            <RoutedTripsForm  selectedTrip={this.props.selectedTrip}
+                              allLocations={this.props.allLocations}
+                              clearSelectedTrip={this.props.clearSelectedTrip}
+                              add={this.props.add}
+                              update={this.props.update}
+                              showPopup={this.props.showConfirmationBlock}
+                              hidePopup={this.props.hideConfirmationBlock}
+                              history={history}
+            />
+        );
+    };
 
     render(){
         return (
