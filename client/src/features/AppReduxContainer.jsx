@@ -13,10 +13,13 @@ const ActionCreator = {
     ...LocationService,
     ...TripsService
 };
-
+store.dispatch(LocationService.fetchLocations());
+store.dispatch(TripsService.fetchTrips());
 const mapStateToProps = state => state;
 const ConnectedRouter = connect(mapStateToProps,
     dispatch => bindActionCreators(dispatch, ActionCreator))(AppRouter);
+
+
 
 export const ConnectedApp = () => (
     <Provider store={store}>

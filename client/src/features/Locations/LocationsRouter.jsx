@@ -1,13 +1,9 @@
 import React from 'react';
-import {
-    Route,
-    Switch,
-    withRouter
-} from 'react-router-dom';
+import {Route, Switch, withRouter} from 'react-router-dom';
 
 import LocationsTable from './LocationsTable';
 import LocationsForm from './LocationsForm';
-import {Paginator, getDisplayedItems} from "../Global/Paginator/Paginator";
+import {getDisplayedItems, Paginator} from "../Global/Paginator/Paginator";
 import {parseQueryString} from "../../utils/utils";
 
 const RoutedLocationsForm = withRouter(LocationsForm);
@@ -16,13 +12,7 @@ export default class LocationsRouter extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            itemsPerPage: 5,
-            confirmationBlockConfig: {
-                isShown: false,
-                message: '',
-                onResolve: null,
-                onReject: null
-            }
+            itemsPerPage: 5
         };
     }
 
@@ -49,23 +39,13 @@ export default class LocationsRouter extends React.Component {
     };
 
     renderLocationsForm = ({match, history}) => {
-        if (match.params.id){
-            if (this.props.selectedLocation){
-                if (this.props.selectedLocation.id !== match.params.id){
-                    this.props.selectLocation(match.params.id);
-                }
-            } else {
-                this.props.selectLocation(match.params.id)
-            }
-        }
-
         return (
-            <RoutedLocationsForm selectedLocation={this.props.selectedLocation}
+            <RoutedLocationsForm locations={this.props.locations}
+                                 id={match.params.id}
                                  add={this.props.add}
                                  update={this.props.update}
                                  showPopup={this.props.showConfirmationBlock}
                                  hidePopup={this.props.hideConfirmationBlock}
-                                 clearSelectedLocation={this.props.clearSelectedLocation}
                                  history={history}
             />
         );

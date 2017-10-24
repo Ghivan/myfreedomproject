@@ -1,8 +1,6 @@
 import {APIDriver} from '../../api/api';
 import {
     fetchLocationsList,
-    selectLocation,
-    clearSelectedLocation,
     addLocation,
     updateLocation,
     deleteLocation,
@@ -20,18 +18,6 @@ export const LocationService = {
                     setError(dispatch, err.message)
                 })
         };
-    },
-
-    selectLocation: (id) => {
-        return dispatch => {
-            selectLocation(dispatch, id);
-        }
-    },
-
-    clearSelectedLocation: () => {
-        return dispatch => {
-            clearSelectedLocation(dispatch)
-        }
     },
 
     addLocation: (location) => {

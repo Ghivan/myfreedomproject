@@ -30,37 +30,6 @@ const __fetchTripsList = (state, action) => {
     };
 };
 
-
-export const selectTrip = (dispatch, id) => {
-    dispatch({
-        type: ActionTypes.SELECT,
-        payload: {
-            selectedTrip: id
-        }
-    })
-};
-
-const __selectTrip = (state, action) => {
-    const trip = state.list.find(item => item.id === action.payload.selectedTrip);
-    return {
-        ...state,
-        selectedTrip: trip
-    };
-};
-
-export const clearSelectedTrip = (dispatch) => {
-    dispatch({
-        type: ActionTypes.CLEAR_SELECTED_TRIP
-    })
-};
-
-const __clearSelectedTrip = (state) => {
-    return {
-        ...state,
-        selectedTrip: null
-    };
-};
-
 export const addTrip = (dispatch, trip) => {
     dispatch({
         type: ActionTypes.ADD_TRIP,
@@ -137,10 +106,6 @@ export default (state = initialState, action) => {
     switch (action.type) {
         case ActionTypes.GET_LIST:
             return __fetchTripsList(state, action);
-        case ActionTypes.SELECT:
-            return __selectTrip(state, action);
-        case ActionTypes.CLEAR_SELECTED_TRIP:
-            return __clearSelectedTrip(state);
         case ActionTypes.ADD_TRIP:
             return __addTrip(state, action);
         case ActionTypes.UPDATE_TRIP:

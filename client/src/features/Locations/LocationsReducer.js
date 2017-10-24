@@ -10,8 +10,7 @@ const ActionTypes = {
 
 const initialState = {
     list: [],
-    errorMessage: '',
-    selectedLocation: null
+    errorMessage: ''
 };
 
 export const fetchLocationsList = (dispatch, locations) => {
@@ -27,37 +26,6 @@ const __fetchLocationsList = (state, action) => {
     return {
         ...state,
         list: action.payload.locations
-    };
-};
-
-
-export const selectLocation = (dispatch, id) => {
-    dispatch({
-        type: ActionTypes.SELECT,
-        payload: {
-            selectedLocation: id
-        }
-    })
-};
-
-const __selectLocation = (state, action) => {
-    const location = state.list.find(item => item.id === action.payload.selectedLocation);
-    return {
-        ...state,
-        selectedLocation: location
-    };
-};
-
-export const clearSelectedLocation = (dispatch) => {
-    dispatch({
-        type: ActionTypes.CLEAR_SELECTED_LOCATION
-    })
-};
-
-const __clearSelectedLocation = (state) => {
-    return {
-        ...state,
-        selectedLocation: null
     };
 };
 
@@ -137,10 +105,6 @@ export default (state = initialState, action) => {
     switch (action.type) {
         case ActionTypes.GET_LIST:
             return __fetchLocationsList(state, action);
-        case ActionTypes.SELECT:
-            return __selectLocation(state, action);
-        case ActionTypes.CLEAR_SELECTED_LOCATION:
-            return __clearSelectedLocation(state);
         case ActionTypes.ADD_LOCATION:
             return __addLocation(state, action);
         case ActionTypes.UPDATE_LOCATION:

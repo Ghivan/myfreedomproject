@@ -27,8 +27,6 @@ export class AppRouter extends React.Component {
                 onReject: null
             }
         };
-        this.props.fetchLocations();
-        this.props.fetchTrips();
     }
 
 
@@ -75,9 +73,6 @@ export class AppRouter extends React.Component {
                             <LocationsRouter locations={this.props.locations.list}
                                              remove={this.props.deleteLocation}
                                              add={this.props.addLocation}
-                                             selectedLocation={this.props.locations.selectedLocation}
-                                             selectLocation={this.props.selectLocation}
-                                             clearSelectedLocation={this.props.clearSelectedLocation}
                                              update={this.props.updateLocation}
                                              showConfirmationBlock={this.showConfirmationBlock}
                                              hideConfirmationBlock={this.hideConfirmationBlock}

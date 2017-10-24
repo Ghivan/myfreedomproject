@@ -1,8 +1,6 @@
 import {APIDriver} from '../../api/api';
 import {
     fetchTripsList,
-    selectTrip,
-    clearSelectedTrip,
     addTrip,
     updateTrip,
     deleteTrip,
@@ -20,18 +18,6 @@ export const TripsService = {
                     setError(dispatch, err.message)
                 })
         };
-    },
-
-    selectTrip: (id) => {
-        return dispatch => {
-            selectTrip(dispatch, id);
-        }
-    },
-
-    clearSelectedTrip: () => {
-        return dispatch => {
-            clearSelectedTrip(dispatch)
-        }
     },
 
     addTrip: (newTrip) => {
