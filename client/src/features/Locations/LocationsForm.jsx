@@ -4,7 +4,7 @@ import {ErrorBlock} from '../Global/Errors/ErrorMessage';
 
 const selectLocation = (props, currentLocation) => {
     if (props.id && props.locations && props.id !== currentLocation.id) {
-        return props.locations.find(location => location.id === props.id);
+        return Object.assign({}, props.locations.find(location => location.id === props.id));
     }
 };
 

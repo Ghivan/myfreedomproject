@@ -26,6 +26,10 @@ export default class TripsRouter extends React.Component {
         };
     }
 
+    componentDidMount(){
+        this.props.fetchTrips();
+    }
+
     renderTripsTable = () => {
         const queryParams = parseQueryString(window.location.search.substr(1));
         let currentPage = queryParams.page >= 1 ? parseInt(queryParams.page, 10) : 1;

@@ -30,8 +30,6 @@ export class AppRouter extends React.Component {
     }
 
 
-
-
     showConfirmationBlock = (message, onResolve, onReject) => {
         this.setState({
             confirmationBlockConfig: {
@@ -58,7 +56,7 @@ export class AppRouter extends React.Component {
         return (
             <Router>
                 <div>
-                    <MainMenu />
+                    <MainMenu/>
                     <ErrorBlock message={this.state.errors}
                                 clearError={() => this.setState({errors: ''})}
                     />
@@ -79,7 +77,8 @@ export class AppRouter extends React.Component {
                             />
                         </Route>
                         <Route path="/trips">
-                            <TripsRouter trips={this.props.trips.list}
+                            <TripsRouter fetchTrips={this.props.fetchTrips}
+                                         trips={this.props.trips.list}
                                          remove={this.props.deleteTrip}
                                          allLocations={this.props.locations.list}
                                          add={this.props.addTrip}
