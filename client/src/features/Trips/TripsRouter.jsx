@@ -26,7 +26,7 @@ export default class TripsRouter extends React.Component {
         };
     }
 
-    componentDidMount(){
+    componentWillMount(){
         this.props.fetchTrips();
     }
 

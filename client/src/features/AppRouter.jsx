@@ -68,7 +68,8 @@ export class AppRouter extends React.Component {
                     <Switch>
                         <Route exact path="/" component={MainPage}/>
                         <Route path="/locations">
-                            <LocationsRouter locations={this.props.locations.list}
+                            <LocationsRouter fetchLocations={this.props.fetchLocations}
+                                             locations={this.props.locations.list}
                                              remove={this.props.deleteLocation}
                                              add={this.props.addLocation}
                                              update={this.props.updateLocation}

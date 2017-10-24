@@ -20,7 +20,7 @@ const getLocationsIdsFromTrip = (trip) => {
 const selectTrip = (props, currentTrip) => {
     if (props.id && props.trips && props.id !== currentTrip.id) {
         const selectedTrip = Object.assign({},props.trips.find(trips => trips.id === props.id));
-        if (selectedTrip) {
+        if (selectedTrip.id) {
             selectedTrip.selectedLocations = getLocationsIdsFromTrip(selectedTrip);
             selectedTrip.arrivalDate = formatDate(selectedTrip.route.arrivalDate);
             selectedTrip.departureDate = formatDate(selectedTrip.route.departureDate);

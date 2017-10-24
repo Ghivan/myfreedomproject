@@ -16,6 +16,10 @@ export default class LocationsRouter extends React.Component {
         };
     }
 
+    componentWillMount(){
+        this.props.fetchLocations();
+    }
+
     renderLocationsTable = ({match}) => {
         const queryParams = parseQueryString(window.location.search.substr(1));
         let currentPage = queryParams.page >= 1 ? parseInt(queryParams.page, 10) : 1;
