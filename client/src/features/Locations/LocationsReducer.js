@@ -1,4 +1,4 @@
-const ActionTypes = {
+export const ActionTypes = {
     GET_LIST: 'LOCATIONS/ GET LIST',
     SELECT: 'LOCATIONS/ SELECT',
     CLEAR_SELECTED_LOCATION: 'LOCATIONS/ CLEAR SELECTED',
