@@ -25,6 +25,9 @@ export default class LocationsRouter extends React.Component{
             }
         };
     }
+    componentWillMount(){
+        this.props.fetchCustomers();
+    }
 
     renderCustomersTable = () => {
         const queryParams = parseQueryString(window.location.search.substr(1));
@@ -51,6 +54,7 @@ export default class LocationsRouter extends React.Component{
     renderCustomersForm = ({match, history}) => {
         return <RoutedCustomersForm  id={match.params.id}
                                      allTrips={this.props.allTrips}
+                                     customers={this.props.customers}
                                      add={this.props.add}
                                      getById={this.props.getById}
                                      update={this.props.update}

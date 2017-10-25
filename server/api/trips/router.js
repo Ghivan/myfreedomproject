@@ -101,7 +101,7 @@ router.post('/', (req, res, next) => {
                 });
                 res.status(200);
                 NewTrip.save().then(trip => {
-                    LocationModel.find().then(locations => {
+                    LocationModel.find({_id: {$in: trip.route.locations}}).then(locations => {
                         const normalizedLocations = _.keyBy(locations.map(transform), location => location.id);
                         trip.route.locations = trip.route.locations.map(locationId => normalizedLocations[locationId]);
                         res.json(transform(trip))
@@ -215,7 +215,12 @@ router.put('/:id', (req, res, next) => {
                 }, next);
             })
         } else {
-            trip.save().then(trip => res.json(transform(trip)), next);
+            trip.save().then(trip => {
+                LocationModel.find({_id: {$in: trip.route.locations}}).then(locations => {
+                    trip.route.locations = locations.map(transform);
+                    res.json(transform(trip))
+                })
+            }, next);
         }
 
     })

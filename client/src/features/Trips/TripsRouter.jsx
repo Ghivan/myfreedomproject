@@ -16,13 +16,7 @@ export default class TripsRouter extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            itemsPerPage: 5,
-            confirmationBlockConfig: {
-                isShown: false,
-                message: '',
-                onResolve: null,
-                onReject: null
-            }
+            itemsPerPage: 5
         };
     }
 

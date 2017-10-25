@@ -9,42 +9,72 @@ const getTripsIdsFromCustomer = (customer) => {
     }, [])
 };
 
+const selectCustomer = (props, currentCustomer) => {
+    if (props.id && props.customers && props.id !== currentCustomer.id) {
+        const selectedCustomer = Object.assign({}, props.customers.find(customers => customers.id === props.id));
+        if (selectedCustomer.id) {
+            selectedCustomer.selectedTrips = getTripsIdsFromCustomer(selectedCustomer);
+            return selectedCustomer;
+        }
+    }
+};
+
 class CustomersForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             errors: '',
-            firstName: '',
-            lastName: '',
-            selectedTrips: []
+            currentCustomer: {
+                id: '',
+                firstName: '',
+                lastName: '',
+                selectedTrips: []
+            }
         };
-        if (this.props.id) {
-            this.props.getById(this.props.id)
-                .then(customer => {
-                    if (!customer) {
-                        return props.history.replace('/notFound');
-                    }
-                    this.setState({
-                        firstName: customer.firstName,
-                        lastName: customer.lastName,
-                        selectedTrips: getTripsIdsFromCustomer(customer)
-                    })
-                })
+    }
+
+    componentDidMount() {
+        const currentCustomer = selectCustomer(this.props, this.state.currentCustomer);
+        if (currentCustomer) {
+            this.setState({
+                currentCustomer
+            })
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const currentCustomer = selectCustomer(nextProps, this.state.currentCustomer);
+        if (currentCustomer) {
+            this.setState({
+                currentCustomer
+            })
         }
     }
 
     handleSelectedTrips = e => {
-        let index = this.state.selectedTrips.indexOf(e.target.value),
-            selectedTrips = this.state.selectedTrips;
+        let index = this.state.currentCustomer.selectedTrips.indexOf(e.target.value),
+            selectedTrips = this.state.currentCustomer.selectedTrips;
         if (e.target.checked) {
             selectedTrips.push(e.target.value);
-            this.setState({
-                selectedTrips
+            this.setState((prevState) => {
+                return {
+                    ...prevState,
+                    currentCustomer: {
+                        ...prevState.currentCustomer,
+                        selectedTrips
+                    }
+                }
             })
         } else {
             if (index > -1) selectedTrips.splice(index, 1);
-            this.setState({
-                selectedTrips
+            this.setState((prevState) => {
+                return {
+                    ...prevState,
+                    currentCustomer: {
+                        ...prevState.currentCustomer,
+                        selectedTrips
+                    }
+                }
             })
         }
     };
@@ -52,24 +82,24 @@ class CustomersForm extends React.Component {
     handleActionBtn = e => {
         e.preventDefault();
         let errors = [];
-        if (!this.state.firstName.trim()){
+        if (!this.state.currentCustomer.firstName.trim()) {
             errors.push('First name should not be empty.')
         }
-        if (!this.state.lastName.trim()){
+        if (!this.state.currentCustomer.lastName.trim()) {
             errors.push('Last name should not be empty.')
         }
-        if (errors.length > 0){
+        if (errors.length > 0) {
             this.setState({errors: errors.join(' ')});
             return;
         }
-        if (this.props.id) {
+        if (this.state.currentCustomer.id) {
             this.props.showPopup(
                 'Do you really want to change this customer?',
                 () => {
-                    this.props.update(this.props.id, {
-                        firstName: this.state.firstName,
-                        lastName: this.state.lastName,
-                        trips: this.state.selectedTrips
+                    this.props.update(this.state.currentCustomer.id, {
+                        firstName: this.state.currentCustomer.firstName,
+                        lastName: this.state.currentCustomer.lastName,
+                        trips: this.state.currentCustomer.selectedTrips
                     });
                     this.props.hidePopup();
                     this.props.history.push('/customers');
@@ -78,9 +108,9 @@ class CustomersForm extends React.Component {
             );
         } else {
             this.props.add({
-                firstName: this.state.firstName,
-                lastName: this.state.lastName,
-                trips: this.state.selectedTrips
+                firstName: this.state.currentCustomer.firstName,
+                lastName: this.state.currentCustomer.lastName,
+                trips: this.state.currentCustomer.selectedTrips
             });
             this.props.history.push('/customers');
         }
@@ -96,22 +126,46 @@ class CustomersForm extends React.Component {
         return (
             <form>
                 <ErrorBlock message={this.state.errors}
-                            clearError={()=>this.setState({errors: ''})}
+                            clearError={() => this.setState({errors: ''})}
                 />
                 <div className="form-group">
                     <label htmlFor="firstName">First name</label>
                     <input className="form-control"
                            id="firstName"
-                           value={this.state.firstName}
-                           onChange={(e) => this.setState({firstName: e.target.value})}
+                           value={this.state.currentCustomer.firstName}
+                           onChange={(e) => {
+                               const firstName = e.target.value;
+                               this.setState((prevState) => {
+                                   return {
+                                       ...prevState,
+                                       currentCustomer: {
+                                           ...prevState.currentCustomer,
+                                           firstName
+                                       }
+                                   }
+                               })
+                           }
+                           }
                            placeholder="First name"/>
                 </div>
                 <div className="form-group">
                     <label htmlFor="lastName">Last name</label>
                     <input className="form-control"
                            id="lastName"
-                           value={this.state.lastName}
-                           onChange={(e) => this.setState({lastName: e.target.value})}
+                           value={this.state.currentCustomer.lastName}
+                           onChange={(e) => {
+                               const lastName = e.target.value;
+                               this.setState((prevState) => {
+                                   return {
+                                       ...prevState,
+                                       currentCustomer: {
+                                           ...prevState.currentCustomer,
+                                           lastName
+                                       }
+                                   }
+                               })
+                           }
+                           }
                            placeholder="Last name"/>
                 </div>
                 <div>
@@ -120,7 +174,7 @@ class CustomersForm extends React.Component {
                 <fieldset className="form-group">
                     {this.props.allTrips.map(trip => {
                         return (
-                            <div className="form-check form-check-inline"  key={trip.id}>
+                            <div className="form-check form-check-inline" key={trip.id}>
                                 <label className="form-check-label"
                                        htmlFor={trip.id}
                                 >
@@ -129,7 +183,7 @@ class CustomersForm extends React.Component {
                                            type="checkbox"
                                            value={trip.id}
                                            name="locations"
-                                           checked={(this.state.selectedTrips.indexOf(trip.id) > -1)}
+                                           checked={(this.state.currentCustomer.selectedTrips.indexOf(trip.id) > -1)}
                                            onChange={this.handleSelectedTrips}
                                     />
                                     <span className="checkbox-label">{trip.name}</span>
@@ -140,10 +194,11 @@ class CustomersForm extends React.Component {
                 </fieldset>
                 <button className="btn btn-primary"
                         onClick={this.handleActionBtn}
-                >{this.props.id ? 'Update' : 'Add'}</button>
+                >{this.state.currentCustomer.id ? 'Update' : 'Add'}</button>
                 <button className="btn btn-default"
                         onClick={this.handleCancelBtn}
-                >Cancel</button>
+                >Cancel
+                </button>
             </form>
 
         );

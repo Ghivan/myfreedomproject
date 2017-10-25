@@ -81,7 +81,10 @@ router.post('/', (req, res, next) => {
                     return next();
                 }
                 res.status(200);
-                NewCustomer.save().then(customer => res.json(transform(customer)), next);
+                NewCustomer.save().then(customer => {
+                    customer.trips = trips.map(transform);
+                    res.json(transform(customer))
+                }, next);
             })
             .catch(err => {
                 res.status(500);
@@ -93,7 +96,12 @@ router.post('/', (req, res, next) => {
             })
     } else {
         res.status(200);
-        NewCustomer.save().then(customer => res.json(transform(customer)), next);
+        NewCustomer.save().then(customer => {
+            TripModel.find({_id :{ $in: customer.trips }}).then(trips => {
+                customer.trips = trips.map(transform);
+                res.json(transform(customer))
+            })
+        }, next);
     }
 });
 
@@ -157,11 +165,19 @@ router.put('/:id', (req, res, next) => {
                 }
                 customer.trips = requestedTrips;
                 res.status(200);
-                customer.save().then(customer => res.json(transform(customer)), next);
+                customer.save().then(customer => {
+                    customer.trips = trips.map(transform);
+                    res.json(transform(customer))
+                }, next);
             })
         } else {
             res.status(200);
-            customer.save().then(customer => res.json(transform(customer)), next);
+            customer.save().then(customer => {
+                TripModel.find({_id :{ $in: customer.trips }}).then(trips => {
+                    customer.trips = trips.map(transform);
+                    res.json(transform(customer))
+                })
+            }, next);
         }
     })
 

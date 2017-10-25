@@ -29,6 +29,12 @@ export class AppRouter extends React.Component {
         };
     }
 
+    componentWillMount() {
+        this.props.fetchLocations();
+        this.props.fetchTrips();
+        this.props.fetchCustomers();
+    }
+
 
     showConfirmationBlock = (message, onResolve, onReject) => {
         this.setState({
@@ -84,11 +90,20 @@ export class AppRouter extends React.Component {
                                          allLocations={this.props.locations.list}
                                          add={this.props.addTrip}
                                          update={this.props.updateTrip}
-                                         selectedTrip={this.props.trips.selectedTrip}
-                                         selectTrip={this.props.selectTrip}
-                                         clearSelectedTrip={this.props.clearSelectedTrip}
                                          showConfirmationBlock={this.showConfirmationBlock}
                                          hideConfirmationBlock={this.hideConfirmationBlock}
+                            />
+                        </Route>
+                        <Route path="/customers">
+                            <CustomersRouter fetchCustomers={this.props.fetchCustomers}
+                                             customers={this.props.customers.list}
+                                             remove={this.props.deleteCustomer}
+                                             allTrips={this.props.trips.list}
+                                             add={this.props.addCustomer}
+                                             update={this.props.updateCustomer}
+                                             showConfirmationBlock={this.showConfirmationBlock}
+                                             hideConfirmationBlock={this.hideConfirmationBlock}
+
                             />
                         </Route>
                         <Route path="/"
