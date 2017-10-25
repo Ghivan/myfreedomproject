@@ -11,14 +11,12 @@ const initialState = {
     list: [],
 };
 
-export const fetchTripsList = (dispatch, trips) => {
-    dispatch({
+export const fetchTripsList = trips => ({
         type: ActionTypes.GET_LIST,
         payload: {
             trips
         }
-    })
-};
+    });
 
 const __fetchTripsList = (state, action) => {
     return {
@@ -27,14 +25,12 @@ const __fetchTripsList = (state, action) => {
     };
 };
 
-export const addTrip = (dispatch, trip) => {
-    dispatch({
+export const addTrip = trip => ({
         type: ActionTypes.ADD_TRIP,
         payload: {
             trip
         }
-    })
-};
+    });
 
 const __addTrip = (state, action) => {
     const newTripsList = state.list.slice();
@@ -45,14 +41,12 @@ const __addTrip = (state, action) => {
     };
 };
 
-export const updateTrip = (dispatch, trip) => {
-    dispatch({
+export const updateTrip = trip => ({
         type: ActionTypes.UPDATE_TRIP,
         payload: {
             trip
         }
-    })
-};
+    });
 
 const __updateTrip = (state, action) => {
     const newTripsList = state.list.slice();
@@ -64,14 +58,12 @@ const __updateTrip = (state, action) => {
     };
 };
 
-export const deleteTrip = (dispatch, tripId) => {
-    dispatch({
+export const deleteTrip = tripId => ({
         type: ActionTypes.DELETE_TRIP,
         payload: {
             id: tripId
         }
-    })
-};
+    });
 
 const __deleteTrip = (state, action) => {
     const newTripsList = state.list.slice();

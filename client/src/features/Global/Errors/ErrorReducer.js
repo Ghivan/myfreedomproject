@@ -7,14 +7,12 @@ const initialState = {
     message: ''
 };
 
-export const setError = (dispatch, message) => {
-    dispatch({
+export const setError = message => ({
         type: ActionTypes.ERROR_OCCURRED,
         payload: {
             message
         }
-    })
-};
+    });
 
 const __setError = (state, action) => {
     return {
@@ -23,11 +21,9 @@ const __setError = (state, action) => {
     };
 };
 
-export const clearError = () => dispatch => {
-    dispatch({
+export const clearError = () => ({
         type: ActionTypes.CLEAR_ERROR
-    })
-};
+    });
 
 const __clearError = (state) => {
     return {

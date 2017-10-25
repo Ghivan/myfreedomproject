@@ -13,10 +13,10 @@ export const LocationService = {
         return (dispatch) => {
             APIDriver.getAll('locations')
                 .then((locations) => {
-                    fetchLocationsList(dispatch, locations);
+                    dispatch(fetchLocationsList(locations));
                 })
                 .catch(err => {
-                    setError(dispatch, err.message)
+                    dispatch(setError(err.message))
                 })
         };
     },
@@ -25,10 +25,10 @@ export const LocationService = {
         return (dispatch) => {
             APIDriver.add('locations', location)
                 .then((location) => {
-                    addLocation(dispatch, location)
+                    dispatch(addLocation(location))
                 })
                 .catch(err => {
-                    setError(dispatch, err.message)
+                    dispatch(setError(err.message))
                 })
         };
     },
@@ -37,10 +37,10 @@ export const LocationService = {
         return (dispatch) => {
             APIDriver.update('locations', locationId, updatedLocation)
                 .then((location) => {
-                    updateLocation(dispatch, location);
+                    dispatch(updateLocation(location));
                 })
                 .catch(err => {
-                    setError(dispatch, err.message)
+                    dispatch(setError(err.message))
                 })
         };
     },
@@ -49,10 +49,10 @@ export const LocationService = {
         return (dispatch) => {
             APIDriver.remove('locations', locationId)
                 .then((location) => {
-                    deleteLocation(dispatch, locationId);
+                    dispatch(deleteLocation(locationId));
                 })
                 .catch(err => {
-                    setError(dispatch, err.message)
+                    dispatch(setError(err.message))
                 })
         };
     }

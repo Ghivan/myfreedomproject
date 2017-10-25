@@ -13,10 +13,10 @@ export const TripsService = {
         return (dispatch) => {
             APIDriver.getAll('trips')
                 .then((trips) => {
-                    fetchTripsList(dispatch, trips);
+                    dispatch(fetchTripsList(trips));
                 })
                 .catch(err => {
-                    setError(dispatch, err.message)
+                    dispatch(setError(err.message))
                 })
         };
     },
@@ -25,10 +25,10 @@ export const TripsService = {
         return (dispatch) => {
             APIDriver.add('trips', newTrip)
                 .then((trip) => {
-                    addTrip(dispatch, trip)
+                    dispatch(addTrip(trip))
                 })
                 .catch(err => {
-                    setError(dispatch, err.message)
+                    dispatch(setError(err.message))
                 })
         };
     },
@@ -37,10 +37,10 @@ export const TripsService = {
         return (dispatch) => {
             APIDriver.update('trips', tripId, updatedTrip)
                 .then((trip) => {
-                    updateTrip(dispatch, trip);
+                    dispatch(updateTrip(trip));
                 })
                 .catch(err => {
-                    setError(dispatch, err.message)
+                    dispatch(setError(err.message))
                 })
         };
     },
@@ -49,10 +49,10 @@ export const TripsService = {
         return (dispatch) => {
             APIDriver.remove('trips', tripId)
                 .then((trip) => {
-                    deleteTrip(dispatch, tripId);
+                    dispatch(deleteTrip(tripId));
                 })
                 .catch(err => {
-                    setError(dispatch, err.message)
+                    dispatch(setError(err.message))
                 })
         };
     }

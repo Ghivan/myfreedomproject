@@ -25,9 +25,7 @@ it('should populate list with received data', () => {
     const receivedLocations = getLocationsList();
     const store = mockStore(initialState);
 
-    store.dispatch(dispatch => {
-        fetchLocationsList(dispatch, receivedLocations)
-    });
+    store.dispatch(fetchLocationsList(receivedLocations));
 
     const actionEmitted = store.getActions()[0];
     const updatedState = LocationsReducer(initialState, actionEmitted);
@@ -43,9 +41,7 @@ it('should delete location from list', () => {
     const locationToDelete = initialState.list[0];
     const store = mockStore(initialState);
 
-    store.dispatch(dispatch => {
-        deleteLocation(dispatch, locationToDelete.id)
-    });
+    store.dispatch(deleteLocation(locationToDelete.id));
 
     const actionEmitted = store.getActions()[0];
     const updatedState = LocationsReducer(initialState, actionEmitted);

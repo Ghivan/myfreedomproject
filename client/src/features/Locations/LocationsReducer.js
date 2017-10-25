@@ -11,14 +11,12 @@ const initialState = {
     list: []
 };
 
-export const fetchLocationsList = (dispatch, locations) => {
-    dispatch({
+export const fetchLocationsList = locations => ({
         type: ActionTypes.GET_LIST,
         payload: {
             locations
         }
-    })
-};
+    });
 
 const __fetchLocationsList = (state, action) => {
     return {
@@ -27,14 +25,12 @@ const __fetchLocationsList = (state, action) => {
     };
 };
 
-export const addLocation = (dispatch, location) => {
-    dispatch({
+export const addLocation = location => ({
         type: ActionTypes.ADD_LOCATION,
         payload: {
             location
         }
-    })
-};
+    });
 
 const __addLocation = (state, action) => {
     const newLocationsList = state.list.slice();
@@ -45,14 +41,12 @@ const __addLocation = (state, action) => {
     };
 };
 
-export const updateLocation = (dispatch, location) => {
-    dispatch({
+export const updateLocation = location => ({
         type: ActionTypes.UPDATE_LOCATION,
         payload: {
             location
         }
-    })
-};
+    });
 
 const __updateLocation = (state, action) => {
     const newLocationsList = state.list.slice();
@@ -64,14 +58,12 @@ const __updateLocation = (state, action) => {
     };
 };
 
-export const deleteLocation = (dispatch, locationId) => {
-    dispatch({
+export const deleteLocation = locationId => ({
         type: ActionTypes.DELETE_LOCATION,
         payload: {
             id: locationId
         }
-    })
-};
+    });
 
 const __deleteLocation = (state, action) => {
     const newLocationsList = state.list.slice();

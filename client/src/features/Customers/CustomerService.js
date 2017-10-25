@@ -12,10 +12,10 @@ export const CustomersService = {
         return (dispatch) => {
             APIDriver.getAll('customers')
                 .then((customers) => {
-                    fetchCustomersList(dispatch, customers);
+                    dispatch(fetchCustomersList(customers));
                 })
                 .catch(err => {
-                    setError(dispatch, err.message)
+                    dispatch(setError(err.message))
                 })
         };
     },
@@ -24,10 +24,10 @@ export const CustomersService = {
         return (dispatch) => {
             APIDriver.add('customers', newCustomer)
                 .then((customer) => {
-                    addCustomer(dispatch, customer)
+                    dispatch(addCustomer(customer))
                 })
                 .catch(err => {
-                    setError(dispatch, err.message)
+                    dispatch(setError(err.message))
                 })
         };
     },
@@ -36,10 +36,10 @@ export const CustomersService = {
         return (dispatch) => {
             APIDriver.update('customers', customerId, updatedCustomer)
                 .then((customer) => {
-                    updateCustomer(dispatch, customer);
+                    dispatch(updateCustomer(customer));
                 })
                 .catch(err => {
-                    setError(dispatch, err.message)
+                    dispatch(setError(err.message))
                 })
         };
     },
@@ -48,10 +48,10 @@ export const CustomersService = {
         return (dispatch) => {
             APIDriver.remove('customers', customerId)
                 .then((customer) => {
-                    deleteCustomer(dispatch, customerId);
+                    dispatch(deleteCustomer(customerId));
                 })
                 .catch(err => {
-                    setError(dispatch, err.message)
+                    dispatch(setError(err.message))
                 })
         };
     }

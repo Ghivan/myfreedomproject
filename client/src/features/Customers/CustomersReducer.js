@@ -11,14 +11,12 @@ const initialState = {
     list: []
 };
 
-export const fetchCustomersList = (dispatch, customers) => {
-    dispatch({
+export const fetchCustomersList = customers => ({
         type: ActionTypes.GET_LIST,
         payload: {
             customers
         }
-    })
-};
+    });
 
 const __fetchCustomersList = (state, action) => {
     return {
@@ -27,14 +25,12 @@ const __fetchCustomersList = (state, action) => {
     };
 };
 
-export const addCustomer = (dispatch, customer) => {
-    dispatch({
+export const addCustomer = customer => ({
         type: ActionTypes.ADD_CUSTOMER,
         payload: {
             customer
         }
-    })
-};
+    });
 
 const __addCustomer = (state, action) => {
     const newCustomersList = state.list.slice();
@@ -45,14 +41,12 @@ const __addCustomer = (state, action) => {
     };
 };
 
-export const updateCustomer = (dispatch, customer) => {
-    dispatch({
+export const updateCustomer = customer => ({
         type: ActionTypes.UPDATE_CUSTOMER,
         payload: {
             customer
         }
-    })
-};
+    });
 
 const __updateCustomer = (state, action) => {
     const newCustomersList = state.list.slice();
@@ -64,14 +58,12 @@ const __updateCustomer = (state, action) => {
     };
 };
 
-export const deleteCustomer = (dispatch, customerId) => {
-    dispatch({
+export const deleteCustomer = customerId => ({
         type: ActionTypes.DELETE_CUSTOMER,
         payload: {
             id: customerId
         }
-    })
-};
+    });
 
 const __deleteCustomer = (state, action) => {
     const newCustomersList = state.list.slice();
