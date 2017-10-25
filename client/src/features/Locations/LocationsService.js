@@ -4,8 +4,9 @@ import {
     addLocation,
     updateLocation,
     deleteLocation,
-    setError
 } from './LocationsReducer';
+
+import { setError } from '../Global/Errors/ErrorReducer';
 
 export const LocationService = {
     fetchLocations: () => {

@@ -3,9 +3,9 @@ import {
     fetchCustomersList,
     addCustomer,
     updateCustomer,
-    deleteCustomer,
-    setError
+    deleteCustomer
 } from './CustomersReducer';
+import { setError } from '../Global/Errors/ErrorReducer';
 
 export const CustomersService = {
     fetchCustomers: () => {

@@ -4,13 +4,11 @@ const ActionTypes = {
     CLEAR_SELECTED_CUSTOMER: 'CUSTOMERS/ CLEAR SELECTED',
     ADD_CUSTOMER: 'CUSTOMERS/ ADD',
     UPDATE_CUSTOMER: 'CUSTOMERS/ UPDATE',
-    DELETE_CUSTOMER: 'CUSTOMERS/ DELETE',
-    ERROR_OCCURRED: 'CUSTOMERS/ ERROR OCCURRED'
+    DELETE_CUSTOMER: 'CUSTOMERS/ DELETE'
 };
 
 const initialState = {
-    list: [],
-    errorMessage: ''
+    list: []
 };
 
 export const fetchCustomersList = (dispatch, customers) => {
@@ -85,22 +83,6 @@ const __deleteCustomer = (state, action) => {
     };
 };
 
-export const setError = (dispatch, message) => {
-    dispatch({
-        type: ActionTypes.ERROR_OCCURRED,
-        payload: {
-            errorMessage: message
-        }
-    })
-};
-
-const __setError = (state, action) => {
-    return {
-        ...state,
-        errorMessage: action.payload.errorMessage
-    };
-};
-
 export default (state = initialState, action) => {
     switch (action.type) {
         case ActionTypes.GET_LIST:
@@ -111,8 +93,6 @@ export default (state = initialState, action) => {
             return __updateCustomer(state, action);
         case ActionTypes.DELETE_CUSTOMER:
             return __deleteCustomer(state, action);
-        case ActionTypes.ERROR_OCCURRED:
-            return __setError(state, action);
         default:
             return state
     }

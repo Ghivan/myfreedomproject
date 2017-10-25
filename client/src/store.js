@@ -5,11 +5,13 @@ import thunk from 'redux-thunk';
 import LocationReducer from './features/Locations/LocationsReducer';
 import TripsReducer from './features/Trips/TripsReducer';
 import CustomersReducer from './features/Customers/CustomersReducer';
+import ErrorReducer from './features/Global/Errors/ErrorReducer';
 
 const CombinedReducer = combineReducers({
         locations: LocationReducer,
         trips: TripsReducer,
-        customers: CustomersReducer
+        customers: CustomersReducer,
+        errors: ErrorReducer
     }
 );
 

@@ -3,9 +3,10 @@ import {
     fetchTripsList,
     addTrip,
     updateTrip,
-    deleteTrip,
-    setError
+    deleteTrip
 } from './TripsReducer';
+
+import { setError } from '../Global/Errors/ErrorReducer';
 
 export const TripsService = {
     fetchTrips: () => {

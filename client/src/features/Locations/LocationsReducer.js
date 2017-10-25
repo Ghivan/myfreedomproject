@@ -5,12 +5,10 @@ const ActionTypes = {
     ADD_LOCATION: 'LOCATIONS/ ADD',
     UPDATE_LOCATION: 'LOCATIONS/ UPDATE',
     DELETE_LOCATION: 'LOCATIONS/ DELETE',
-    ERROR_OCCURRED: 'LOCATIONS/ ERROR OCCURRED'
 };
 
 const initialState = {
-    list: [],
-    errorMessage: ''
+    list: []
 };
 
 export const fetchLocationsList = (dispatch, locations) => {
@@ -85,22 +83,6 @@ const __deleteLocation = (state, action) => {
     };
 };
 
-export const setError = (dispatch, message) => {
-    dispatch({
-        type: ActionTypes.ERROR_OCCURRED,
-        payload: {
-            errorMessage: message
-        }
-    })
-};
-
-const __setError = (state, action) => {
-    return {
-        ...state,
-        errorMessage: action.payload.errorMessage
-    };
-};
-
 export default (state = initialState, action) => {
     switch (action.type) {
         case ActionTypes.GET_LIST:
@@ -111,8 +93,6 @@ export default (state = initialState, action) => {
             return __updateLocation(state, action);
         case ActionTypes.DELETE_LOCATION:
             return __deleteLocation(state, action);
-        case ActionTypes.ERROR_OCCURRED:
-            return __setError(state, action);
         default:
             return state
     }

@@ -4,14 +4,11 @@ const ActionTypes = {
     CLEAR_SELECTED_TRIP: 'TRIPS/ CLEAR SELECTED',
     ADD_TRIP: 'TRIPS/ ADD',
     UPDATE_TRIP: 'TRIPS/ UPDATE',
-    DELETE_TRIP: 'TRIPS/ DELETE',
-    ERROR_OCCURRED: 'TRIPS/ ERROR OCCURRED'
+    DELETE_TRIP: 'TRIPS/ DELETE'
 };
 
 const initialState = {
     list: [],
-    errorMessage: '',
-    selectedTrip: null
 };
 
 export const fetchTripsList = (dispatch, trips) => {
@@ -86,22 +83,6 @@ const __deleteTrip = (state, action) => {
     };
 };
 
-export const setError = (dispatch, message) => {
-    dispatch({
-        type: ActionTypes.ERROR_OCCURRED,
-        payload: {
-            errorMessage: message
-        }
-    })
-};
-
-const __setError = (state, action) => {
-    return {
-        ...state,
-        errorMessage: action.payload.errorMessage
-    };
-};
-
 export default (state = initialState, action) => {
     switch (action.type) {
         case ActionTypes.GET_LIST:
@@ -112,8 +93,6 @@ export default (state = initialState, action) => {
             return __updateTrip(state, action);
         case ActionTypes.DELETE_TRIP:
             return __deleteTrip(state, action);
-        case ActionTypes.ERROR_OCCURRED:
-            return __setError(state, action);
         default:
             return state
     }

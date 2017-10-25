@@ -63,8 +63,8 @@ export class AppRouter extends React.Component {
             <Router>
                 <div>
                     <MainMenu/>
-                    <ErrorBlock message={this.state.errors}
-                                clearError={() => this.setState({errors: ''})}
+                    <ErrorBlock message={this.props.errors.message}
+                                clearError={this.props.clearError}
                     />
                     <ConfirmationBlock status={this.state.confirmationBlockConfig.isShown}
                                        message={this.state.confirmationBlockConfig.message}
