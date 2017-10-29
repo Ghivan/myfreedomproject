@@ -1,13 +1,16 @@
 import configureStore from 'redux-mock-store'
-import thunk from 'redux-thunk';
 
+import {APIDriver} from "../api/api";
+import {LocationService} from "../features/Locations/LocationsService";
 import LocationsReducer, {
     ActionTypes,
     fetchLocationsList,
     deleteLocation
 } from '../features/Locations/LocationsReducer';
 
-const mockStore = configureStore([thunk]);
+
+
+const mockStore = configureStore();
 const getInitialState = () => ({
   list: []
 });
@@ -49,4 +52,23 @@ it('should delete location from list', () => {
 
     expect(actionEmitted.type).toBe(ActionTypes.DELETE_LOCATION);
     expect(index).toBe(-1);
+});
+
+it('LocationsService should receive locations list from server', () => {
+    const originalAPIGetAllFn = APIDriver.getAll;
+    const locationsList = getLocationsList();
+    const initialState = {
+        list: []
+    };
+    const store = mockStore(initialState);
+    APIDriver.getAll = () =>  Promise.resolve(locationsList);
+
+    LocationService.fetchLocations()(store.dispatch).then(() => {
+        const actionEmitted = store.getActions()[0];
+        const updatedState = LocationsReducer(initialState, actionEmitted);
+
+        APIDriver.getAll = originalAPIGetAllFn;
+        expect(actionEmitted.type).toBe(ActionTypes.GET_LIST);
+        expect(updatedState.list).toEqual(locationsList);
+    });
 });

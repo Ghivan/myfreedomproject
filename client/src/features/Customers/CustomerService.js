@@ -10,7 +10,7 @@ import { setError } from '../Global/Errors/ErrorReducer';
 export const CustomersService = {
     fetchCustomers: () => {
         return (dispatch) => {
-            APIDriver.getAll('customers')
+            return APIDriver.getAll('customers')
                 .then((customers) => {
                     dispatch(fetchCustomersList(customers));
                 })
@@ -22,7 +22,7 @@ export const CustomersService = {
 
     addCustomer: (newCustomer) => {
         return (dispatch) => {
-            APIDriver.add('customers', newCustomer)
+            return APIDriver.add('customers', newCustomer)
                 .then((customer) => {
                     dispatch(addCustomer(customer))
                 })
@@ -34,7 +34,7 @@ export const CustomersService = {
 
     updateCustomer: (customerId, updatedCustomer) => {
         return (dispatch) => {
-            APIDriver.update('customers', customerId, updatedCustomer)
+            return APIDriver.update('customers', customerId, updatedCustomer)
                 .then((customer) => {
                     dispatch(updateCustomer(customer));
                 })
@@ -46,7 +46,7 @@ export const CustomersService = {
 
     deleteCustomer: (customerId) => {
         return (dispatch) => {
-            APIDriver.remove('customers', customerId)
+            return APIDriver.remove('customers', customerId)
                 .then((customer) => {
                     dispatch(deleteCustomer(customerId));
                 })

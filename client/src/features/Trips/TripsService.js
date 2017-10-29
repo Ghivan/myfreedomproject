@@ -11,7 +11,7 @@ import { setError } from '../Global/Errors/ErrorReducer';
 export const TripsService = {
     fetchTrips: () => {
         return (dispatch) => {
-            APIDriver.getAll('trips')
+            return APIDriver.getAll('trips')
                 .then((trips) => {
                     dispatch(fetchTripsList(trips));
                 })
@@ -23,7 +23,7 @@ export const TripsService = {
 
     addTrip: (newTrip) => {
         return (dispatch) => {
-            APIDriver.add('trips', newTrip)
+            return APIDriver.add('trips', newTrip)
                 .then((trip) => {
                     dispatch(addTrip(trip))
                 })
@@ -35,7 +35,7 @@ export const TripsService = {
 
     updateTrip: (tripId, updatedTrip) => {
         return (dispatch) => {
-            APIDriver.update('trips', tripId, updatedTrip)
+            return APIDriver.update('trips', tripId, updatedTrip)
                 .then((trip) => {
                     dispatch(updateTrip(trip));
                 })
@@ -47,7 +47,7 @@ export const TripsService = {
 
     deleteTrip: (tripId) => {
         return (dispatch) => {
-            APIDriver.remove('trips', tripId)
+            return APIDriver.remove('trips', tripId)
                 .then((trip) => {
                     dispatch(deleteTrip(tripId));
                 })

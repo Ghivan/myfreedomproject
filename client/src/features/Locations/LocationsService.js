@@ -11,7 +11,7 @@ import { setError } from '../Global/Errors/ErrorReducer';
 export const LocationService = {
     fetchLocations: () => {
         return (dispatch) => {
-            APIDriver.getAll('locations')
+            return APIDriver.getAll('locations')
                 .then((locations) => {
                     dispatch(fetchLocationsList(locations));
                 })
@@ -35,7 +35,7 @@ export const LocationService = {
 
     updateLocation: (locationId, updatedLocation) => {
         return (dispatch) => {
-            APIDriver.update('locations', locationId, updatedLocation)
+            return APIDriver.update('locations', locationId, updatedLocation)
                 .then((location) => {
                     dispatch(updateLocation(location));
                 })
@@ -47,7 +47,7 @@ export const LocationService = {
 
     deleteLocation: (locationId) => {
         return (dispatch) => {
-            APIDriver.remove('locations', locationId)
+            return APIDriver.remove('locations', locationId)
                 .then((location) => {
                     dispatch(deleteLocation(locationId));
                 })
