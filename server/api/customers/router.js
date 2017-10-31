@@ -8,33 +8,20 @@ const Validator = require('../../model/validators');
 
 
 router.get('/', (req, res, next) => {
-    Promise.all([TripModel.find(), CustomerModel.find()]).then(([trips, customers]) => {
-        const normalizedTrips =_.keyBy(trips.map(transform), trip => trip.id);
-        customers.forEach(customer => {
-            customer.trips = customer.trips.map(tripId => normalizedTrips[tripId]);
-        });
+    CustomerModel.find().then(customers => {
         res.json(customers.map(transform));
     }, next)
 });
 
 router.get('/:id', (req, res, next) => {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         res.status(404);
         res.end();
         return next();
     }
     CustomerModel.findById(req.params.id).then(customer => {
-        if (customer){
-            TripModel.find({_id :{ $in: customer.trips }}).then(trips => {
-                customer.trips = customer.trips.map(customerTrip =>
-                    transform(
-                        trips.find(
-                            trip => trip._id.toString() === customerTrip.toString()
-                        )
-                    )
-                );
-                res.json(transform(customer));
-            });
+        if (customer) {
+            res.json(transform(customer));
         } else {
             res.status(404);
             res.end();
@@ -58,7 +45,7 @@ router.post('/', (req, res, next) => {
         }
     };
 
-    if (errors.CUSTOMER_FIRST_NAME_IS_EMPTY || errors.CUSTOMER_LAST_NAME_IS_EMPTY){
+    if (errors.CUSTOMER_FIRST_NAME_IS_EMPTY || errors.CUSTOMER_LAST_NAME_IS_EMPTY) {
         res.statusMessage = errors.toString();
         res.status(400);
         res.end();
@@ -71,10 +58,10 @@ router.post('/', (req, res, next) => {
         trips: requestedTrips
     });
 
-    if (requestedTrips.length > 0){
-        TripModel.find({_id :{ $in: requestedTrips }})
+    if (requestedTrips.length > 0) {
+        TripModel.find({_id: {$in: requestedTrips}})
             .then(trips => {
-                if (trips.length !== requestedTrips.length){
+                if (trips.length !== requestedTrips.length) {
                     res.statusMessage = 'Check trips existence!';
                     res.status(400);
                     res.end();
@@ -82,7 +69,6 @@ router.post('/', (req, res, next) => {
                 }
                 res.status(200);
                 NewCustomer.save().then(customer => {
-                    customer.trips = trips.map(transform);
                     res.json(transform(customer))
                 }, next);
             })
@@ -97,16 +83,13 @@ router.post('/', (req, res, next) => {
     } else {
         res.status(200);
         NewCustomer.save().then(customer => {
-            TripModel.find({_id :{ $in: customer.trips }}).then(trips => {
-                customer.trips = trips.map(transform);
-                res.json(transform(customer))
-            })
+            res.json(transform(customer));
         }, next);
     }
 });
 
 router.put('/:id', (req, res, next) => {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         res.status(404);
         res.end();
         return next();
@@ -114,18 +97,18 @@ router.put('/:id', (req, res, next) => {
 
     let {firstName, lastName} = req.body;
     let requestedTrips = null;
-    let errors =[];
+    let errors = [];
 
-    if (firstName){
-        if (!Validator.text(firstName)){
+    if (firstName) {
+        if (!Validator.text(firstName)) {
             errors.push('Invalid customer\'s first name');
         } else {
             firstName = firstName.trim()
         }
     }
 
-    if (lastName){
-        if (!Validator.text(lastName)){
+    if (lastName) {
+        if (!Validator.text(lastName)) {
             errors.push('Invalid customer\'s last name');
         } else {
             lastName = lastName.trim()
@@ -136,7 +119,7 @@ router.put('/:id', (req, res, next) => {
         requestedTrips = req.body.trips;
 
         requestedTrips.map(tripId => {
-            try{
+            try {
                 tripId = mongoose.Types.ObjectId(tripId)
             } catch (e) {
                 errors.push('Invalid trips id');
@@ -144,7 +127,7 @@ router.put('/:id', (req, res, next) => {
         });
     }
 
-    if (errors.length > 0){
+    if (errors.length > 0) {
         res.statusMessage = errors.join(' ');
         res.status(400);
         res.end();
@@ -155,28 +138,24 @@ router.put('/:id', (req, res, next) => {
         if (firstName) customer.firstName = firstName;
         if (lastName) customer.lastName = lastName;
 
-        if (requestedTrips){
-            TripModel.find({_id :{ $in: requestedTrips }}).then(trips => {
-                if (trips.length !== requestedTrips.length){
+        if (requestedTrips) {
+            TripModel.find({_id: {$in: requestedTrips}}).then(trips => {
+                if (trips.length !== requestedTrips.length) {
                     res.statusMessage = 'Check trips existence!';
                     res.status(400);
                     res.end();
                     return next();
                 }
-                customer.trips = requestedTrips;
                 res.status(200);
+                customer.trips = requestedTrips;
                 customer.save().then(customer => {
-                    customer.trips = trips.map(transform);
-                    res.json(transform(customer))
+                    res.json(transform(customer));
                 }, next);
             })
         } else {
             res.status(200);
             customer.save().then(customer => {
-                TripModel.find({_id :{ $in: customer.trips }}).then(trips => {
-                    customer.trips = trips.map(transform);
-                    res.json(transform(customer))
-                })
+                res.json(transform(customer));
             }, next);
         }
     })
@@ -184,14 +163,14 @@ router.put('/:id', (req, res, next) => {
 });
 
 router.delete('/:id', (req, res, next) => {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         res.status(404);
         res.end();
         return next();
     }
     CustomerModel.findById(req.params.id)
         .then(customer => {
-                if (customer){
+                if (customer) {
                     customer.remove();
                     res.json(transform(customer));
                 } else {

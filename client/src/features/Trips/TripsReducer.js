@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const ActionTypes = {
     GET_LIST: 'TRIPS/ GET LIST',
     SELECT: 'TRIPS/ SELECT',
@@ -19,9 +21,10 @@ export const fetchTripsList = trips => ({
     });
 
 const __fetchTripsList = (state, action) => {
+    const normalizedTrips = _.keyBy(action.payload.trips, trip => trip.id);
     return {
         ...state,
-        list: action.payload.trips
+        list: normalizedTrips
     };
 };
 
@@ -33,8 +36,8 @@ export const addTrip = trip => ({
     });
 
 const __addTrip = (state, action) => {
-    const newTripsList = state.list.slice();
-    newTripsList.push(action.payload.trip);
+    const newTripsList = Object.assign({}, state.list);
+    newTripsList[action.payload.trip.id] = action.payload.trip;
     return {
         ...state,
         list: newTripsList
@@ -49,9 +52,8 @@ export const updateTrip = trip => ({
     });
 
 const __updateTrip = (state, action) => {
-    const newTripsList = state.list.slice();
-    const index = newTripsList.findIndex(item => item.id === action.payload.trip.id);
-    newTripsList.splice(index, 1, action.payload.trip);
+    const newTripsList = Object.assign({}, state.list);
+    newTripsList[action.payload.trip.id] = action.payload.trip;
     return {
         ...state,
         list: newTripsList
@@ -66,9 +68,8 @@ export const deleteTrip = tripId => ({
     });
 
 const __deleteTrip = (state, action) => {
-    const newTripsList = state.list.slice();
-    const index = newTripsList.findIndex(item => item.id === action.payload.id);
-    newTripsList.splice(index, 1);
+    const newTripsList = Object.assign({}, state.list);
+    delete newTripsList[action.payload.id];
     return {
         ...state,
         list: newTripsList

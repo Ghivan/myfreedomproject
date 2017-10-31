@@ -74,8 +74,7 @@ export class AppRouter extends React.Component {
                     <Switch>
                         <Route exact path="/" component={MainPage}/>
                         <Route path="/locations">
-                            <LocationsRouter fetchLocations={this.props.fetchLocations}
-                                             locations={this.props.locations.list}
+                            <LocationsRouter locations={this.props.locations.list}
                                              remove={this.props.deleteLocation}
                                              add={this.props.addLocation}
                                              update={this.props.updateLocation}
@@ -84,8 +83,7 @@ export class AppRouter extends React.Component {
                             />
                         </Route>
                         <Route path="/trips">
-                            <TripsRouter fetchTrips={this.props.fetchTrips}
-                                         trips={this.props.trips.list}
+                            <TripsRouter trips={this.props.trips.list}
                                          remove={this.props.deleteTrip}
                                          allLocations={this.props.locations.list}
                                          add={this.props.addTrip}
@@ -95,8 +93,7 @@ export class AppRouter extends React.Component {
                             />
                         </Route>
                         <Route path="/customers">
-                            <CustomersRouter fetchCustomers={this.props.fetchCustomers}
-                                             customers={this.props.customers.list}
+                            <CustomersRouter customers={this.props.customers.list}
                                              remove={this.props.deleteCustomer}
                                              allTrips={this.props.trips.list}
                                              add={this.props.addCustomer}

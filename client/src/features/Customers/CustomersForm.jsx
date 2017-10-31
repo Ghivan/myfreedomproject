@@ -2,18 +2,13 @@ import React from 'react';
 
 import {ErrorBlock} from '../Global/Errors/ErrorMessage';
 
-const getTripsIdsFromCustomer = (customer) => {
-    return customer.trips.reduce((prev, curr) => {
-        if (curr.id) prev.push(curr.id);
-        return prev;
-    }, [])
-};
 
 const selectCustomer = (props, currentCustomer) => {
     if (props.id && props.customers && props.id !== currentCustomer.id) {
-        const selectedCustomer = Object.assign({}, props.customers.find(customers => customers.id === props.id));
+        const selectedCustomer = Object.assign({}, props.customers[props.id]);
         if (selectedCustomer.id) {
-            selectedCustomer.selectedTrips = getTripsIdsFromCustomer(selectedCustomer);
+            selectedCustomer.selectedTrips = props.customers[props.id].trips.slice();
+            delete selectedCustomer.trips;
             return selectedCustomer;
         }
     }
@@ -172,21 +167,21 @@ class CustomersForm extends React.Component {
                     <label>Select trips:</label>
                 </div>
                 <fieldset className="form-group">
-                    {this.props.allTrips.map(trip => {
+                    {Object.keys(this.props.allTrips).map(id => {
                         return (
-                            <div className="form-check form-check-inline" key={trip.id}>
+                            <div className="form-check form-check-inline" key={id}>
                                 <label className="form-check-label"
-                                       htmlFor={trip.id}
+                                       htmlFor={id}
                                 >
                                     <input className="form-check-input"
-                                           id={trip.id}
+                                           id={id}
                                            type="checkbox"
-                                           value={trip.id}
+                                           value={id}
                                            name="locations"
-                                           checked={(this.state.currentCustomer.selectedTrips.indexOf(trip.id) > -1)}
+                                           checked={(this.state.currentCustomer.selectedTrips.indexOf(id) > -1)}
                                            onChange={this.handleSelectedTrips}
                                     />
-                                    <span className="checkbox-label">{trip.name}</span>
+                                    <span className="checkbox-label">{this.props.allTrips[id].name}</span>
                                 </label>
                             </div>
                         )

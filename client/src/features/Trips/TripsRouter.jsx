@@ -20,24 +20,21 @@ export default class TripsRouter extends React.Component {
         };
     }
 
-    componentWillMount(){
-        this.props.fetchTrips();
-    }
-
     renderTripsTable = () => {
         const queryParams = parseQueryString(window.location.search.substr(1));
         let currentPage = queryParams.page >= 1 ? parseInt(queryParams.page, 10) : 1;
         return (
             <div>
                 <TripsTable trips={getDisplayedItems(this.props.trips, currentPage, this.state.itemsPerPage)}
+                            locations={this.props.allLocations}
                             remove={this.props.remove}
                             showPopup={this.props.showConfirmationBlock}
                             hidePopup={this.props.hideConfirmationBlock}
                 />
-                <Paginator isShown={this.props.trips.length > this.state.itemsPerPage}
+                <Paginator isShown={Object.keys(this.props.trips).length > this.state.itemsPerPage}
                            currentPage={currentPage}
                            currentElementIndex={null}
-                           totalItems={this.props.trips.length}
+                           totalItems={Object.keys(this.props.trips).length}
                            itemsPerPage={this.state.itemsPerPage}
                            urlPrefix={'/trips'}
                 />

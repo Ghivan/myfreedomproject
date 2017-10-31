@@ -10,20 +10,13 @@ const formatDate = (date) => {
     return `${String(year)}-${month < 10 ? '0' + String(month) : String(month)}-${day < 10 ? '0' + String(day) : String(day)}`
 };
 
-const getLocationsIdsFromTrip = (trip) => {
-    return trip.route.locations.reduce((prev, curr) => {
-        if (curr.id) prev.push(curr.id);
-        return prev;
-    }, [])
-};
-
 const selectTrip = (props, currentTrip) => {
     if (props.id && props.trips && props.id !== currentTrip.id) {
-        const selectedTrip = Object.assign({},props.trips.find(trips => trips.id === props.id));
+        const selectedTrip = Object.assign({},props.trips[props.id]);
         if (selectedTrip.id) {
-            selectedTrip.selectedLocations = getLocationsIdsFromTrip(selectedTrip);
-            selectedTrip.arrivalDate = formatDate(selectedTrip.route.arrivalDate);
-            selectedTrip.departureDate = formatDate(selectedTrip.route.departureDate);
+            selectedTrip.selectedLocations = props.trips[props.id].route.locations;
+            selectedTrip.arrivalDate = formatDate( props.trips[props.id].route.arrivalDate);
+            selectedTrip.departureDate = formatDate(props.trips[props.id].route.departureDate);
             delete selectedTrip.route;
             return selectedTrip;
         }
@@ -219,21 +212,21 @@ class TripsForm extends React.Component {
                     <label>Select locations:</label>
                 </div>
                 <fieldset className="form-group">
-                    {this.props.allLocations.map(location => {
+                    {Object.keys(this.props.allLocations).map(id => {
                         return (
-                            <div className="form-check form-check-inline" key={location.id}>
+                            <div className="form-check form-check-inline" key={id}>
                                 <label className="form-check-label"
-                                       htmlFor={location.id}
+                                       htmlFor={id}
                                 >
                                     <input className="form-check-input"
-                                           id={location.id}
+                                           id={id}
                                            type="checkbox"
-                                           value={location.id}
+                                           value={id}
                                            name="locations"
-                                           checked={(this.state.currentTrip.selectedLocations.indexOf(location.id) > -1)}
+                                           checked={(this.state.currentTrip.selectedLocations.indexOf(id) > -1)}
                                            onChange={this.handleSelectedLocations}
                                     />
-                                    <span className="checkbox-label">{`${location.city} (${location.country})`}</span>
+                                    <span className="checkbox-label">{`${this.props.allLocations[id].city} (${this.props.allLocations[id].country})`}</span>
                                 </label>
                             </div>
                         )

@@ -40,11 +40,33 @@ const renderPageButtons = (currentPage, lastPageNumber, urlPrefix) => {
 
 export const getDisplayedItems = (items, pageNumber, itemsPerPage) => {
     let startIndex = pageNumber*itemsPerPage - itemsPerPage;
-    if (startIndex >= items.length) {
-        return items.slice(-itemsPerPage)
-    } else {
-        return items.slice(startIndex, startIndex + itemsPerPage)
+    if (Array.isArray(items)){
+        if (startIndex >= items.length) {
+            return items.slice(-itemsPerPage)
+        } else {
+            return items.slice(startIndex, startIndex + itemsPerPage)
+        }
     }
+
+    if (typeof items === 'object'){
+        let keys = Object.keys(items);
+        let displayedLocations = {};
+        if (startIndex >= keys.length) {
+            keys.slice(-itemsPerPage).forEach(key => {
+                displayedLocations[key] = {};
+                Object.assign(displayedLocations[key], items[key])
+            })
+        } else {
+            keys.slice(startIndex, startIndex + itemsPerPage).forEach(key => {
+                displayedLocations[key] = {};
+                Object.assign(displayedLocations[key], items[key])
+            })
+        }
+        return displayedLocations;
+    }
+
+    return [];
+
 };
 
 export const Paginator = ({

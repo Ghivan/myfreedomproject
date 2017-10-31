@@ -9,11 +9,7 @@ const Validator = require('../../model/validators');
 const {escapeRegExp} = require('../../utils');
 
 router.get('/', (req, res, next) => {
-    Promise.all([TripModel.find(), LocationModel.find()]).then(([trips, locations]) => {
-        const normalizedLocations = _.keyBy(locations.map(transform), location => location.id);
-        trips.forEach(trip => {
-            trip.route.locations = trip.route.locations.map(locationId => normalizedLocations[locationId]);
-        });
+    TripModel.find().then(trips => {
         res.json(trips.map(transform));
     }, next)
 });
@@ -27,11 +23,7 @@ router.get('/:id', (req, res, next) => {
     TripModel.findById(req.params.id)
         .then(trip => {
             if (trip) {
-                LocationModel.find({_id: {$in: trip.route.locations}}).then(locations => {
-                    trip.route.locations = trip.route.locations.map(tripLoc =>
-                        transform(locations.find(location => location._id.toString() === tripLoc.toString())));
-                    res.json(transform(trip));
-                });
+                res.json(transform(trip));
             } else {
                 res.status(404);
                 res.end();
@@ -101,11 +93,7 @@ router.post('/', (req, res, next) => {
                 });
                 res.status(200);
                 NewTrip.save().then(trip => {
-                    LocationModel.find({_id: {$in: trip.route.locations}}).then(locations => {
-                        const normalizedLocations = _.keyBy(locations.map(transform), location => location.id);
-                        trip.route.locations = trip.route.locations.map(locationId => normalizedLocations[locationId]);
-                        res.json(transform(trip))
-                    })
+                    res.json(transform(trip))
                 }, next);
             })
         } else {
@@ -208,18 +196,13 @@ router.put('/:id', (req, res, next) => {
                     res.end();
                     return next();
                 }
-                trip.route.locations = requestedLocations;
                 trip.save().then(trip => {
-                    trip.route.locations = locations.map(transform);
                     res.json(transform(trip))
                 }, next);
             })
         } else {
             trip.save().then(trip => {
-                LocationModel.find({_id: {$in: trip.route.locations}}).then(locations => {
-                    trip.route.locations = locations.map(transform);
-                    res.json(transform(trip))
-                })
+                res.json(transform(trip))
             }, next);
         }
 

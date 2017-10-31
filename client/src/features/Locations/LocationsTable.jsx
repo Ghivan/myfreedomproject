@@ -29,18 +29,18 @@ const LocationsTable = ({locations, remove, showPopup, hidePopup}) =>
                 </thead>
                 <tbody>
                 {
-                    locations.map(location => {
+                    Object.keys(locations).map(id => {
                         return (
-                            <tr key={location.id} className={`${location.updated ? 'updated' : ''}`}>
-                                <td>{location.city}</td>
-                                <td>{location.country}</td>
+                            <tr key={id}>
+                                <td>{locations[id].city}</td>
+                                <td>{locations[id].country}</td>
                                 <td>
-                                    <Link to={`/locations/${location.id}`}
+                                    <Link to={`/locations/${id}`}
                                           className="btn btn-info btn-sm"
                                     >Update
                                     </Link>
                                     <button className="btn btn-danger btn-sm"
-                                            onClick={handleDeleteLocationBtn(location, showPopup,remove, hidePopup)}
+                                            onClick={handleDeleteLocationBtn(locations[id], showPopup,remove, hidePopup)}
                                     >Delete</button>
                                 </td>
                             </tr>

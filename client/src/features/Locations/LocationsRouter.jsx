@@ -16,10 +16,6 @@ export default class LocationsRouter extends React.Component {
         };
     }
 
-    componentWillMount(){
-        this.props.fetchLocations();
-    }
-
     renderLocationsTable = ({match}) => {
         const queryParams = parseQueryString(window.location.search.substr(1));
         let currentPage = queryParams.page >= 1 ? parseInt(queryParams.page, 10) : 1;
@@ -31,10 +27,10 @@ export default class LocationsRouter extends React.Component {
                     showPopup={this.props.showConfirmationBlock}
                     hidePopup={this.props.hideConfirmationBlock}
                 />
-                <Paginator isShown={this.props.locations.length > this.state.itemsPerPage}
+                <Paginator isShown={Object.keys(this.props.locations).length > this.state.itemsPerPage}
                            currentPage={currentPage}
                            currentElementIndex={null}
-                           totalItems={this.props.locations.length}
+                           totalItems={Object.keys(this.props.locations).length}
                            itemsPerPage={this.state.itemsPerPage}
                            urlPrefix={'/locations'}
                 />

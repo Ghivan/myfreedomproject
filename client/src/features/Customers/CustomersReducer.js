@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const ActionTypes = {
     GET_LIST: 'CUSTOMERS/ GET LIST',
     SELECT: 'CUSTOMERS/ SELECT',
@@ -19,9 +21,10 @@ export const fetchCustomersList = customers => ({
     });
 
 const __fetchCustomersList = (state, action) => {
+    const normalizedCustomers = _.keyBy(action.payload.customers, customer => customer.id);
     return {
         ...state,
-        list: action.payload.customers
+        list: normalizedCustomers
     };
 };
 
@@ -33,8 +36,8 @@ export const addCustomer = customer => ({
     });
 
 const __addCustomer = (state, action) => {
-    const newCustomersList = state.list.slice();
-    newCustomersList.push(action.payload.customer);
+    const newCustomersList = Object.assign({}, state.list);
+    newCustomersList[action.payload.customer.id] = action.payload.customer;
     return {
         ...state,
         list: newCustomersList
@@ -49,9 +52,8 @@ export const updateCustomer = customer => ({
     });
 
 const __updateCustomer = (state, action) => {
-    const newCustomersList = state.list.slice();
-    const index = newCustomersList.findIndex(item => item.id === action.payload.customer.id);
-    newCustomersList.splice(index, 1, action.payload.customer);
+    const newCustomersList = Object.assign({}, state.list);
+    newCustomersList[action.payload.customer.id] = action.payload.customer;
     return {
         ...state,
         list: newCustomersList
@@ -66,9 +68,8 @@ export const deleteCustomer = customerId => ({
     });
 
 const __deleteCustomer = (state, action) => {
-    const newCustomersList = state.list.slice();
-    const index = newCustomersList.findIndex(item => item.id === action.payload.id);
-    newCustomersList.splice(index, 1);
+    const newCustomersList = Object.assign({}, state.list);
+    delete newCustomersList[action.payload.id];
     return {
         ...state,
         list: newCustomersList

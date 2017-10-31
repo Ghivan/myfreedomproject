@@ -16,7 +16,7 @@ const handleDeleteTripBtn = (trip, showPopup, onAccept, hidePopup) => {
     }
 };
 
-const TripsTable = ({trips, remove, showPopup, hidePopup}) =>
+const TripsTable = ({trips, locations, remove, showPopup, hidePopup}) =>
     (
         <div>
             <table className="table table-responsive table-striped table-hover">
@@ -31,25 +31,25 @@ const TripsTable = ({trips, remove, showPopup, hidePopup}) =>
                 </thead>
                 <tbody>
                 {
-                    trips.map(trip => {
+                    Object.keys(trips).map(id => {
                         return (
-                            <tr key={trip.id} className={`${trip.updated ? 'updated' : ''}`}>
-                                <td>{trip.name}</td>
+                            <tr key={id}>
+                                <td>{trips[id].name}</td>
                                 <td>
                                     <ul>
-                                        {trip.route.locations.map(location => {
-                                            return <li key={location.id}>{location.city} ({location.country})</li>
+                                        {trips[id].route.locations.map(id => {
+                                            return <li key={id}>{locations[id].city} ({locations[id].country})</li>
                                         })}
                                     </ul>
                                 </td>
-                                <td>{new Date(trip.route.arrivalDate).toLocaleDateString()}</td>
-                                <td>{new Date(trip.route.departureDate).toLocaleDateString()}</td>
+                                <td>{new Date(trips[id].route.arrivalDate).toLocaleDateString()}</td>
+                                <td>{new Date(trips[id].route.departureDate).toLocaleDateString()}</td>
                                 <td>
-                                    <Link to={`/trips/${trip.id}`}
+                                    <Link to={`/trips/${id}`}
                                           className="btn btn-info btn-sm"
                                     >Update</Link>
                                     <button className="btn btn-danger btn-sm"
-                                            onClick={handleDeleteTripBtn(trip,showPopup,remove,hidePopup)}
+                                            onClick={handleDeleteTripBtn(trips[id],showPopup,remove,hidePopup)}
                                     >Delete</button>
                                 </td>
                             </tr>

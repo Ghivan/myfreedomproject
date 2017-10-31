@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export const ActionTypes = {
     GET_LIST: 'LOCATIONS/ GET LIST',
     SELECT: 'LOCATIONS/ SELECT',
@@ -19,9 +21,10 @@ export const fetchLocationsList = locations => ({
     });
 
 const __fetchLocationsList = (state, action) => {
+    const normalizedLocations = _.keyBy(action.payload.locations, location => location.id);
     return {
         ...state,
-        list: action.payload.locations
+        list: normalizedLocations
     };
 };
 
@@ -33,8 +36,8 @@ export const addLocation = location => ({
     });
 
 const __addLocation = (state, action) => {
-    const newLocationsList = state.list.slice();
-    newLocationsList.push(action.payload.location);
+    const newLocationsList = Object.assign({}, state.list);
+    newLocationsList[action.payload.location.id] = action.payload.location;
     return {
         ...state,
         list: newLocationsList
@@ -49,9 +52,8 @@ export const updateLocation = location => ({
     });
 
 const __updateLocation = (state, action) => {
-    const newLocationsList = state.list.slice();
-    const index = newLocationsList.findIndex(item => item.id === action.payload.location.id);
-    newLocationsList.splice(index, 1, action.payload.location);
+    const newLocationsList = Object.assign({}, state.list);
+    newLocationsList[action.payload.location.id] = action.payload.location;
     return {
         ...state,
         list: newLocationsList
@@ -66,9 +68,8 @@ export const deleteLocation = locationId => ({
     });
 
 const __deleteLocation = (state, action) => {
-    const newLocationsList = state.list.slice();
-    const index = newLocationsList.findIndex(item => item.id === action.payload.id);
-    newLocationsList.splice(index, 1);
+    const newLocationsList = Object.assign({}, state.list);
+    delete newLocationsList[action.payload.id];
     return {
         ...state,
         list: newLocationsList

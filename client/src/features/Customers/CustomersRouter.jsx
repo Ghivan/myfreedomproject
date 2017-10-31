@@ -12,7 +12,7 @@ import {parseQueryString} from "../../utils/utils";
 
 const RoutedCustomersForm = withRouter(CustomersForm);
 
-export default class LocationsRouter extends React.Component{
+export default class CustomersRouter extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -25,9 +25,6 @@ export default class LocationsRouter extends React.Component{
             }
         };
     }
-    componentWillMount(){
-        this.props.fetchCustomers();
-    }
 
     renderCustomersTable = () => {
         const queryParams = parseQueryString(window.location.search.substr(1));
@@ -35,14 +32,15 @@ export default class LocationsRouter extends React.Component{
         return (
             <div>
                 <CustomersTable customers={getDisplayedItems(this.props.customers, currentPage, this.state.itemsPerPage)}
+                                trips={this.props.allTrips}
                                 remove={this.props.remove}
                                 showPopup={this.props.showConfirmationBlock}
                                 hidePopup={this.props.hideConfirmationBlock}
                 />
-                <Paginator isShown={this.props.customers.length > this.state.itemsPerPage}
+                <Paginator isShown={Object.keys(this.props.customers).length > this.state.itemsPerPage}
                            currentPage={currentPage}
                            currentElementIndex={null}
-                           totalItems={this.props.customers.length}
+                           totalItems={Object.keys(this.props.customers).length}
                            itemsPerPage={this.state.itemsPerPage}
                            urlPrefix={'/customers'}
                 />
