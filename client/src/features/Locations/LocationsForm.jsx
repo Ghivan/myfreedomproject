@@ -2,12 +2,6 @@ import React from 'react';
 
 import {ErrorBlock} from '../Global/Errors/ErrorMessage';
 
-const selectLocation = (props, currentLocation) => {
-    if (props.id && props.locations && props.id !== currentLocation.id) {
-        return Object.assign({}, props.locations[props.id]);
-    }
-};
-
 class LocationsForm extends React.Component {
     constructor(props) {
         super(props);
@@ -22,19 +16,9 @@ class LocationsForm extends React.Component {
     }
 
     componentDidMount(){
-        const currentLocation = selectLocation(this.props, this.state.currentLocation);
-        if (currentLocation){
+        if (this.props.selectedLocation){
             this.setState({
-                currentLocation
-            })
-        }
-    }
-
-    componentWillReceiveProps(nextProps) {
-        const currentLocation = selectLocation(nextProps, this.state.currentLocation);
-        if (currentLocation){
-            this.setState({
-                currentLocation
+                currentLocation: this.props.selectedLocation
             })
         }
     }

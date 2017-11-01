@@ -16,6 +16,12 @@ export default class LocationsRouter extends React.Component {
         };
     }
 
+    selectLocation = (id) => {
+        if (this.props.locations[id]) {
+            return Object.assign({}, this.props.locations[id]);
+        }
+    };
+
     renderLocationsTable = ({match}) => {
         const queryParams = parseQueryString(window.location.search.substr(1));
         let currentPage = queryParams.page >= 1 ? parseInt(queryParams.page, 10) : 1;
@@ -41,6 +47,7 @@ export default class LocationsRouter extends React.Component {
     renderLocationsForm = ({match, history}) => {
         return (
             <RoutedLocationsForm locations={this.props.locations}
+                                 selectedLocation={this.selectLocation(match.params.id)}
                                  id={match.params.id}
                                  add={this.props.add}
                                  update={this.props.update}
