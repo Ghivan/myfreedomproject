@@ -40,8 +40,9 @@ const LocationsTable = ({locations, remove, showPopup, hidePopup}) =>
                                     >Update
                                     </Link>
                                     <button className="btn btn-danger btn-sm"
-                                            onClick={handleDeleteLocationBtn(locations[id], showPopup,remove, hidePopup)}
-                                    >Delete</button>
+                                            onClick={handleDeleteLocationBtn(locations[id], showPopup, remove, hidePopup)}
+                                    >Delete
+                                    </button>
                                 </td>
                             </tr>
                         )
@@ -57,11 +58,14 @@ const LocationsTable = ({locations, remove, showPopup, hidePopup}) =>
     );
 
 LocationsTable.propTypes = {
-    locations: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        city: PropTypes.string.isRequired,
-        country: PropTypes.string.isRequired
-    }))
+    locations: PropTypes.objectOf(
+        PropTypes.shape({
+                city: PropTypes.string,
+                country: PropTypes.string,
+                id: PropTypes.string,
+            }
+        )
+    )
 };
 
 export default LocationsTable;

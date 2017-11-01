@@ -1,26 +1,11 @@
 import _ from 'lodash';
-
-export const ActionTypes = {
-    GET_LIST: 'LOCATIONS/ GET LIST',
-    SELECT: 'LOCATIONS/ SELECT',
-    CLEAR_SELECTED_LOCATION: 'LOCATIONS/ CLEAR SELECTED',
-    ADD_LOCATION: 'LOCATIONS/ ADD',
-    UPDATE_LOCATION: 'LOCATIONS/ UPDATE',
-    DELETE_LOCATION: 'LOCATIONS/ DELETE',
-};
+import ActionTypes from './LocationActionTypes';
 
 const initialState = {
-    list: []
+    list: {}
 };
 
-export const fetchLocationsList = locations => ({
-        type: ActionTypes.GET_LIST,
-        payload: {
-            locations
-        }
-    });
-
-const __fetchLocationsList = (state, action) => {
+const reducerFetchLocationsList = (state, action) => {
     const normalizedLocations = _.keyBy(action.payload.locations, location => location.id);
     return {
         ...state,
@@ -28,14 +13,7 @@ const __fetchLocationsList = (state, action) => {
     };
 };
 
-export const addLocation = location => ({
-        type: ActionTypes.ADD_LOCATION,
-        payload: {
-            location
-        }
-    });
-
-const __addLocation = (state, action) => {
+const reducerAddLocation = (state, action) => {
     const newLocationsList = Object.assign({}, state.list);
     newLocationsList[action.payload.location.id] = action.payload.location;
     return {
@@ -44,14 +22,7 @@ const __addLocation = (state, action) => {
     };
 };
 
-export const updateLocation = location => ({
-        type: ActionTypes.UPDATE_LOCATION,
-        payload: {
-            location
-        }
-    });
-
-const __updateLocation = (state, action) => {
+const reducerUpdateLocation = (state, action) => {
     const newLocationsList = Object.assign({}, state.list);
     newLocationsList[action.payload.location.id] = action.payload.location;
     return {
@@ -60,14 +31,7 @@ const __updateLocation = (state, action) => {
     };
 };
 
-export const deleteLocation = locationId => ({
-        type: ActionTypes.DELETE_LOCATION,
-        payload: {
-            id: locationId
-        }
-    });
-
-const __deleteLocation = (state, action) => {
+const reducerDeleteLocation = (state, action) => {
     const newLocationsList = Object.assign({}, state.list);
     delete newLocationsList[action.payload.id];
     return {
@@ -79,13 +43,13 @@ const __deleteLocation = (state, action) => {
 export default (state = initialState, action) => {
     switch (action.type) {
         case ActionTypes.GET_LIST:
-            return __fetchLocationsList(state, action);
+            return reducerFetchLocationsList(state, action);
         case ActionTypes.ADD_LOCATION:
-            return __addLocation(state, action);
+            return reducerAddLocation(state, action);
         case ActionTypes.UPDATE_LOCATION:
-            return __updateLocation(state, action);
+            return reducerUpdateLocation(state, action);
         case ActionTypes.DELETE_LOCATION:
-            return __deleteLocation(state, action);
+            return reducerDeleteLocation(state, action);
         default:
             return state
     }

@@ -1,25 +1,36 @@
 import React from 'react';
 import './ErrorMessage.css';
 
-export const ErrorBlock = ({message, clearError}) => {
-    if (message){
-        let messageShowTime = setTimeout(() => clearError(), 2000);
-        return (
+const HIDE_MESSAGE_TIME = 2000;
 
-            <div className="messageWrapper"
-                 onClick={() => {
-                     clearInterval(messageShowTime);
-                     clearError();
-                 }}
-            >
-                <div className="alert alert-danger text-center messageBlock"
-                     role="alert"
+export class ErrorBlock extends React.Component {
+    componentWillReceiveProps(nextProps){
+        if (nextProps.message){
+            setTimeout(() => {
+                if(this.props.message){
+                    this.props.clearError();
+                }
+            }, HIDE_MESSAGE_TIME);
+        }
+    }
+    render({message, clearError} = this.props) {
+        if (message) {
+            return (
+
+                <div className="messageWrapper"
+                     onClick={() => {
+                         clearError();
+                     }}
                 >
-                    {message}
+                    <div className="alert alert-danger text-center messageBlock"
+                         role="alert"
+                    >
+                        {message}
+                    </div>
                 </div>
-            </div>
-        )
-    } else {
-        return null
+            )
+        } else {
+            return null
+        }
     }
 };

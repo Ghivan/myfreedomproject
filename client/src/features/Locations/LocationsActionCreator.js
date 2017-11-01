@@ -1,17 +1,39 @@
-import {APIDriver} from '../../api/api';
-import {
-    fetchLocationsList,
-    addLocation,
-    updateLocation,
-    deleteLocation,
-} from './LocationsReducer';
+import ActionTypes from './LocationActionTypes';
 
 import { setError } from '../Global/Errors/ErrorReducer';
 
-export const LocationService = {
+export const fetchLocationsList = locations => ({
+    type: ActionTypes.GET_LIST,
+    payload: {
+        locations
+    }
+});
+
+export const addLocation = location => ({
+    type: ActionTypes.ADD_LOCATION,
+    payload: {
+        location
+    }
+});
+
+export const updateLocation = location => ({
+    type: ActionTypes.UPDATE_LOCATION,
+    payload: {
+        location
+    }
+});
+
+export const deleteLocation = locationId => ({
+    type: ActionTypes.DELETE_LOCATION,
+    payload: {
+        id: locationId
+    }
+});
+
+export default {
     fetchLocations: () => {
-        return (dispatch) => {
-            return APIDriver.getAll('locations')
+        return (dispatch, getState, api) => {
+            return api.getAll('locations')
                 .then((locations) => {
                     dispatch(fetchLocationsList(locations));
                 })
@@ -22,8 +44,8 @@ export const LocationService = {
     },
 
     addLocation: (location) => {
-        return (dispatch) => {
-            APIDriver.add('locations', location)
+        return (dispatch, getState, api) => {
+            api.add('locations', location)
                 .then((location) => {
                     dispatch(addLocation(location))
                 })
@@ -34,8 +56,8 @@ export const LocationService = {
     },
 
     updateLocation: (locationId, updatedLocation) => {
-        return (dispatch) => {
-            return APIDriver.update('locations', locationId, updatedLocation)
+        return (dispatch, getState, api) => {
+            return api.update('locations', locationId, updatedLocation)
                 .then((location) => {
                     dispatch(updateLocation(location));
                 })
@@ -46,9 +68,9 @@ export const LocationService = {
     },
 
     deleteLocation: (locationId) => {
-        return (dispatch) => {
-            return APIDriver.remove('locations', locationId)
-                .then((location) => {
+        return (dispatch, getState, api) => {
+            return api.remove('locations', locationId)
+                .then(() => {
                     dispatch(deleteLocation(locationId));
                 })
                 .catch(err => {

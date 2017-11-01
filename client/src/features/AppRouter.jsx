@@ -19,7 +19,6 @@ export class AppRouter extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            itemsPerPage: 5,
             confirmationBlockConfig: {
                 isShown: false,
                 message: '',

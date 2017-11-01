@@ -1,19 +1,16 @@
 import _ from 'lodash';
+import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store'
 
-import {APIDriver} from "../api/api";
-import {LocationService} from "../features/Locations/LocationsService";
-import LocationsReducer, {
-    ActionTypes,
+import LocationActionCreator, {
     fetchLocationsList,
     deleteLocation
-} from '../features/Locations/LocationsReducer';
+} from '../features/Locations/LocationsActionCreator';
+import LocationsReducer from '../features/Locations/LocationsReducer';
+import ActionTypes from '../features/Locations/LocationActionTypes';
 
-
-
-const mockStore = configureStore();
 const getInitialState = () => ({
-  list: []
+    list: {}
 });
 const getLocationsList = () => [
     {
@@ -27,6 +24,10 @@ const getNormalizedLocationList = () => {
     return _.keyBy(list, list => list.id)
 };
 
+const middlewares = [thunk.withExtraArgument({
+    getAll: () => Promise.resolve(getLocationsList())
+})];
+const mockStore = configureStore(middlewares);
 
 it('should populate list with received data', () => {
     const initialState = getInitialState();
@@ -61,21 +62,18 @@ it('should delete location from list', () => {
 });
 
 it('LocationsService should receive locations list from server', () => {
-    const originalAPIGetAllFn = APIDriver.getAll;
-    const locationsList = getLocationsList();
     const normalizedLocationList = getNormalizedLocationList();
     const initialState = {
-        list: []
+        list: {}
     };
     const store = mockStore(initialState);
-    APIDriver.getAll = () =>  Promise.resolve(locationsList);
 
-    LocationService.fetchLocations()(store.dispatch).then(() => {
-        const actionEmitted = store.getActions()[0];
-        const updatedState = LocationsReducer(initialState, actionEmitted);
+    store.dispatch(LocationActionCreator.fetchLocations())
+        .then(() => {
+            const actionEmitted = store.getActions()[0];
+            const updatedState = LocationsReducer(initialState, actionEmitted);
 
-        APIDriver.getAll = originalAPIGetAllFn;
-        expect(actionEmitted.type).toBe(ActionTypes.GET_LIST);
-        expect(updatedState.list).toEqual(normalizedLocationList);
-    });
+            expect(actionEmitted.type).toBe(ActionTypes.GET_LIST);
+            expect(updatedState.list).toEqual(normalizedLocationList);
+        });
 });
