@@ -29,7 +29,7 @@ class TripsForm extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.selectedTrip && nextProps.selectedTrip.id !==  this.props.selectedTrip) {
+        if (nextProps.selectedTrip && nextProps.selectedTrip.id !==  this.state.currentTrip.id) {
             this.setState({
                 currentTrip: nextProps.selectedTrip
             })

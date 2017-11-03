@@ -31,7 +31,7 @@ const CustomersTable = ({customers, trips, remove, showPopup, hidePopup}) =>
                 {
                     Object.keys(customers).map(id => {
                         return (
-                            <tr key={customers[id]}>
+                            <tr key={id}>
                                 <td>{customers[id].firstName}</td>
                                 <td>{customers[id].lastName}</td>
                                 <td>

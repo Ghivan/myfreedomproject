@@ -9,9 +9,9 @@ import CustomersReducer from './features/Customers/CustomersReducer';
 import ErrorReducer from './features/Global/Errors/ErrorReducer';
 
 const CombinedReducer = combineReducers({
-        locations: LocationReducer,
-        trips: TripsReducer,
-        customers: CustomersReducer,
+        locationsScreen: LocationReducer,
+        tripsScreen: TripsReducer,
+        customersScreen: CustomersReducer,
         errors: ErrorReducer
     }
 );

@@ -1,5 +1,4 @@
 import ActionTypes from './LocationActionTypes';
-
 import { setError } from '../Global/Errors/ErrorReducer';
 
 export const fetchLocationsList = locations => ({

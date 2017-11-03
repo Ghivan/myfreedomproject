@@ -1,16 +1,38 @@
-import {APIDriver} from '../../api/api';
-import {
-    fetchCustomersList,
-    addCustomer,
-    updateCustomer,
-    deleteCustomer
-} from './CustomersReducer';
+import ActionTypes from './CustomersActionTypes';
 import { setError } from '../Global/Errors/ErrorReducer';
 
-export const CustomersService = {
+export const fetchCustomersList = customers => ({
+    type: ActionTypes.GET_LIST,
+    payload: {
+        customers
+    }
+});
+
+export const addCustomer = customer => ({
+    type: ActionTypes.ADD_CUSTOMER,
+    payload: {
+        customer
+    }
+});
+
+export const updateCustomer = customer => ({
+    type: ActionTypes.UPDATE_CUSTOMER,
+    payload: {
+        customer
+    }
+});
+
+export const deleteCustomer = customerId => ({
+    type: ActionTypes.DELETE_CUSTOMER,
+    payload: {
+        id: customerId
+    }
+});
+
+export default {
     fetchCustomers: () => {
-        return (dispatch) => {
-            return APIDriver.getAll('customers')
+        return (dispatch, getState, api) => {
+            return api.getAll('customers')
                 .then((customers) => {
                     dispatch(fetchCustomersList(customers));
                 })
@@ -21,8 +43,8 @@ export const CustomersService = {
     },
 
     addCustomer: (newCustomer) => {
-        return (dispatch) => {
-            return APIDriver.add('customers', newCustomer)
+        return (dispatch, getState, api) => {
+            return api.add('customers', newCustomer)
                 .then((customer) => {
                     dispatch(addCustomer(customer))
                 })
@@ -33,8 +55,8 @@ export const CustomersService = {
     },
 
     updateCustomer: (customerId, updatedCustomer) => {
-        return (dispatch) => {
-            return APIDriver.update('customers', customerId, updatedCustomer)
+        return (dispatch, getState, api) => {
+            return api.update('customers', customerId, updatedCustomer)
                 .then((customer) => {
                     dispatch(updateCustomer(customer));
                 })
@@ -45,8 +67,8 @@ export const CustomersService = {
     },
 
     deleteCustomer: (customerId) => {
-        return (dispatch) => {
-            return APIDriver.remove('customers', customerId)
+        return (dispatch, getState, api) => {
+            return api.remove('customers', customerId)
                 .then((customer) => {
                     dispatch(deleteCustomer(customerId));
                 })

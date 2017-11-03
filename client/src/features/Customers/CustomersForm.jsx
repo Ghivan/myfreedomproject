@@ -2,18 +2,6 @@ import React from 'react';
 
 import {ErrorBlock} from '../Global/Errors/ErrorMessage';
 
-
-const selectCustomer = (props, currentCustomer) => {
-    if (props.id && props.customers && props.id !== currentCustomer.id) {
-        const selectedCustomer = Object.assign({}, props.customers[props.id]);
-        if (selectedCustomer.id) {
-            selectedCustomer.selectedTrips = props.customers[props.id].trips.slice();
-            delete selectedCustomer.trips;
-            return selectedCustomer;
-        }
-    }
-};
-
 class CustomersForm extends React.Component {
     constructor(props) {
         super(props);
@@ -29,19 +17,17 @@ class CustomersForm extends React.Component {
     }
 
     componentDidMount() {
-        const currentCustomer = selectCustomer(this.props, this.state.currentCustomer);
-        if (currentCustomer) {
+        if (this.props.selectedCustomer) {
             this.setState({
-                currentCustomer
+                currentCustomer: this.props.selectedCustomer
             })
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        const currentCustomer = selectCustomer(nextProps, this.state.currentCustomer);
-        if (currentCustomer) {
+        if (nextProps.selectedCustomer && nextProps.selectedCustomer.id !== this.state.currentCustomer.id) {
             this.setState({
-                currentCustomer
+                currentCustomer: nextProps.selectedCustomer
             })
         }
     }

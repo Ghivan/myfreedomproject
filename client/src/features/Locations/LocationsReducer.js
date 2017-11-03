@@ -2,48 +2,48 @@ import _ from 'lodash';
 import ActionTypes from './LocationActionTypes';
 
 const initialState = {
-    list: {}
+    locations: {}
 };
 
-const reducerFetchLocationsList = (state, action) => {
+const reducerFetchLocations = (state, action) => {
     const normalizedLocations = _.keyBy(action.payload.locations, location => location.id);
     return {
         ...state,
-        list: normalizedLocations
+        locations: normalizedLocations
     };
 };
 
 const reducerAddLocation = (state, action) => {
-    const newLocationsList = Object.assign({}, state.list);
+    const newLocationsList = _.cloneDeep(state.locations);
     newLocationsList[action.payload.location.id] = action.payload.location;
     return {
         ...state,
-        list: newLocationsList
+        locations: newLocationsList
     };
 };
 
 const reducerUpdateLocation = (state, action) => {
-    const newLocationsList = Object.assign({}, state.list);
+    const newLocationsList = _.cloneDeep(state.locations);
     newLocationsList[action.payload.location.id] = action.payload.location;
     return {
         ...state,
-        list: newLocationsList
+        locations: newLocationsList
     };
 };
 
 const reducerDeleteLocation = (state, action) => {
-    const newLocationsList = Object.assign({}, state.list);
+    const newLocationsList = _.cloneDeep(state.locations);
     delete newLocationsList[action.payload.id];
     return {
         ...state,
-        list: newLocationsList
+        locations: newLocationsList
     };
 };
 
 export default (state = initialState, action) => {
     switch (action.type) {
         case ActionTypes.GET_LIST:
-            return reducerFetchLocationsList(state, action);
+            return reducerFetchLocations(state, action);
         case ActionTypes.ADD_LOCATION:
             return reducerAddLocation(state, action);
         case ActionTypes.UPDATE_LOCATION:

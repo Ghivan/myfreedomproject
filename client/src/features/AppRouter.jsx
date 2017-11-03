@@ -73,7 +73,7 @@ export class AppRouter extends React.Component {
                     <Switch>
                         <Route exact path="/" component={MainPage}/>
                         <Route path="/locations">
-                            <LocationsRouter locations={this.props.locations.list}
+                            <LocationsRouter locations={this.props.locationsScreen.locations}
                                              remove={this.props.deleteLocation}
                                              add={this.props.addLocation}
                                              update={this.props.updateLocation}
@@ -82,9 +82,9 @@ export class AppRouter extends React.Component {
                             />
                         </Route>
                         <Route path="/trips">
-                            <TripsRouter trips={this.props.trips.list}
+                            <TripsRouter trips={this.props.tripsScreen.trips}
                                          remove={this.props.deleteTrip}
-                                         allLocations={this.props.locations.list}
+                                         allLocations={this.props.locationsScreen.locations}
                                          add={this.props.addTrip}
                                          update={this.props.updateTrip}
                                          showConfirmationBlock={this.showConfirmationBlock}
@@ -92,9 +92,9 @@ export class AppRouter extends React.Component {
                             />
                         </Route>
                         <Route path="/customers">
-                            <CustomersRouter customers={this.props.customers.list}
+                            <CustomersRouter customers={this.props.customersScreen.customers}
                                              remove={this.props.deleteCustomer}
-                                             allTrips={this.props.trips.list}
+                                             allTrips={this.props.tripsScreen.trips}
                                              add={this.props.addCustomer}
                                              update={this.props.updateCustomer}
                                              showConfirmationBlock={this.showConfirmationBlock}

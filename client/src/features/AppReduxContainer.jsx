@@ -7,7 +7,7 @@ import {bindActionCreators} from '../utils/utils';
 
 import LocationActionCreator from './Locations/LocationsActionCreator';
 import TripsActionCreator from './Trips/TripsActionCreator';
-import {CustomersService} from './Customers/CustomerService';
+import CustomersActionCreator from './Customers/CustomersActionCreator';
 import {clearError} from './Global/Errors/ErrorReducer';
 
 import {AppRouter} from './AppRouter';
@@ -15,7 +15,7 @@ import {AppRouter} from './AppRouter';
 const ActionCreator = {
     ...LocationActionCreator,
     ...TripsActionCreator,
-    ...CustomersService,
+    ...CustomersActionCreator,
     clearError
 };
 

@@ -1,91 +1,63 @@
 import _ from 'lodash';
-
-const ActionTypes = {
-    GET_LIST: 'CUSTOMERS/ GET LIST',
-    SELECT: 'CUSTOMERS/ SELECT',
-    CLEAR_SELECTED_CUSTOMER: 'CUSTOMERS/ CLEAR SELECTED',
-    ADD_CUSTOMER: 'CUSTOMERS/ ADD',
-    UPDATE_CUSTOMER: 'CUSTOMERS/ UPDATE',
-    DELETE_CUSTOMER: 'CUSTOMERS/ DELETE'
-};
+import ActionTypes from './CustomersActionTypes';
 
 const initialState = {
-    list: []
+    customers: {}
 };
 
-export const fetchCustomersList = customers => ({
-        type: ActionTypes.GET_LIST,
-        payload: {
-            customers
-        }
-    });
 
-const __fetchCustomersList = (state, action) => {
+
+const reducerFetchCustomers = (state, action) => {
     const normalizedCustomers = _.keyBy(action.payload.customers, customer => customer.id);
     return {
         ...state,
-        list: normalizedCustomers
+        customers: normalizedCustomers
     };
 };
 
-export const addCustomer = customer => ({
-        type: ActionTypes.ADD_CUSTOMER,
-        payload: {
-            customer
-        }
-    });
 
-const __addCustomer = (state, action) => {
-    const newCustomersList = Object.assign({}, state.list);
+
+const reducerAddCustomer = (state, action) => {
+    const newCustomersList = _.cloneDeep(state.customers);
     newCustomersList[action.payload.customer.id] = action.payload.customer;
     return {
         ...state,
-        list: newCustomersList
+        customers: newCustomersList
     };
 };
 
-export const updateCustomer = customer => ({
-        type: ActionTypes.UPDATE_CUSTOMER,
-        payload: {
-            customer
-        }
-    });
 
-const __updateCustomer = (state, action) => {
-    const newCustomersList = Object.assign({}, state.list);
+
+const reducerUpdateCustomer = (state, action) => {
+    const newCustomersList = _.cloneDeep(state.customers);
     newCustomersList[action.payload.customer.id] = action.payload.customer;
     return {
         ...state,
-        list: newCustomersList
+        customers: newCustomersList
     };
 };
 
-export const deleteCustomer = customerId => ({
-        type: ActionTypes.DELETE_CUSTOMER,
-        payload: {
-            id: customerId
-        }
-    });
 
-const __deleteCustomer = (state, action) => {
-    const newCustomersList = Object.assign({}, state.list);
+
+const reducerDeleteCustomer = (state, action) => {
+    const newCustomersList = _.cloneDeep(state.customers);
     delete newCustomersList[action.payload.id];
     return {
         ...state,
-        list: newCustomersList
+        customers: newCustomersList
     };
 };
 
 export default (state = initialState, action) => {
     switch (action.type) {
         case ActionTypes.GET_LIST:
-            return __fetchCustomersList(state, action);
+            return reducerFetchCustomers(state, action);
         case ActionTypes.ADD_CUSTOMER:
-            return __addCustomer(state, action);
+            return reducerAddCustomer(state, action);
         case ActionTypes.UPDATE_CUSTOMER:
-            return __updateCustomer(state, action);
+            return reducerUpdateCustomer(state, action);
         case ActionTypes.DELETE_CUSTOMER:
-            return __deleteCustomer(state, action);
+            return reducerDeleteCustomer(state, action);
         default:
             return state
     }
