@@ -10,7 +10,7 @@ import LocationsReducer from '../features/Locations/LocationsReducer';
 import ActionTypes from '../features/Locations/LocationActionTypes';
 
 const getInitialState = () => ({
-    list: {}
+    locations: {}
 });
 const getLocationsList = () => [
     {
@@ -41,14 +41,14 @@ it('should populate list with received data', () => {
     const updatedState = LocationsReducer(initialState, actionEmitted);
 
     expect(actionEmitted.type).toBe(ActionTypes.GET_LIST);
-    expect(updatedState.list).toEqual(normalizedLocations);
+    expect(updatedState.locations).toEqual(normalizedLocations);
 });
 
 it('should delete location from list', () => {
     const initialState = {
-        list: getNormalizedLocationList()
+        locations: getNormalizedLocationList()
     };
-    const locationsIds = Object.keys(initialState.list);
+    const locationsIds = Object.keys(initialState.locations);
     const locationToDelete = locationsIds[0];
     const store = mockStore(initialState);
 
@@ -58,13 +58,13 @@ it('should delete location from list', () => {
     const updatedState = LocationsReducer(initialState, actionEmitted);
 
     expect(actionEmitted.type).toBe(ActionTypes.DELETE_LOCATION);
-    expect(updatedState.list[locationToDelete]).toBeFalsy();
+    expect(updatedState.locations[locationToDelete]).toBeFalsy();
 });
 
 it('LocationsService should receive locations list from server', () => {
     const normalizedLocationList = getNormalizedLocationList();
     const initialState = {
-        list: {}
+        locations: {}
     };
     const store = mockStore(initialState);
 
@@ -74,6 +74,6 @@ it('LocationsService should receive locations list from server', () => {
             const updatedState = LocationsReducer(initialState, actionEmitted);
 
             expect(actionEmitted.type).toBe(ActionTypes.GET_LIST);
-            expect(updatedState.list).toEqual(normalizedLocationList);
+            expect(updatedState.locations).toEqual(normalizedLocationList);
         });
 });
