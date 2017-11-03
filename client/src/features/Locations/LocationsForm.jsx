@@ -23,6 +23,14 @@ class LocationsForm extends React.Component {
         }
     }
 
+    componentWillReceiveProps(nextProps){
+        if (nextProps.selectedLocation && nextProps.selectedLocation.id !== this.state.currentLocation.id){
+            this.setState({
+                currentLocation: nextProps.selectedLocation
+            })
+        }
+    }
+
     handleActionBtn = e => {
         e.preventDefault();
         let errors = [];

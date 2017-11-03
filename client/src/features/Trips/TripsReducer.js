@@ -1,26 +1,12 @@
 import _ from 'lodash';
-
-const ActionTypes = {
-    GET_LIST: 'TRIPS/ GET LIST',
-    SELECT: 'TRIPS/ SELECT',
-    CLEAR_SELECTED_TRIP: 'TRIPS/ CLEAR SELECTED',
-    ADD_TRIP: 'TRIPS/ ADD',
-    UPDATE_TRIP: 'TRIPS/ UPDATE',
-    DELETE_TRIP: 'TRIPS/ DELETE'
-};
+import ActionTypes from './TripsActionTypes';
 
 const initialState = {
     list: [],
 };
 
-export const fetchTripsList = trips => ({
-        type: ActionTypes.GET_LIST,
-        payload: {
-            trips
-        }
-    });
 
-const __fetchTripsList = (state, action) => {
+const reducerFetchTripsList = (state, action) => {
     const normalizedTrips = _.keyBy(action.payload.trips, trip => trip.id);
     return {
         ...state,
@@ -28,14 +14,8 @@ const __fetchTripsList = (state, action) => {
     };
 };
 
-export const addTrip = trip => ({
-        type: ActionTypes.ADD_TRIP,
-        payload: {
-            trip
-        }
-    });
 
-const __addTrip = (state, action) => {
+const reducerAddTrip = (state, action) => {
     const newTripsList = Object.assign({}, state.list);
     newTripsList[action.payload.trip.id] = action.payload.trip;
     return {
@@ -44,14 +24,7 @@ const __addTrip = (state, action) => {
     };
 };
 
-export const updateTrip = trip => ({
-        type: ActionTypes.UPDATE_TRIP,
-        payload: {
-            trip
-        }
-    });
-
-const __updateTrip = (state, action) => {
+const reducerUpdateTrip = (state, action) => {
     const newTripsList = Object.assign({}, state.list);
     newTripsList[action.payload.trip.id] = action.payload.trip;
     return {
@@ -60,14 +33,7 @@ const __updateTrip = (state, action) => {
     };
 };
 
-export const deleteTrip = tripId => ({
-        type: ActionTypes.DELETE_TRIP,
-        payload: {
-            id: tripId
-        }
-    });
-
-const __deleteTrip = (state, action) => {
+const reducerDeleteTrip = (state, action) => {
     const newTripsList = Object.assign({}, state.list);
     delete newTripsList[action.payload.id];
     return {
@@ -79,13 +45,13 @@ const __deleteTrip = (state, action) => {
 export default (state = initialState, action) => {
     switch (action.type) {
         case ActionTypes.GET_LIST:
-            return __fetchTripsList(state, action);
+            return reducerFetchTripsList(state, action);
         case ActionTypes.ADD_TRIP:
-            return __addTrip(state, action);
+            return reducerAddTrip(state, action);
         case ActionTypes.UPDATE_TRIP:
-            return __updateTrip(state, action);
+            return reducerUpdateTrip(state, action);
         case ActionTypes.DELETE_TRIP:
-            return __deleteTrip(state, action);
+            return reducerDeleteTrip(state, action);
         default:
             return state
     }

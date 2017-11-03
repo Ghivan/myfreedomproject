@@ -2,26 +2,8 @@ import React from 'react';
 
 import {ErrorBlock} from '../Global/Errors/ErrorMessage';
 
-const formatDate = (date) => {
-    date = new Date(date);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${String(year)}-${month < 10 ? '0' + String(month) : String(month)}-${day < 10 ? '0' + String(day) : String(day)}`
-};
+import {formatDate} from "../../utils/utils";
 
-const selectTrip = (props, currentTrip) => {
-    if (props.id && props.trips && props.id !== currentTrip.id) {
-        const selectedTrip = Object.assign({},props.trips[props.id]);
-        if (selectedTrip.id) {
-            selectedTrip.selectedLocations = props.trips[props.id].route.locations;
-            selectedTrip.arrivalDate = formatDate( props.trips[props.id].route.arrivalDate);
-            selectedTrip.departureDate = formatDate(props.trips[props.id].route.departureDate);
-            delete selectedTrip.route;
-            return selectedTrip;
-        }
-    }
-};
 
 class TripsForm extends React.Component {
     constructor(props) {
@@ -39,19 +21,17 @@ class TripsForm extends React.Component {
     }
 
     componentDidMount() {
-        const currentTrip = selectTrip(this.props, this.state.currentTrip);
-        if (currentTrip) {
+        if (this.props.selectedTrip) {
             this.setState({
-                currentTrip
+                currentTrip: this.props.selectedTrip
             })
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        const currentTrip = selectTrip(nextProps, this.state.currentTrip);
-        if (currentTrip) {
+        if (nextProps.selectedTrip && nextProps.selectedTrip.id !==  this.props.selectedTrip) {
             this.setState({
-                currentTrip
+                currentTrip: nextProps.selectedTrip
             })
         }
     }

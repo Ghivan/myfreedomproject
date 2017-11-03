@@ -1,17 +1,38 @@
-import {APIDriver} from '../../api/api';
-import {
-    fetchTripsList,
-    addTrip,
-    updateTrip,
-    deleteTrip
-} from './TripsReducer';
-
+import ActionTypes from "./TripsActionTypes";
 import { setError } from '../Global/Errors/ErrorReducer';
 
-export const TripsService = {
+export const fetchTripsList = trips => ({
+    type: ActionTypes.GET_LIST,
+    payload: {
+        trips
+    }
+});
+
+export const addTrip = trip => ({
+    type: ActionTypes.ADD_TRIP,
+    payload: {
+        trip
+    }
+});
+
+export const updateTrip = trip => ({
+    type: ActionTypes.UPDATE_TRIP,
+    payload: {
+        trip
+    }
+});
+
+export const deleteTrip = tripId => ({
+    type: ActionTypes.DELETE_TRIP,
+    payload: {
+        id: tripId
+    }
+});
+
+export default {
     fetchTrips: () => {
-        return (dispatch) => {
-            return APIDriver.getAll('trips')
+        return (dispatch, getState, api) => {
+            return api.getAll('trips')
                 .then((trips) => {
                     dispatch(fetchTripsList(trips));
                 })
@@ -22,8 +43,8 @@ export const TripsService = {
     },
 
     addTrip: (newTrip) => {
-        return (dispatch) => {
-            return APIDriver.add('trips', newTrip)
+        return (dispatch, getState, api) => {
+            return api.add('trips', newTrip)
                 .then((trip) => {
                     dispatch(addTrip(trip))
                 })
@@ -34,8 +55,8 @@ export const TripsService = {
     },
 
     updateTrip: (tripId, updatedTrip) => {
-        return (dispatch) => {
-            return APIDriver.update('trips', tripId, updatedTrip)
+        return (dispatch, getState, api) => {
+            return api.update('trips', tripId, updatedTrip)
                 .then((trip) => {
                     dispatch(updateTrip(trip));
                 })
@@ -46,8 +67,8 @@ export const TripsService = {
     },
 
     deleteTrip: (tripId) => {
-        return (dispatch) => {
-            return APIDriver.remove('trips', tripId)
+        return (dispatch, getState, api) => {
+            return api.remove('trips', tripId)
                 .then((trip) => {
                     dispatch(deleteTrip(tripId));
                 })

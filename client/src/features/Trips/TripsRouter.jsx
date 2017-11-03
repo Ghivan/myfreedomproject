@@ -8,7 +8,7 @@ import {
 import TripsTable from './TripsTable';
 import TripsForm from './TripsForm';
 import {Paginator, getDisplayedItems} from "../Global/Paginator/Paginator";
-import {parseQueryString} from "../../utils/utils";
+import {parseQueryString, formatDate} from "../../utils/utils";
 
 const RoutedTripsForm = withRouter(TripsForm);
 
@@ -19,6 +19,17 @@ export default class TripsRouter extends React.Component {
             itemsPerPage: 5
         };
     }
+
+    selectTrip = (id) => {
+        if (this.props.trips[id]) {
+            const selectedTrip = Object.assign({}, this.props.trips[id]);
+            selectedTrip.selectedLocations = this.props.trips[id].route.locations;
+            selectedTrip.arrivalDate = formatDate(this.props.trips[id].route.arrivalDate);
+            selectedTrip.departureDate = formatDate(this.props.trips[id].route.departureDate);
+            delete selectedTrip.route;
+            return selectedTrip;
+        }
+    };
 
     renderTripsTable = () => {
         const queryParams = parseQueryString(window.location.search.substr(1));
@@ -44,7 +55,7 @@ export default class TripsRouter extends React.Component {
 
     renderTripsForm = ({match, history}) => {
         return (
-            <RoutedTripsForm id={match.params.id}
+            <RoutedTripsForm selectedTrip={this.selectTrip(match.params.id)}
                              trips={this.props.trips}
                              allLocations={this.props.allLocations}
                              add={this.props.add}
