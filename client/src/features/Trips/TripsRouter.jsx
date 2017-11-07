@@ -8,23 +8,28 @@ import {
 import TripsTable from './TripsTable';
 import TripsForm from './TripsForm';
 import {Paginator, getDisplayedItems} from "../Global/Paginator/Paginator";
-import {parseQueryString} from "../../utils/utils";
+import {parseQueryString, formatDate} from "../../utils/utils";
 
 const RoutedTripsForm = withRouter(TripsForm);
 
-export default class LocationsRouter extends React.Component{
-    constructor(props){
+export default class TripsRouter extends React.Component {
+    constructor(props) {
         super(props);
         this.state = {
-            itemsPerPage: 5,
-            confirmationBlockConfig: {
-                isShown: false,
-                message: '',
-                onResolve: null,
-                onReject: null
-            }
+            itemsPerPage: 5
         };
     }
+
+    selectTrip = (id) => {
+        if (this.props.trips[id]) {
+            const selectedTrip = Object.assign({}, this.props.trips[id]);
+            selectedTrip.selectedLocations = this.props.trips[id].route.locations;
+            selectedTrip.arrivalDate = formatDate(this.props.trips[id].route.arrivalDate);
+            selectedTrip.departureDate = formatDate(this.props.trips[id].route.departureDate);
+            delete selectedTrip.route;
+            return selectedTrip;
+        }
+    };
 
     renderTripsTable = () => {
         const queryParams = parseQueryString(window.location.search.substr(1));
@@ -32,14 +37,15 @@ export default class LocationsRouter extends React.Component{
         return (
             <div>
                 <TripsTable trips={getDisplayedItems(this.props.trips, currentPage, this.state.itemsPerPage)}
+                            locations={this.props.allLocations}
                             remove={this.props.remove}
                             showPopup={this.props.showConfirmationBlock}
                             hidePopup={this.props.hideConfirmationBlock}
                 />
-                <Paginator isShown={this.props.trips.length > this.state.itemsPerPage}
+                <Paginator isShown={Object.keys(this.props.trips).length > this.state.itemsPerPage}
                            currentPage={currentPage}
                            currentElementIndex={null}
-                           totalItems={this.props.trips.length}
+                           totalItems={Object.keys(this.props.trips).length}
                            itemsPerPage={this.state.itemsPerPage}
                            urlPrefix={'/trips'}
                 />
@@ -47,19 +53,21 @@ export default class LocationsRouter extends React.Component{
         )
     };
 
-    renderTripsForm = ({match, history}) => (
-        <RoutedTripsForm  id={match.params.id}
-                          allLocations={this.props.allLocations}
-                          add={this.props.add}
-                          getById={this.props.getById}
-                          update={this.props.update}
-                          showPopup={this.props.showConfirmationBlock}
-                          hidePopup={this.props.hideConfirmationBlock}
-                          history={history}
-        />
-    );
+    renderTripsForm = ({match, history}) => {
+        return (
+            <RoutedTripsForm selectedTrip={this.selectTrip(match.params.id)}
+                             trips={this.props.trips}
+                             allLocations={this.props.allLocations}
+                             add={this.props.add}
+                             update={this.props.update}
+                             showPopup={this.props.showConfirmationBlock}
+                             hidePopup={this.props.hideConfirmationBlock}
+                             history={history}
+            />
+        );
+    };
 
-    render(){
+    render() {
         return (
             <Switch>
                 <Route exact path="/trips" render={this.renderTripsTable}/>

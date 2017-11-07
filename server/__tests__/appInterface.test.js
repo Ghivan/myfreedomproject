@@ -57,8 +57,8 @@ it('should create 2 locations, 1 trip and 1 customer', () => {
         .then(element => element.click())
         .then(() => driver.wait(until.elementLocated(By.linkText('Add new location'))))
         .then(element => element.click())
-        .then(() => driver.wait(until.elementLocated(By.css('form'))))
         .then(() => {
+            driver.wait(until.elementLocated(By.css('form')));
             const cityInput = driver.findElement(By.id('city'));
             const countryInput = driver.findElement(By.id('Country'));
             const addButton = driver.findElement(By.className('btn-primary'));
@@ -68,8 +68,8 @@ it('should create 2 locations, 1 trip and 1 customer', () => {
         })
         .then(() => driver.wait(until.elementLocated(By.linkText('Add new location'))))
         .then(element => element.click())
-        .then(() => driver.wait(until.elementLocated(By.css('form'))))
         .then(() => {
+            driver.wait(until.elementLocated(By.css('form')));
             const cityInput = driver.findElement(By.id('city'));
             const countryInput = driver.findElement(By.id('Country'));
             const addButton = driver.findElement(By.className('btn-primary'));
@@ -81,8 +81,8 @@ it('should create 2 locations, 1 trip and 1 customer', () => {
         .then(element => element.click())
         .then(() => driver.wait(until.elementLocated(By.linkText('Add new trip'))))
         .then(element => element.click())
-        .then(() => driver.wait(until.elementLocated(By.css('form'))))
         .then(() => {
+            driver.wait(until.elementLocated(By.css('form')));
             const nameInput = driver.findElement(By.id('tripName'));
             const arrivalInput = driver.findElement(By.id('arrivalDate'));
             const departureInput = driver.findElement(By.id('departureDate'));
@@ -109,7 +109,7 @@ it('should create 2 locations, 1 trip and 1 customer', () => {
         .then(element => element.click())
         .then(() => driver.wait(until.elementLocated(By.css('form'))))
         .then(() => LocationModel.find({}))
-        .then((addedLocations) => {
+        .then(() => {
             const firstNameInput = driver.findElement(By.id('firstName'));
             const lastNamelInput = driver.findElement(By.id('lastName'));
             const addButton = driver.findElement(By.className('btn-primary'));

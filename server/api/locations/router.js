@@ -12,7 +12,7 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/:id', (req, res, next) => {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         res.status(404);
         res.end();
         return next();
@@ -40,15 +40,18 @@ router.post('/', (req, res, next) => {
         }
     };
 
-    if (errors.CITY_IS_EMPTY || errors.COUNTRY_IS_EMPTY){
+    if (errors.CITY_IS_EMPTY || errors.COUNTRY_IS_EMPTY) {
         res.statusMessage = errors.toString();
         res.status(400);
         res.end();
         return next();
     }
 
-    LocationModel.findOne({city: new RegExp('^' + escapeRegExp(city) + '$', 'i'), country: new RegExp('^' + escapeRegExp(country) + '$', 'i')}).then(location => {
-        if (!location){
+    LocationModel.findOne({
+        city: new RegExp('^' + escapeRegExp(city) + '$', 'i'),
+        country: new RegExp('^' + escapeRegExp(country) + '$', 'i')
+    }).then(location => {
+        if (!location) {
             const NewLocation = new LocationModel({
                     city: city.trim(),
                     country: country.trim()
@@ -69,7 +72,7 @@ router.post('/', (req, res, next) => {
 });
 
 router.put('/:id', (req, res, next) => {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         res.status(404);
         res.end();
         return next();
@@ -84,9 +87,12 @@ router.put('/:id', (req, res, next) => {
         const {city, country} = req.body;
         location.city = (Validator.text(city)) ? city.trim() : location.city;
         location.country = (Validator.text(country)) ? country.trim() : location.country;
-        LocationModel.findOne({city: new RegExp('^' + escapeRegExp(location.city) + '$', 'i'), country: new RegExp('^' + escapeRegExp(location.country) + '$', 'i')})
+        LocationModel.findOne({
+            city: new RegExp('^' + escapeRegExp(location.city) + '$', 'i'),
+            country: new RegExp('^' + escapeRegExp(location.country) + '$', 'i')
+        })
             .then(testedLocation => {
-                if (!testedLocation){
+                if (!testedLocation) {
                     location.save().then(location => res.json(transform(location)), next);
                 } else {
                     res.statusMessage = 'Location already exists';
@@ -99,19 +105,19 @@ router.put('/:id', (req, res, next) => {
 });
 
 router.delete('/:id', (req, res, next) => {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         res.status(200);
         res.end();
         return next();
     }
     LocationModel.findById(req.params.id)
         .then(location => {
-                if (location){
+                if (location) {
                     TripModel.find({
                         'route.locations': {$in: [req.params.id]}
                     })
                         .then(trips => {
-                            if(trips.length > 0) {
+                            if (trips.length > 0) {
                                 res.statusMessage = 'Location is used in trip';
                                 res.status(400);
                                 res.end();

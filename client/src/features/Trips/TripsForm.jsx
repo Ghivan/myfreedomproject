@@ -2,81 +2,86 @@ import React from 'react';
 
 import {ErrorBlock} from '../Global/Errors/ErrorMessage';
 
-const formatDate = (date) => {
-    date = new Date(date);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${String(year)}-${month < 10 ? '0' + String(month) : String(month)}-${day < 10 ? '0' + String(day) : String(day)}`
-};
+import {formatDate} from "../../utils/utils";
 
-const getLocationsIdsFromTrip = (trip) => {
-    return trip.route.locations.reduce((prev, curr) => {
-        if (curr.id) prev.push(curr.id);
-        return prev;
-    }, [])
-};
 
 class TripsForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             errors: '',
-            name: '',
-            arrivalDate: formatDate(Date.now()),
-            departureDate: formatDate(Date.now()),
-            selectedLocations: []
+            currentTrip: {
+                id: '',
+                name: '',
+                arrivalDate: formatDate(Date.now()),
+                departureDate: formatDate(Date.now()),
+                selectedLocations: []
+            }
         };
-        if (this.props.id) {
-            this.props.getById(this.props.id)
-                .then(trip => {
-                    if (!trip) {
-                        return props.history.replace('/notFound');
-                    }
-                    this.setState({
-                        name: trip.name,
-                        arrivalDate: formatDate(trip.route.arrivalDate),
-                        departureDate: formatDate(trip.route.departureDate),
-                        selectedLocations: getLocationsIdsFromTrip(trip)
-                    })
-                })
+    }
+
+    componentDidMount() {
+        if (this.props.selectedTrip) {
+            this.setState({
+                currentTrip: this.props.selectedTrip
+            })
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.selectedTrip && nextProps.selectedTrip.id !==  this.state.currentTrip.id) {
+            this.setState({
+                currentTrip: nextProps.selectedTrip
+            })
         }
     }
 
     handleSelectedLocations = e => {
-        let index = this.state.selectedLocations.indexOf(e.target.value),
-            selectedLocations = this.state.selectedLocations;
+        let index = this.state.currentTrip.selectedLocations.indexOf(e.target.value),
+            selectedLocations = this.state.currentTrip.selectedLocations.slice();
         if (e.target.checked) {
             selectedLocations.push(e.target.value);
-            this.setState({
-                selectedLocations
-            })
+            this.setState((prevState) => {
+                return {
+                    ...prevState,
+                    currentTrip: {
+                        ...prevState.currentTrip,
+                        selectedLocations
+                    }
+                }
+            });
         } else {
             if (index > -1) selectedLocations.splice(index, 1);
-            this.setState({
-                selectedLocations
-            })
+            this.setState((prevState) => {
+                return {
+                    ...prevState,
+                    currentTrip: {
+                        ...prevState.currentTrip,
+                        selectedLocations
+                    }
+                }
+            });
         }
     };
 
     handleActionBtn = e => {
         e.preventDefault();
         let errors = [];
-        if (!this.state.name.trim()) {
+        if (!this.state.currentTrip.name.trim()) {
             errors.push('Trip name should not be empty.')
         }
-        if (!this.state.arrivalDate.trim()) {
+        if (!this.state.currentTrip.arrivalDate.trim()) {
             errors.push('Arrival date should not be empty.')
         }
-        if (!this.state.departureDate.trim()) {
+        if (!this.state.currentTrip.departureDate.trim()) {
             errors.push('Arrival date should not be empty.')
         }
 
-        if (new Date(this.state.arrivalDate) > new Date(this.state.departureDate)) {
+        if (new Date(this.state.currentTrip.arrivalDate) > new Date(this.state.currentTrip.departureDate)) {
             errors.push('Departure is sooner than arrival')
         }
 
-        if (this.state.selectedLocations.length === 0) {
+        if (this.state.currentTrip.selectedLocations.length === 0) {
             errors.push('Locations should not be empty')
         }
 
@@ -84,15 +89,15 @@ class TripsForm extends React.Component {
             this.setState({errors: errors.join(' ')});
             return;
         }
-        if (this.props.id) {
+        if (this.state.currentTrip.id) {
             this.props.showPopup(
                 'Do you really want to change this trip?',
                 () => {
-                    this.props.update(this.props.id, {
-                        name: this.state.name,
-                        arrivalDate: this.state.arrivalDate,
-                        departureDate: this.state.departureDate,
-                        locations: this.state.selectedLocations
+                    this.props.update(this.state.currentTrip.id, {
+                        name: this.state.currentTrip.name,
+                        arrivalDate: this.state.currentTrip.arrivalDate,
+                        departureDate: this.state.currentTrip.departureDate,
+                        locations: this.state.currentTrip.selectedLocations
                     });
                     this.props.hidePopup();
                     this.props.history.push('/trips');
@@ -101,10 +106,10 @@ class TripsForm extends React.Component {
             );
         } else {
             this.props.add({
-                name: this.state.name,
-                arrivalDate: this.state.arrivalDate,
-                departureDate: this.state.departureDate,
-                locations: this.state.selectedLocations
+                name: this.state.currentTrip.name,
+                arrivalDate: this.state.currentTrip.arrivalDate,
+                departureDate: this.state.currentTrip.departureDate,
+                locations: this.state.currentTrip.selectedLocations
             });
             this.props.history.push('/trips');
         }
@@ -125,8 +130,20 @@ class TripsForm extends React.Component {
                     <label htmlFor="tripName">Trip Name</label>
                     <input className="form-control"
                            id="tripName"
-                           value={this.state.name}
-                           onChange={(e) => this.setState({name: e.target.value})}
+                           value={this.state.currentTrip.name}
+                           onChange={(e) => {
+                               const tripName = e.target.value;
+                               this.setState((prevState) => {
+                                   return {
+                                       ...prevState,
+                                       currentTrip: {
+                                           ...prevState.currentTrip,
+                                           name: tripName
+                                       }
+                                   }
+                               })
+                           }
+                           }
                            placeholder="Trip Name"/>
                 </div>
                 <div className="form-group">
@@ -134,8 +151,20 @@ class TripsForm extends React.Component {
                     <input type="date"
                            className="form-control"
                            id="arrivalDate"
-                           value={this.state.arrivalDate}
-                           onChange={(e) => this.setState({arrivalDate: e.target.value})}
+                           value={this.state.currentTrip.arrivalDate}
+                           onChange={(e) => {
+                               const arrivalDate = e.target.value;
+                               this.setState((prevState) => {
+                                   return {
+                                       ...prevState,
+                                       currentTrip: {
+                                           ...prevState.currentTrip,
+                                           arrivalDate
+                                       }
+                                   }
+                               })
+                           }
+                           }
                     />
                 </div>
                 <div className="form-group">
@@ -143,29 +172,41 @@ class TripsForm extends React.Component {
                     <input type="date"
                            className="form-control"
                            id="departureDate"
-                           value={this.state.departureDate}
-                           onChange={(e) => this.setState({departureDate: e.target.value})}
+                           value={this.state.currentTrip.departureDate}
+                           onChange={(e) => {
+                               const departureDate = e.target.value;
+                               this.setState((prevState) => {
+                                   return {
+                                       ...prevState,
+                                       currentTrip: {
+                                           ...prevState.currentTrip,
+                                           departureDate
+                                       }
+                                   }
+                               })
+                           }
+                           }
                     />
                 </div>
                 <div>
                     <label>Select locations:</label>
                 </div>
                 <fieldset className="form-group">
-                    {this.props.allLocations.map(location => {
+                    {Object.keys(this.props.allLocations).map(id => {
                         return (
-                            <div className="form-check form-check-inline" key={location.id}>
+                            <div className="form-check form-check-inline" key={id}>
                                 <label className="form-check-label"
-                                       htmlFor={location.id}
+                                       htmlFor={id}
                                 >
                                     <input className="form-check-input"
-                                           id={location.id}
+                                           id={id}
                                            type="checkbox"
-                                           value={location.id}
+                                           value={id}
                                            name="locations"
-                                           checked={(this.state.selectedLocations.indexOf(location.id) > -1)}
+                                           checked={(this.state.currentTrip.selectedLocations.indexOf(id) > -1)}
                                            onChange={this.handleSelectedLocations}
                                     />
-                                    <span className="checkbox-label">{`${location.city} (${location.country})`}</span>
+                                    <span className="checkbox-label">{`${this.props.allLocations[id].city} (${this.props.allLocations[id].country})`}</span>
                                 </label>
                             </div>
                         )
@@ -173,7 +214,7 @@ class TripsForm extends React.Component {
                 </fieldset>
                 <button className="btn btn-primary"
                         onClick={this.handleActionBtn}
-                >{this.props.id ? 'Update' : 'Add'}</button>
+                >{this.state.currentTrip.id ? 'Update' : 'Add'}</button>
                 <button className="btn btn-default"
                         onClick={this.handleCancelBtn}
                 >Cancel

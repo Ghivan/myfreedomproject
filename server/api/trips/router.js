@@ -9,29 +9,21 @@ const Validator = require('../../model/validators');
 const {escapeRegExp} = require('../../utils');
 
 router.get('/', (req, res, next) => {
-    Promise.all([TripModel.find(), LocationModel.find()]).then(([trips, locations]) => {
-        const normalizedLocations = _.keyBy(locations.map(transform), location => location.id);
-        trips.forEach(trip => {
-            trip.route.locations = trip.route.locations.map(locationId => normalizedLocations[locationId]);
-        });
+    TripModel.find().then(trips => {
         res.json(trips.map(transform));
     }, next)
 });
 
 router.get('/:id', (req, res, next) => {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         res.status(404);
         res.end();
         return next('Invalid trip Id');
     }
     TripModel.findById(req.params.id)
         .then(trip => {
-            if (trip){
-                LocationModel.find({_id :{ $in: trip.route.locations }}).then(locations => {
-                    trip.route.locations = trip.route.locations.map(tripLoc =>
-                        transform(locations.find(location => location._id.toString() === tripLoc.toString())));
-                    res.json(transform(trip));
-                });
+            if (trip) {
+                res.json(transform(trip));
             } else {
                 res.status(404);
                 res.end();
@@ -63,7 +55,7 @@ router.post('/', (req, res, next) => {
 
     if (errors.TRIP_NAME_IS_EMPTY || errors.ARRIVAL_DATE_IS_NOT_VALID ||
         errors.DEPARTURE_DATE_IS_NOT_VALID || errors.LOCATIONS_IS_EMPTY ||
-        errors.DEPARTURE_IS_SOONER_ARRIVAL){
+        errors.DEPARTURE_IS_SOONER_ARRIVAL) {
         res.statusMessage = errors.toString();
         res.status(400);
         res.json({
@@ -74,7 +66,7 @@ router.post('/', (req, res, next) => {
         return next();
     }
     requestedLocations.map(location => {
-        try{
+        try {
             location = mongoose.Types.ObjectId(location)
         } catch (e) {
             res.statusMessage = 'Invalid locations id';
@@ -84,9 +76,9 @@ router.post('/', (req, res, next) => {
     });
 
     TripModel.findOne({name: new RegExp('^' + escapeRegExp(name) + '$', 'i')}).then(trip => {
-        if (!trip){
-            LocationModel.find({_id :{ $in: requestedLocations }}).then(locations => {
-                if (locations.length !== requestedLocations.length){
+        if (!trip) {
+            LocationModel.find({_id: {$in: requestedLocations}}).then(locations => {
+                if (locations.length !== requestedLocations.length) {
                     res.statusMessage = 'Check locations existence!';
                     res.end();
                     return next();
@@ -100,7 +92,9 @@ router.post('/', (req, res, next) => {
                     }
                 });
                 res.status(200);
-                NewTrip.save().then(trip => res.json(transform(trip)), next);
+                NewTrip.save().then(trip => {
+                    res.json(transform(trip))
+                }, next);
             })
         } else {
             res.statusMessage = 'Trip already exists';
@@ -112,7 +106,7 @@ router.post('/', (req, res, next) => {
 
 
 router.put('/:id', (req, res, next) => {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         res.status(404);
         res.end();
         return next();
@@ -124,7 +118,7 @@ router.put('/:id', (req, res, next) => {
     if (req.body.locations) {
         requestedLocations = req.body.locations;
         requestedLocations.map(locationId => {
-            try{
+            try {
                 locationId = mongoose.Types.ObjectId(locationId)
             } catch (e) {
                 errors.push('Invalid locations id');
@@ -132,8 +126,8 @@ router.put('/:id', (req, res, next) => {
         });
     }
 
-    if (name){
-        if (!Validator.text(name)){
+    if (name) {
+        if (!Validator.text(name)) {
             errors.push('Invalid trip\'s name');
         } else {
             name = name.trim()
@@ -141,7 +135,7 @@ router.put('/:id', (req, res, next) => {
     }
 
     if (arrivalDate) {
-        if (!Validator.date(arrivalDate)){
+        if (!Validator.date(arrivalDate)) {
             errors.push('Invalid arrival date');
         } else {
             arrivalDate = new Date(arrivalDate)
@@ -149,14 +143,14 @@ router.put('/:id', (req, res, next) => {
     }
 
     if (departureDate) {
-        if (!Validator.date(departureDate)){
+        if (!Validator.date(departureDate)) {
             errors.push('Invalid departure date');
         } else {
             departureDate = new Date(departureDate)
         }
     }
 
-    if (errors.length > 0){
+    if (errors.length > 0) {
         res.statusMessage = errors.join(' ');
         res.status(400);
         res.end();
@@ -184,7 +178,7 @@ router.put('/:id', (req, res, next) => {
                 trip.route.arrivalDate = arrivalDate;
             }
         }
-        if (departureDate){
+        if (departureDate) {
             if (new Date(trip.route.arrivalDate) > departureDate) {
                 res.statusMessage = 'New departure date is sooner than arrival date';
                 res.status(400);
@@ -194,19 +188,22 @@ router.put('/:id', (req, res, next) => {
                 trip.route.departureDate = departureDate;
             }
         }
-        if (requestedLocations){
-            LocationModel.find({_id :{ $in: requestedLocations }}).then(locations => {
-                if (locations.length !== requestedLocations.length){
+        if (requestedLocations) {
+            LocationModel.find({_id: {$in: requestedLocations}}).then(locations => {
+                if (locations.length !== requestedLocations.length) {
                     res.statusMessage = 'Check locations existence!';
                     res.status(400);
                     res.end();
                     return next();
                 }
-                trip.route.locations = requestedLocations;
-                trip.save().then(trip => res.json(transform(trip)), next);
+                trip.save().then(trip => {
+                    res.json(transform(trip))
+                }, next);
             })
         } else {
-            trip.save().then(trip => res.json(transform(trip)), next);
+            trip.save().then(trip => {
+                res.json(transform(trip))
+            }, next);
         }
 
     })
@@ -214,7 +211,7 @@ router.put('/:id', (req, res, next) => {
 });
 
 router.delete('/:id', (req, res, next) => {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         res.status(200);
         res.end();
         return next();
@@ -224,7 +221,7 @@ router.delete('/:id', (req, res, next) => {
                 CustomerModel.find({
                     'trips': {$in: [req.params.id]}
                 }).then(customers => {
-                    if(customers.length > 0) {
+                    if (customers.length > 0) {
                         res.statusMessage = 'Trip is used by Customers';
                         res.status(400);
                         res.end();

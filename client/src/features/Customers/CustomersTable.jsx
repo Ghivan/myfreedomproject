@@ -16,7 +16,7 @@ const handleDeleteCustomerBtn = (customer, showPopup, onAccept, hidePopup) => {
     }
 };
 
-const CustomersTable = ({customers, remove, showPopup, hidePopup}) =>
+const CustomersTable = ({customers, trips, remove, showPopup, hidePopup}) =>
     (
         <div>
             <table className="table table-responsive table-striped table-hover">
@@ -29,24 +29,24 @@ const CustomersTable = ({customers, remove, showPopup, hidePopup}) =>
                 </thead>
                 <tbody>
                 {
-                    customers.map(customer => {
+                    Object.keys(customers).map(id => {
                         return (
-                            <tr key={customer.id} className={`${customer.updated ? 'updated' : ''}`}>
-                                <td>{customer.firstName}</td>
-                                <td>{customer.lastName}</td>
+                            <tr key={id}>
+                                <td>{customers[id].firstName}</td>
+                                <td>{customers[id].lastName}</td>
                                 <td>
                                     <ul>
-                                        {customer.trips.map(trip => {
-                                            return <li key={trip.id}>{trip.name}</li>
+                                        {customers[id].trips.map(id => {
+                                            return <li key={id}>{trips[id].name}</li>
                                         })}
                                     </ul>
                                 </td>
                                 <td>
-                                    <Link to={`/customers/${customer.id}`}
+                                    <Link to={`/customers/${id}`}
                                           className="btn btn-info btn-sm"
                                     >Update</Link>
                                     <button className="btn btn-danger btn-sm"
-                                            onClick={handleDeleteCustomerBtn(customer, showPopup, remove, hidePopup)}
+                                            onClick={handleDeleteCustomerBtn(customers[id], showPopup, remove, hidePopup)}
                                     >Delete</button>
                                 </td>
                             </tr>
